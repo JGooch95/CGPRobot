@@ -1,0 +1,29 @@
+﻿  Texture.cpp
+  scene.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(172): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(211): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(225): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(322): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(324): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(380): warning C4018: '>=': signed/unsigned mismatch
+  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  Robot.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\robot.cpp(167): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\robot.cpp(172): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\robot.cpp(253): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\robot.cpp(275): warning C4018: '<': signed/unsigned mismatch
+  model.cpp
+  GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  main.cpp
+  gl_core_4_3.cpp
+  Collectable.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\collectable.cpp(9): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\collectable.cpp(33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Bitmap.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glfw3.lib(init.obj) : error LNK2019: unresolved external symbol __imp__vsnprintf referenced in function __glfwInputError
+MSVCRTD.lib(vsnprintf.obj) : error LNK2001: unresolved external symbol __imp__vsnprintf
+glfw3.lib(context.obj) : error LNK2019: unresolved external symbol __imp__sscanf referenced in function _parseGLVersion
+MSVCRTD.lib(vsnprintf.obj) : error LNK2001: unresolved external symbol __imp___vsnprintf
+C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\Debug\Win32\Coursework 1.exe : fatal error LNK1120: 3 unresolved externals
