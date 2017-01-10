@@ -8,38 +8,48 @@
 #include "glm\glm.hpp"
 #include "Texture.h"
 
+enum CoordinateType{ LOCAL_COORDS, WORLD_COORDS };
+
 class Model
 {
 	private:
-		GLuint vboHandles[2];
-		GLuint vaoHandle;
-		GLint programHandle;
+		GLuint m_uiVBOHandles[2];
+		GLuint m_uiVAOHandle;
+		GLint m_iProgramHandle;
 
-		Texture* gTexture;
+		Texture* m_Texture;
 
-		glm::mat4 M;
+		glm::mat4 m_ModelMatrix;
 
-		std::string TextureDir;
-		std::vector<float> positionData;
-		std::vector<float> uvData;
-
-	public:
-		Model(std::string Obj, glm::vec3 Translate2, glm::vec3 Rotate2, glm::vec3 Scale2, std::string Tex, GLint programHandle2);
-		void init();
-		void update();
-		void render();
-		void loadObj(std::string dir);
-
-		void end();
-		void start();
-		void Scale(float x, float y, float z);
-		void WRotate(float x, float y, float z);
-		void LRotate(float x, float y, float z);
-		void Translate(float x, float y, float z);
-		void LTranslate(float x, float y, float z);
+		std::vector<float> m_vfPositionData;
+		std::vector<float> m_vfUvData;
+		
 		glm::vec3 Rotation;
 		glm::vec3 CurrentScale;
 		glm::vec3 Position;
 		glm::vec3 Dimensions;
+
+	public:
+		Model(std::string Obj, glm::vec3 Translate2, glm::vec3 Rotate2, glm::vec3 Scale2, std::string sTex, GLint programHandle2);
+		void init(std::string sTex);
+		void update();
+		void render();
+		void loadObj(std::string sDir);
+
+		void end();
+		void start();
+
+		void scale(float fX, float fY, float fZ);
+		void rotate(float fX, float fY, float fZ, CoordinateType);
+		void translate(float fX, float fY, float fZ);
+
+		glm::vec3 getRotation();
+		glm::vec3 getCurrentScale();
+		glm::vec3 getPosition();
+		glm::vec3 getDimensions();
+
+		void setPosition(glm::vec3 newVect);
+		void setRotation(glm::vec3 newVect);
+		void setCurrentScale(glm::vec3 newVect);
 		
 };

@@ -6,32 +6,31 @@
 
 #define GLM_FORCE_RADIANS
 
-Model::Model(std::string Obj, glm::vec3 Translate2, glm::vec3 Rotate2, glm::vec3 Scale2, std::string Tex, GLint programHandle2) {
-	programHandle = programHandle2;
-	TextureDir = Tex;
+Model::Model(std::string Obj, glm::vec3 Translate2, glm::vec3 Rotate2, glm::vec3 Scale2, std::string sTex, GLint programHandle2) {
+	m_iProgramHandle = programHandle2;
 	Position = Translate2;
 	Rotation = Rotate2;
 	CurrentScale = Scale2;
 	loadObj(Obj);
-	init();
+	init(sTex);
 }
 
-void Model::init(){
+void Model::init(std::string sTex){
 	// Create and populate the buffer objects using separate buffers
-	gl::GenBuffers(2, vboHandles);
+	gl::GenBuffers(2, m_uiVBOHandles);
 
-	GLuint positionBufferHandle = vboHandles[0];
-	GLuint uvBufferHandle = vboHandles[1];
+	GLuint positionBufferHandle = m_uiVBOHandles[0];
+	GLuint uvBufferHandle = m_uiVBOHandles[1];
 
 	gl::BindBuffer(gl::ARRAY_BUFFER, positionBufferHandle);
-	gl::BufferData(gl::ARRAY_BUFFER, positionData.size() * sizeof(float), &positionData[0], gl::STATIC_DRAW);
+	gl::BufferData(gl::ARRAY_BUFFER, m_vfPositionData.size() * sizeof(float), &m_vfPositionData[0], gl::STATIC_DRAW);
 
 	gl::BindBuffer(gl::ARRAY_BUFFER, uvBufferHandle);
-	gl::BufferData(gl::ARRAY_BUFFER, uvData.size() * sizeof(float), &uvData[0], gl::STATIC_DRAW);
+	gl::BufferData(gl::ARRAY_BUFFER, m_vfUvData.size() * sizeof(float), &m_vfUvData[0], gl::STATIC_DRAW);
 
 	// Create and set-up the vertex array object
-	gl::GenVertexArrays(1, &vaoHandle);
-	gl::BindVertexArray(vaoHandle);
+	gl::GenVertexArrays(1, &m_uiVAOHandle);
+	gl::BindVertexArray(m_uiVAOHandle);
 
 	gl::EnableVertexAttribArray(0);  // Vertex position
 	gl::EnableVertexAttribArray(1);  // Vertex color
@@ -43,14 +42,14 @@ void Model::init(){
 	gl::VertexAttribPointer(1, 2, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
 
 	//Load the texture
-	Bitmap bmp = Bitmap::bitmapFromFile(TextureDir);
+	Bitmap bmp = Bitmap::bitmapFromFile(sTex);
 	bmp.flipVertically();
-	gTexture = new Texture(bmp);
+	m_Texture = new Texture(bmp);
 
 	//Set texture
 	gl::ActiveTexture(gl::TEXTURE0);
-	gl::BindTexture(gl::TEXTURE_2D, gTexture->object());
-	GLint loc = gl::GetUniformLocation(programHandle, "tex");
+	gl::BindTexture(gl::TEXTURE_2D, m_Texture->object());
+	GLint loc = gl::GetUniformLocation(m_iProgramHandle, "tex");
 	gl::Uniform1f(loc, 0);
 
 }
@@ -61,147 +60,120 @@ void Model::update(){
 void Model::start()
 {
 	//The model matrix
-	M = glm::mat4(1.0f);
+	m_ModelMatrix = glm::mat4(1.0f);
 }
 
 void Model::end()
 {
 	//Links each variable to the matrixID value.
-	GLint modelMatrixID = gl::GetUniformLocation(programHandle, "mModel");
+	GLint modelMatrixID = gl::GetUniformLocation(m_iProgramHandle, "mModel");
 
 	//The matrixId is then passed the values to be applied to the variables. 
-	gl::UniformMatrix4fv(modelMatrixID, 1, gl::FALSE_, glm::value_ptr(M));
-}
-void Model::Scale(float x, float y, float z)
-{
-	M = glm::scale(glm::mat4(1.0f), glm::vec3(x, y, z))* M;
+	gl::UniformMatrix4fv(modelMatrixID, 1, gl::FALSE_, glm::value_ptr(m_ModelMatrix));
 }
 
-void Model::WRotate(float x, float y, float z)
+void Model::scale(float fX, float fY, float fZ)
 {
-	//The rotation matrix applied to the points
-	//X rotation
-	if (x >= 360)
+	m_ModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(fX, fY, fZ))*  m_ModelMatrix; // Apply the scale to the model matrix
+}
+
+void Model::rotate(float fX, float fY, float fZ, CoordinateType Coord)
+{
+	//X rotation 
+	if (fX >= 360) //Upper bound
 	{
-		x -= 360;
+		fX -= 360;
 	}
-	else if (x < 0)
+	else if (fX < 0) //Lower bound
 	{
-		x += 360;
+		fX += 360;
 	}
+
+	glm::mat4 rotMatrix = glm::rotate(glm::mat4(1.0f), fX, glm::vec3(1, 0, 0));
 
 	//Y rotation
-	if (y >= 360)
+	if (fY >= 360) //Upper bound
 	{
-		y -= 360;
+		fY -= 360;
 	}
-	else if (y < 0)
+	else if (fY < 0) //Lower bound
 	{
-		y += 360;
+		fY += 360;
 	}
 
+	rotMatrix *= glm::rotate(glm::mat4(1.0f), fY, glm::vec3(0, 1, 0));
 
 	//Z Rotation
-	if (z >= 360)
+	if (fZ >= 360) //Upper bound
 	{
-		z -= 360;
+		fZ -= 360;
 	}
-	else if (z < 0)
+	else if (fZ < 0) //Lower bound
 	{
-		z += 360;
+		fZ += 360;
 	}
 
+	rotMatrix *= glm::rotate(glm::mat4(1.0f), fZ, glm::vec3(0, 0, 1));
 
-	glm::mat4 Rotate = glm::rotate(glm::mat4(1.0f), x, glm::vec3(1, 0, 0));
-	Rotate *= glm::rotate(glm::mat4(1.0f), y, glm::vec3(0, 1, 0));
-	Rotate *= glm::rotate(glm::mat4(1.0f), z, glm::vec3(0, 0, 1));
-	M = M*Rotate;
+	//If rotating around world coordinates
+	if (Coord == WORLD_COORDS)
+	{
+		m_ModelMatrix *= rotMatrix; //Multiply model matrix by rotation
+	}
+	//If rotating around local coordinates
+	else
+	{
+		m_ModelMatrix = rotMatrix *  m_ModelMatrix; //Multiply rotation by model matrix
+	}
 }
 
-void Model::LRotate(float x, float y, float z)
+
+
+void Model::translate(float fX, float fY, float fZ)
 {
-	//The rotation matrix applied to the points
-	//X rotation
-	if (x >= 360)
-	{
-		x -= 360;
-	}
-	else if (x < 0)
-	{
-		x += 360;
-	}
-
-	//Y rotation
-	if (y >= 360)
-	{
-		y -= 360;
-	}
-	else if (y < 0)
-	{
-		y += 360;
-	}
-
-
-	//Z Rotation
-	if (z >= 360)
-	{
-		z -= 360;
-	}
-	else if (z < 0)
-	{
-		z += 360;
-	}
-
-
-	glm::mat4 Rotate = glm::rotate(glm::mat4(1.0f), x, glm::vec3(1, 0, 0));
-	Rotate *= glm::rotate(glm::mat4(1.0f), y, glm::vec3(0, 1, 0));
-	Rotate *= glm::rotate(glm::mat4(1.0f), z, glm::vec3(0, 0, 1));
-	M = Rotate*M;
+	m_ModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(fX, fY, fZ)) *  m_ModelMatrix; // Apply the translation to the model matrix
 }
 
-void Model::Translate(float x, float y, float z)
-{
-	//The translation matrix applied to the points
-	M = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z)) * M;
-	//M *= glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
-}
-void Model::LTranslate(float x, float y, float z)
-{
-	//The translation matrix applied to the points
-	M = M * glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
-	//M *= glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
-}
 
 void Model::render(){
 	gl::Enable(gl::DEPTH_TEST);
-
+	
+	//Set texture0 to the model's texture
 	gl::ActiveTexture(gl::TEXTURE0);
-	gl::BindTexture(gl::TEXTURE_2D, gTexture->object());
+	gl::BindTexture(gl::TEXTURE_2D, m_Texture->object());
 
-	gl::BindVertexArray(vaoHandle);
-	gl::DrawArrays(gl::TRIANGLES, 0, positionData.size() / 3);
-	gl::BindVertexArray(NULL);
+	//Use this model's VAO and draw the model
+	gl::BindVertexArray(m_uiVAOHandle);
+	gl::DrawArrays(gl::TRIANGLES, 0, m_vfPositionData.size() / 3);
+
+	gl::BindTexture(gl::TEXTURE_2D, NULL); //Unbind the Texture
+	gl::BindVertexArray(NULL); //Unbind the VAO
 }
 
-void Model::loadObj(std::string dir)
+void Model::loadObj(std::string sDir)
 {
-	std::fstream modelfile(dir, std::ios_base::in);
+	std::fstream modelfile(sDir, std::ios_base::in);
 
+	//If the file doesn't load output an error
 	if (!modelfile.is_open())
 	{
-		std::cerr << "File " << dir << " not found.";
+		std::cerr << "File " << sDir << " not found.";
 		DebugBreak();
 		throw std::invalid_argument("File not found");
 		return;	//ERROR!!!
 	}
 
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec2> uvCoords;
-	glm::vec3 DimHigh(0,0,0);
-	glm::vec3 DimLow(0,0,0);
-	std::string line;
-	std::string token = "";
-	Dimensions = glm::vec3(0, 0, 0);
+	std::vector<glm::vec3> vertices; //Holds each individual type of vertex in the file
+	std::vector<glm::vec2> uvCoords; // Holds each individual uv coordinate in the file
+
+	glm::vec3 dimHigh(0,0,0); //Holds the highest x, y and z for the model dimensions
+	glm::vec3 dimLow(0,0,0);  //Holds the lowest x, y and z for the model dimensions
+
+	std::string line; //Holds the line being read
+	std::string token = ""; //Holds the part of the line being read
+
+	Dimensions = glm::vec3(0, 0, 0); //Resetting the dimensions vector
+
 	while (getline(modelfile, line))
 	{
 		std::istringstream iss(line);
@@ -211,10 +183,7 @@ void Model::loadObj(std::string dir)
 
 		iss >> token; // read to first whitespace
 
-		if (token == "g")
-			iss >> token; // read the model name
-
-		else if (token == "v")
+		if (token == "v") //If the line is a vertex
 		{
 			//Vertex position
 			glm::vec3 Vert;
@@ -226,7 +195,7 @@ void Model::loadObj(std::string dir)
 			vertices.push_back(Vert);
 		}
 
-		else if (token == "vt")
+		else if (token == "vt")  //If the line is a uv Coordinate 
 		{
 			//UV coordinates
 			glm::vec2 UV;
@@ -236,7 +205,7 @@ void Model::loadObj(std::string dir)
 			uvCoords.push_back(UV);
 		}
 
-		else if (token == "f")
+		else if (token == "f") //If the line is a face
 		{
 			//Triangles
 			unsigned int value; //Holds the value to be stored
@@ -248,45 +217,48 @@ void Model::loadObj(std::string dir)
 				iss >> value; //Reads the face index
 				int lookAhead = iss.peek();  	// peek character
 
-				positionData.push_back(vertices.at(value - 1).x);
+				m_vfPositionData.push_back(vertices.at(value - 1).x); //Adds the x for the vertex at that index to the position data
 
-				if (positionData.at(positionData.size()-1) > DimHigh.x)
+				//Checks against the current dimensions and alters them if the vertices exceed the bounds
+				if (m_vfPositionData.at(m_vfPositionData.size()-1) > dimHigh.x) //Upper Bound
 				{
-					DimHigh.x = positionData.at(positionData.size()-1);
+					dimHigh.x = m_vfPositionData.at(m_vfPositionData.size()-1);
 				}
-				if (positionData.at(positionData.size() - 1) < DimLow.x)
+				if (m_vfPositionData.at(m_vfPositionData.size() - 1) < dimLow.x) //Lower Bound
 				{
-					DimLow.x = positionData.at(positionData.size() - 1);
-				}
-
-				positionData.push_back(vertices.at(value - 1).y);
-
-				if (positionData.at(positionData.size()-1) > DimHigh.y)
-				{
-					DimHigh.y = positionData.at(positionData.size()-1);
-				}
-				if (positionData.at(positionData.size() - 1) < DimLow.y)
-				{
-					DimLow.y = positionData.at(positionData.size() - 1);
+					dimLow.x = m_vfPositionData.at(m_vfPositionData.size() - 1);
 				}
 
-				positionData.push_back(vertices.at(value - 1).z);
+				m_vfPositionData.push_back(vertices.at(value - 1).y); //Adds the y for the vertex at that index to the position data
 
-				if (positionData.at(positionData.size()-1) > DimHigh.z)
+				//Checks against the current dimensions and alters them if the vertices exceed the bounds
+				if (m_vfPositionData.at(m_vfPositionData.size()-1) > dimHigh.y) //Upper Bound
 				{
-					DimHigh.z = positionData.at(positionData.size()-1);
+					dimHigh.y = m_vfPositionData.at(m_vfPositionData.size()-1);
 				}
-				if (positionData.at(positionData.size() - 1) < DimLow.z)
+				if (m_vfPositionData.at(m_vfPositionData.size() - 1) < dimLow.y) //Lower Bound
 				{
-					DimLow.z = positionData.at(positionData.size() - 1);
+					dimLow.y = m_vfPositionData.at(m_vfPositionData.size() - 1);
+				}
+
+				m_vfPositionData.push_back(vertices.at(value - 1).z); //Adds the z for the vertex at that index to the position data
+
+				//Checks against the current dimensions and alters them if the vertices exceed the bounds
+				if (m_vfPositionData.at(m_vfPositionData.size()-1) > dimHigh.z) //Upper Bound
+				{
+					dimHigh.z = m_vfPositionData.at(m_vfPositionData.size()-1);
+				}
+				if (m_vfPositionData.at(m_vfPositionData.size() - 1) < dimLow.z) //Lower Bound
+				{
+					dimLow.z = m_vfPositionData.at(m_vfPositionData.size() - 1);
 				}
 
 				if (lookAhead == forwardSlash)    //If the next character is a "/"
 				{
 					iss.ignore(1); //Ignore it
 					iss >> value;
-					uvData.push_back(uvCoords.at(value - 1).x);
-					uvData.push_back(uvCoords.at(value - 1).y);
+					m_vfUvData.push_back(uvCoords.at(value - 1).x);
+					m_vfUvData.push_back(uvCoords.at(value - 1).y);
 
 					if (lookAhead == forwardSlash) //If the next character is a "/"
 					{
@@ -310,5 +282,40 @@ void Model::loadObj(std::string dir)
 	modelfile.close();
 
 
-	Dimensions = (DimHigh - DimLow) * CurrentScale;
+	Dimensions = (dimHigh - dimLow) * CurrentScale;
+}
+
+glm::vec3 Model::getRotation()
+{
+	return Rotation;
+}
+
+glm::vec3 Model::getCurrentScale()
+{
+	return CurrentScale;
+}
+
+glm::vec3 Model::getPosition()
+{
+	return Position;
+}
+
+glm::vec3 Model::getDimensions()
+{
+	return Dimensions;
+}
+
+void Model::setCurrentScale(glm::vec3 newVect)
+{
+	CurrentScale = newVect;
+}
+
+void Model::setPosition(glm::vec3 newVect)
+{
+	Position = newVect;
+}
+
+void Model::setRotation(glm::vec3 newVect)
+{
+	Rotation = newVect;
 }

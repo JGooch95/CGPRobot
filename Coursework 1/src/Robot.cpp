@@ -160,19 +160,19 @@ void Robot::Setup(std::string dir, GLint programHandle2)
 	}
 	Robotfile.close(); //Closes the file
 
-	Head->Position *= overallScale;
-	Head->CurrentScale *= overallScale;
-	Body->Position *= overallScale;
-	Body->CurrentScale *= overallScale;
+	Head->setPosition(Head->getPosition() * overallScale);
+	Head->setCurrentScale(Head->getCurrentScale() * overallScale);
+	Body->setPosition(Body->getPosition() * overallScale);
+	Body->setCurrentScale(Body->getCurrentScale() * overallScale);
 	for (int i = 0; i < Legs.size(); i++)
 	{
-		Legs.at(i)->Position *= overallScale;
-		Legs.at(i)->CurrentScale *= overallScale;
+		Legs.at(i)->setPosition(Legs.at(i)->getPosition() * overallScale);
+		Legs.at(i)->setCurrentScale(Legs.at(i)->getCurrentScale() * overallScale);
 	}
 	for (int i = 0; i < Arms.size(); i++)
 	{
-		Arms.at(i)->Position *= overallScale;
-		Arms.at(i)->CurrentScale *= overallScale;
+		Arms.at(i)->setPosition(Arms.at(i)->getPosition() * overallScale);
+		Arms.at(i)->setCurrentScale(Arms.at(i)->getCurrentScale() * overallScale);
 	}
 	Position = glm::vec3(9, 1.3f * overallScale.y, 10);
 }
@@ -235,38 +235,38 @@ void Robot::Render()
 	}
 
 	Head->start();
-		Head->Scale(Head->CurrentScale.x, Head->CurrentScale.y, Head->CurrentScale.z);
-		Head->Translate(Head->Position.x, Head->Position.y, Head->Position.z);
-		Head->WRotate(0, Rot, 0);
-		Head->Translate(Position.x, Position.y, Position.z);
+		Head->scale(Head->getCurrentScale().x, Head->getCurrentScale().y, Head->getCurrentScale().z);
+		Head->translate(Head->getPosition().x, Head->getPosition().y, Head->getPosition().z);
+		Head->rotate(0, Rot, 0, WORLD_COORDS);
+		Head->translate(Position.x, Position.y, Position.z);
 	Head->end();
 	Head->render();
 
 	Body->start();
-		Body->Scale(Body->CurrentScale.x, Body->CurrentScale.y, Body->CurrentScale.z);
-		Body->Translate(Body->Position.x, Body->Position.y, Body->Position.z);
-		Body->WRotate(0, Rot, 0);
-		Body->Translate(Position.x, Position.y, Position.z);
+		Body->scale(Body->getCurrentScale().x, Body->getCurrentScale().y, Body->getCurrentScale().z);
+		Body->translate(Body->getPosition().x, Body->getPosition().y, Body->getPosition().z);
+		Body->rotate(0, Rot, 0, WORLD_COORDS);
+		Body->translate(Position.x, Position.y, Position.z);
 	Body->end();
 	Body->render();
 
 	for (int i = 0; i < Legs.size(); i++)
 	{
 		Legs.at(i)->start();
-			Legs.at(i)->Scale(Legs.at(i)->CurrentScale.x, Legs.at(i)->CurrentScale.y, Legs.at(i)->CurrentScale.z);
-			Legs.at(i)->Translate(0, -Legs.at(i)->CurrentScale.y / 2, 0);
+			Legs.at(i)->scale(Legs.at(i)->getCurrentScale().x, Legs.at(i)->getCurrentScale().y, Legs.at(i)->getCurrentScale().z);
+			Legs.at(i)->translate(0, -Legs.at(i)->getCurrentScale().y / 2, 0);
 			if (i == 0)
 			{
-				Legs.at(i)->LRotate(LegAngles1, 0, 0);
+				Legs.at(i)->rotate(LegAngles1, 0, 0, LOCAL_COORDS);
 			}
 			else if (i == 1)
 			{
-				Legs.at(i)->LRotate(LegAngles2, 0, 0);
+				Legs.at(i)->rotate(LegAngles2, 0, 0, LOCAL_COORDS);
 			}
-			Legs.at(i)->Translate(0, Legs.at(i)->CurrentScale.y / 2, 0);
-			Legs.at(i)->Translate(Legs.at(i)->Position.x, Legs.at(i)->Position.y, Legs.at(i)->Position.z);
-			Legs.at(i)->LRotate(0, Rot, 0);
-			Legs.at(i)->Translate(Position.x, Position.y, Position.z);
+			Legs.at(i)->translate(0, Legs.at(i)->getCurrentScale().y / 2, 0);
+			Legs.at(i)->translate(Legs.at(i)->getPosition().x, Legs.at(i)->getPosition().y, Legs.at(i)->getPosition().z);
+			Legs.at(i)->rotate(0, Rot, 0, LOCAL_COORDS);
+			Legs.at(i)->translate(Position.x, Position.y, Position.z);
 
 		Legs.at(i)->end();
 		Legs.at(i)->render();
@@ -275,20 +275,20 @@ void Robot::Render()
 	for (int i = 0; i < Arms.size(); i++)
 	{
 		Arms.at(i)->start();
-			Arms.at(i)->Scale(Arms.at(i)->CurrentScale.x, Arms.at(i)->CurrentScale.y, Arms.at(i)->CurrentScale.z);
-			Arms.at(i)->Translate(0, -Arms.at(i)->CurrentScale.y/2, 0);
+			Arms.at(i)->scale(Arms.at(i)->getCurrentScale().x, Arms.at(i)->getCurrentScale().y, Arms.at(i)->getCurrentScale().z);
+			Arms.at(i)->translate(0, -Arms.at(i)->getCurrentScale().y/2, 0);
 			if (i == 0)
 			{
-				Arms.at(i)->LRotate(ArmAngles1, 0, 0);
+				Arms.at(i)->rotate(ArmAngles1, 0, 0, LOCAL_COORDS);
 			}
 			else if (i == 1)
 			{
-				Arms.at(i)->LRotate(ArmAngles2, 0, 0);
+				Arms.at(i)->rotate(ArmAngles2, 0, 0, LOCAL_COORDS);
 			}
-			Arms.at(i)->Translate(0, Arms.at(i)->CurrentScale.y / 2, 0);
-			Arms.at(i)->Translate(Arms.at(i)->Position.x, Arms.at(i)->Position.y, Arms.at(i)->Position.z);
-			Arms.at(i)->LRotate(0, Rot, 0);
-			Arms.at(i)->Translate(Position.x, Position.y, Position.z);
+			Arms.at(i)->translate(0, Arms.at(i)->getCurrentScale().y / 2, 0);
+			Arms.at(i)->translate(Arms.at(i)->getPosition().x, Arms.at(i)->getPosition().y, Arms.at(i)->getPosition().z);
+			Arms.at(i)->rotate(0, Rot, 0, LOCAL_COORDS);
+			Arms.at(i)->translate(Position.x, Position.y, Position.z);
 
 		Arms.at(i)->end();
 		Arms.at(i)->render();

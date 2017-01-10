@@ -213,10 +213,10 @@ void Scene::Update()
 		Models.at(i)->update();
 
 		Models.at(i)->start();
-		Models.at(i)->Scale(Models.at(i)->CurrentScale.x, Models.at(i)->CurrentScale.y, Models.at(i)->CurrentScale.z);
-		Models.at(i)->Translate(0, Models.at(i)->Dimensions.y / 2, 0);
-		Models.at(i)->WRotate(Models.at(i)->Rotation.x, Models.at(i)->Rotation.y, Models.at(i)->Rotation.z);
-		Models.at(i)->Translate(Models.at(i)->Position.x, Models.at(i)->Position.y, Models.at(i)->Position.z);
+			Models.at(i)->scale(Models.at(i)->getCurrentScale().x, Models.at(i)->getCurrentScale().y, Models.at(i)->getCurrentScale().z);
+			Models.at(i)->translate(0, Models.at(i)->getDimensions().y / 2, 0);
+			Models.at(i)->rotate(Models.at(i)->getRotation().x, Models.at(i)->getRotation().y, Models.at(i)->getRotation().z, WORLD_COORDS);
+			Models.at(i)->translate(Models.at(i)->getPosition().x, Models.at(i)->getPosition().y, Models.at(i)->getPosition().z);
 		Models.at(i)->end();
 
 		Models.at(i)->render();
