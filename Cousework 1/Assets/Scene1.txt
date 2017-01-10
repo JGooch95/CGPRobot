@@ -1,0 +1,7 @@
+o Assets/box.obj | t 0 0 0          | r 0 45 0    | s 0.1 0.1 0.1       | tex Assets/CrateMap.jpg | p
+o Assets/box.obj | t 10 0 9          | r 0 0 0    | s 0.1 1 1       | tex Assets/WallMap.jpg | p
+o Assets/Floor.obj | t 0 0 0          | r 0 0 0    | s 1 1 1       | tex Assets/WallMap.jpg | p
+o Assets/box.obj | t 10 0 10        | r 0 45 0    | s 0.1 0.1 0.1       | tex Assets/CrateMap.jpg | coll true | p
+o Assets/box.obj | t 9.3 0 9.3        | r 0 45 0    | s 0.1 0.1 0.1       | tex Assets/CrateMap.jpg | coll true | p
+c 100 45 0 p 0 p 0 1 0 | p
+c -60 45 0 p 0 p 0 1 0 | p
