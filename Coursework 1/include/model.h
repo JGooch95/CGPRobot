@@ -24,15 +24,14 @@ class Model
 		std::vector<float> m_vfPositionData;
 		std::vector<float> m_vfUvData;
 		
-		glm::vec3 Rotation;
-		glm::vec3 CurrentScale;
-		glm::vec3 Position;
-		glm::vec3 Dimensions;
+		glm::vec3 m_Rotation;
+		glm::vec3 m_CurrentScale;
+		glm::vec3 m_Position;
+		glm::vec3 m_Dimensions;
 
 	public:
 		Model(std::string Obj, glm::vec3 Translate2, glm::vec3 Rotate2, glm::vec3 Scale2, std::string sTex, GLint programHandle2);
 		void init(std::string sTex);
-		void update();
 		void render();
 		void loadObj(std::string sDir);
 
@@ -40,7 +39,7 @@ class Model
 		void start();
 
 		void scale(float fX, float fY, float fZ);
-		void rotate(float fX, float fY, float fZ, CoordinateType);
+		void rotate(float fX, float fY, float fZ, CoordinateType Coord);
 		void translate(float fX, float fY, float fZ);
 
 		glm::vec3 getRotation();

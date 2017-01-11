@@ -2,9 +2,9 @@
 #include <iostream>
 #include <fstream>
 
-Collectable::Collectable(Model* NewModel)
+Collectable::Collectable(Model* newModel)
 {
-	Model1 = NewModel;
+	model1 = newModel;
 	Rot = 0;
 	BounceSpeed = 0.001f;
 };
@@ -13,7 +13,7 @@ void Collectable::Move()
 {
 	Position.y += BounceSpeed;
 
-	if (Position.y > 0.05f || Position.y < 0.0f)
+	if (Position.y > 0.5f * model1->getCurrentScale().y || Position.y < 0.0f)
 	{
 		BounceSpeed *= -1.0f;
 	}
@@ -23,32 +23,35 @@ void Collectable::Move()
 	{
 		Rot = 0.0f;
 	}
-	if (Rot < 0.0f)
+	else if (Rot < 0.0f)
 	{
 		Rot = 359.0f;
 	}
 
-	Model1->start();
-		Model1->scale(Model1->getCurrentScale().x, Model1->getCurrentScale().y, Model1->getCurrentScale().z);
-		Model1->translate(0.0f, Model1->getCurrentScale().y / 2.0f, 0.0f);
-		Model1->rotate(0.0f, Rot, 0.0f, LOCAL_COORDS);
-		Model1->translate(Model1->getPosition().x, Model1->getPosition().y, Model1->getPosition().z);
-		Model1->rotate(Model1->getRotation().x, Model1->getRotation().y, Model1->getRotation().z, WORLD_COORDS);
-		Model1->translate(0.0f,Position.y,0.0f);
-	Model1->end();
-	Model1->render();
+	model1->start();
+		model1->scale(model1->getCurrentScale().x, model1->getCurrentScale().y, model1->getCurrentScale().z);
+		model1->translate(0.0f, model1->getCurrentScale().y / 2.0f, 0.0f);
+		model1->rotate(0.0f, Rot, 0.0f, LOCAL_COORDS);
+		model1->translate(model1->getPosition().x, model1->getPosition().y, model1->getPosition().z);
+		model1->rotate(model1->getRotation().x, model1->getRotation().y, model1->getRotation().z, WORLD_COORDS);
+		model1->translate(0.0f,Position.y,0.0f);
+	model1->end();
+	model1->render();
 }
 
-int Collectable::Colliding(glm::vec3 Position)
+bool Collectable::Colliding(glm::vec3 Position)
 {
-	glm::vec3 Dist = Position - Model1->getPosition();
+	//Calculates the vector between the models
+	glm::vec3 dist = Position - model1->getPosition();
 
-	float d = sqrtf(pow(Dist.x, 2) + pow(Dist.y, 2) + pow(Dist.z, 2));
+	//Calculates the magnitude between them
+	float fMag = sqrtf(pow(dist.x, 2) + pow(dist.z, 2));
 
-	if (d < 0.1 && d > -0.1)
+	//If the magnitude is less than the collision range
+	if (fMag < 0.1f)
 	{
-		Collected = true;
-		return 1;
+		Collected = true; //The collectible has been collected
+		return true; 
 	}
-	return 0;
+	return false;
 }

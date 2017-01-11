@@ -9,7 +9,7 @@ Scene::Scene()
 
 }
 
-void Scene::Init()
+void Scene::init()
 {	
 	//////////////////////////////////////////////////////
 	/////////// Vertex shader //////////////////////////
@@ -115,40 +115,40 @@ void Scene::Init()
 	linkMe(vertShader, fragShader);
 
 	//Sets the view distance and angle of view.
-	P = glm::perspective(glm::radians(60.0f), 1280.0f/720.0f, 0.1f, 1000.0f);
-	CurrentCamera = 0;
+	m_PerspMatrix = glm::perspective(glm::radians(60.0f), 1280.0f/720.0f, 0.1f, 1000.0f);
+	m_iCurrentCamera = 0;
 }
 
 void Scene::linkMe(GLint vertShader, GLint fragShader) {
 	// Create the program object
-	programHandle = gl::CreateProgram();
-	if (0 == programHandle) {
+	m_uiProgramHandle = gl::CreateProgram();
+	if (0 == m_uiProgramHandle) {
 		fprintf(stderr, "Error creating program object.\n");
 		exit(1);
 	}
 
 	// Attach the shaders to the program object
-	gl::AttachShader(programHandle, vertShader);
-	gl::AttachShader(programHandle, fragShader);
+	gl::AttachShader(m_uiProgramHandle, vertShader);
+	gl::AttachShader(m_uiProgramHandle, fragShader);
 
 	// Link the program
-	gl::LinkProgram(programHandle);
+	gl::LinkProgram(m_uiProgramHandle);
 
 	// Check for successful linking
 	GLint status;
-	gl::GetProgramiv(programHandle, gl::LINK_STATUS, &status);
+	gl::GetProgramiv(m_uiProgramHandle, gl::LINK_STATUS, &status);
 	if (FALSE == status) {
 
 		fprintf(stderr, "Failed to link shader program!\n");
 
 		GLint logLen;
-		gl::GetProgramiv(programHandle, gl::INFO_LOG_LENGTH, &logLen);
+		gl::GetProgramiv(m_uiProgramHandle, gl::INFO_LOG_LENGTH, &logLen);
 
 		if (logLen > 0) {
 			char * log = (char *)malloc(logLen);
 
 			GLsizei written;
-			gl::GetProgramInfoLog(programHandle, logLen, &written, log);
+			gl::GetProgramInfoLog(m_uiProgramHandle, logLen, &written, log);
 
 			fprintf(stderr, "Program log: \n%s", log);
 
@@ -156,89 +156,103 @@ void Scene::linkMe(GLint vertShader, GLint fragShader) {
 		}
 	}
 	else {
-		gl::UseProgram(programHandle);
+		gl::UseProgram(m_uiProgramHandle);
 	}
-	Bot1.Setup("Assets/Robot1.txt", programHandle);
-	CollectableCount = 0;
+	m_Bot1.Setup("Assets/Robot1.txt", m_uiProgramHandle);
+	m_iCollectableCount = 0;
 }
 
-void Scene::Update()
+void Scene::update()
 {
+	//Clear the buffers ready for drawing
 	gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
-	GLint viewMatrixID = gl::GetUniformLocation(programHandle, "mView");
-	GLint projectionMatrixID = gl::GetUniformLocation(programHandle, "mProjection");
+	//Gets the location of the view and projection variables for the camera.
+	GLint viewMatrixID = gl::GetUniformLocation(m_uiProgramHandle, "mView");
+	GLint projectionMatrixID = gl::GetUniformLocation(m_uiProgramHandle, "mProjection");
 
-	for (int i = 0; i < usePlayerPos.at(CurrentCamera).size(); i++)
+	//Check every coordinate in the camera to see if it's locked to the player
+	for (int i = 0; i <  m_vbUsePlayerPos.at(m_iCurrentCamera).size(); i++) 
 	{
-		if (usePlayerPos.at(CurrentCamera).at(i))
+		//If it is set it's variable to the according player position
+		if ( m_vbUsePlayerPos.at(m_iCurrentCamera).at(i))
 		{
+			//ViewX
 			if (i == 0)
 			{
-				Cameras.at(CurrentCamera)[0].x = Bot1.Position.x;
+				m_vCameras.at(m_iCurrentCamera)[0].x = m_Bot1.Position.x;
 			}
+			//ViewY
 			else if (i == 1)
 			{
-				Cameras.at(CurrentCamera)[0].y = Bot1.Position.y;
+				m_vCameras.at(m_iCurrentCamera)[0].y = m_Bot1.Position.y;
 			}
+			//ViewZ
 			else if (i == 2)
 			{
-				Cameras.at(CurrentCamera)[0].z = Bot1.Position.z;
+				m_vCameras.at(m_iCurrentCamera)[0].z = m_Bot1.Position.z;
 			}
 
+			//PositionX
 			else if (i == 3)
 			{
-				Cameras.at(CurrentCamera)[1].x = Bot1.Position.x;
+				m_vCameras.at(m_iCurrentCamera)[1].x = m_Bot1.Position.x;
 			}
+			//PositionY
 			else if (i == 4)
 			{
-				Cameras.at(CurrentCamera)[1].y = Bot1.Position.y;
+				m_vCameras.at(m_iCurrentCamera)[1].y = m_Bot1.Position.y;
 			}
+			//PositionZ
 			else if (i == 5)
 			{
-				Cameras.at(CurrentCamera)[1].z = Bot1.Position.z;
+				m_vCameras.at(m_iCurrentCamera)[1].z = m_Bot1.Position.z;
 			}
 		}
 	}
-	glm::mat4 V = glm::lookAt(glm::vec3(Cameras.at(CurrentCamera)[0].x, Cameras.at(CurrentCamera)[0].y, Cameras.at(CurrentCamera)[0].z),
-							  glm::vec3(Cameras.at(CurrentCamera)[1].x, Cameras.at(CurrentCamera)[1].y, Cameras.at(CurrentCamera)[1].z),
-							  glm::vec3(Cameras.at(CurrentCamera)[2].x, Cameras.at(CurrentCamera)[2].y, Cameras.at(CurrentCamera)[2].z));
+
+	//Set ViewMatrix to be a lookat function for the new values
+	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(m_vCameras.at(m_iCurrentCamera)[0].x, m_vCameras.at(m_iCurrentCamera)[0].y, m_vCameras.at(m_iCurrentCamera)[0].z),
+							  glm::vec3(m_vCameras.at(m_iCurrentCamera)[1].x, m_vCameras.at(m_iCurrentCamera)[1].y, m_vCameras.at(m_iCurrentCamera)[1].z),
+							  glm::vec3(m_vCameras.at(m_iCurrentCamera)[2].x, m_vCameras.at(m_iCurrentCamera)[2].y, m_vCameras.at(m_iCurrentCamera)[2].z));
 
 	//Sets the matrix for the camera
-	gl::UniformMatrix4fv(viewMatrixID, 1, gl::FALSE_, glm::value_ptr(V));
-	gl::UniformMatrix4fv(projectionMatrixID, 1, gl::FALSE_, glm::value_ptr(P));
+	gl::UniformMatrix4fv(viewMatrixID, 1, gl::FALSE_, glm::value_ptr(ViewMatrix));
+	gl::UniformMatrix4fv(projectionMatrixID, 1, gl::FALSE_, glm::value_ptr(m_PerspMatrix));
 
-	for (int i = 0; i < Models.size(); i++)
+	for (int i = 0; i < m_vModels.size(); i++) //For every model in the scene
 	{
-		Models.at(i)->update();
+		//Transform and render the model
+		m_vModels.at(i)->start();
+			m_vModels.at(i)->scale(m_vModels.at(i)->getCurrentScale().x, m_vModels.at(i)->getCurrentScale().y, m_vModels.at(i)->getCurrentScale().z);
+			m_vModels.at(i)->translate(0, m_vModels.at(i)->getDimensions().y / 2, 0);
+			m_vModels.at(i)->rotate(m_vModels.at(i)->getRotation().x, m_vModels.at(i)->getRotation().y, m_vModels.at(i)->getRotation().z, WORLD_COORDS);
+			m_vModels.at(i)->translate(m_vModels.at(i)->getPosition().x, m_vModels.at(i)->getPosition().y, m_vModels.at(i)->getPosition().z);
+		m_vModels.at(i)->end();
 
-		Models.at(i)->start();
-			Models.at(i)->scale(Models.at(i)->getCurrentScale().x, Models.at(i)->getCurrentScale().y, Models.at(i)->getCurrentScale().z);
-			Models.at(i)->translate(0, Models.at(i)->getDimensions().y / 2, 0);
-			Models.at(i)->rotate(Models.at(i)->getRotation().x, Models.at(i)->getRotation().y, Models.at(i)->getRotation().z, WORLD_COORDS);
-			Models.at(i)->translate(Models.at(i)->getPosition().x, Models.at(i)->getPosition().y, Models.at(i)->getPosition().z);
-		Models.at(i)->end();
-
-		Models.at(i)->render();
+		m_vModels.at(i)->render();
 	}
 
-	for (int i = 0; i < Collectables.size(); i++)
+	for (int i = 0; i < m_vCollectables.size(); i++) //For every collectable
 	{
-		if (!Collectables.at(i)->Collected)
+		if (!m_vCollectables.at(i)->Collected) //If the collectable has been collected
 		{
-			Collectables.at(i)->Move();
-			if (Collectables.at(i)->Colliding(Bot1.Position))
+			if (m_vCollectables.at(i)->Colliding(m_Bot1.Position)) //If collision between robot and Collectables occurs
 			{
-				CollectableCount++;
-				std::cout << CollectableCount;
+				m_iCollectableCount++;					   //Increment collectable count
+				std::cout << m_iCollectableCount << "\n"; //Output the amount of Collectables collected
+			}
+			else
+			{
+				m_vCollectables.at(i)->Move();		//Move the collectable
 			}
 		}
 	}
 
-	Bot1.Render();
+	m_Bot1.Render(); //Renders the robot
 }
 
-void Scene::Load(std::string dir)
+void Scene::load(std::string dir)
 {
 	std::fstream Scenefile(dir, std::ios_base::in); //Attempt to open the file given
 
@@ -307,14 +321,14 @@ void Scene::Load(std::string dir)
 
 			else if (token == "c") //If its a texture
 			{
-				usePlayerPos.push_back(std::vector<bool>{false, false, false, 
+				 m_vbUsePlayerPos.push_back(std::vector<bool>{false, false, false, 
 														 false, false, false});
 				for (int i = 0; i < 6; i++)
 				{
 					iss >> token;
 					if (token == "p")
 					{
-						usePlayerPos[usePlayerPos.size() - 1][i] = true;
+						 m_vbUsePlayerPos[ m_vbUsePlayerPos.size() - 1][i] = true;
 					}
 					else
 					{
@@ -330,7 +344,7 @@ void Scene::Load(std::string dir)
 				iss >> TempCamera[2].z; //Read the item
 				
 
-				Cameras.push_back(glm::mat3(TempCamera[0].x, TempCamera[0].y, TempCamera[0].z,
+				m_vCameras.push_back(glm::mat3(TempCamera[0].x, TempCamera[0].y, TempCamera[0].z,
 											TempCamera[1].x, TempCamera[1].y, TempCamera[1].z,
 											TempCamera[2].x, TempCamera[2].y, TempCamera[2].z));
 			}
@@ -352,9 +366,9 @@ void Scene::Load(std::string dir)
 		if (LoadingModel)
 		{
 			if (isCollectable)
-				Collectables.push_back(new Collectable(new Model(ObjDirectory, TempTranslationVect, TempRotationVect, TempScaleVect, TextureDirectory, programHandle)));
+				m_vCollectables.push_back(new Collectable(new Model(ObjDirectory, TempTranslationVect, TempRotationVect, TempScaleVect, TextureDirectory, m_uiProgramHandle)));
 			else
-				Models.push_back(new Model(ObjDirectory, TempTranslationVect, TempRotationVect, TempScaleVect, TextureDirectory, programHandle)); //Pushes the model onto the vector
+				m_vModels.push_back(new Model(ObjDirectory, TempTranslationVect, TempRotationVect, TempScaleVect, TextureDirectory, m_uiProgramHandle)); //Pushes the model onto the vector
 
 			LoadingModel = false;
 		}
@@ -362,23 +376,23 @@ void Scene::Load(std::string dir)
 	Scenefile.close(); //Closes the file
 }
 
-void Scene::MoveRobot(float Direction)
+void Scene::moveRobot(float Direction)
 {
-	Bot1.Move(Direction);
+	m_Bot1.Move(Direction);
 }
-void Scene::TurnRobot(float Direction)
+void Scene::turnRobot(float Direction)
 {
-	Bot1.Turn(Direction);
+	m_Bot1.Turn(Direction);
 }
-void Scene::SwitchCamera(int Direction)
+void Scene::switchCamera(int Direction)
 {
-	CurrentCamera += Direction;
-	if (CurrentCamera < 0)
+	m_iCurrentCamera += Direction;
+	if (m_iCurrentCamera < 0)
 	{
-		CurrentCamera = Cameras.size() - 1;
+		m_iCurrentCamera = m_vCameras.size() - 1;
 	}
-	if (CurrentCamera >= Cameras.size())
+	if (m_iCurrentCamera >= m_vCameras.size())
 	{
-		CurrentCamera = 0;
+		m_iCurrentCamera = 0;
 	}
 }

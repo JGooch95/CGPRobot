@@ -5,24 +5,24 @@
 class Scene
 {
 	private:
-		std::vector<Model*> Models;
-		std::vector<Collectable*> Collectables;
-		std::vector<Texture*> gTextures;
-		Robot Bot1;
-		GLuint programHandle;
-		std::vector<glm::mat3> Cameras;
-		glm::mat4 P;
-		std::vector<std::vector<bool>> usePlayerPos;
-		int CurrentCamera;
-		int CollectableCount;
+		std::vector<Model*> m_vModels;
+		std::vector<Collectable*> m_vCollectables;
+		std::vector<Texture*> m_vTextures;
+		Robot m_Bot1;
+		GLuint m_uiProgramHandle;
+		std::vector<glm::mat3> m_vCameras;
+		glm::mat4 m_PerspMatrix;
+		std::vector<std::vector<bool>> m_vbUsePlayerPos;
+		int m_iCurrentCamera;
+		int m_iCollectableCount;
 
 	public:
 		Scene();
-		void Init();
-		void Update();
-		void Load(std::string dir);
+		void init();
+		void update();
+		void load(std::string dir);
 		void linkMe(GLint vertShader, GLint fragShader);
-		void MoveRobot(float Direction);
-		void TurnRobot(float Direction);
-		void SwitchCamera(int Direction);
+		void moveRobot(float Direction);
+		void turnRobot(float Direction);
+		void switchCamera(int Direction);
 };

@@ -8,9 +8,9 @@
 
 Model::Model(std::string Obj, glm::vec3 Translate2, glm::vec3 Rotate2, glm::vec3 Scale2, std::string sTex, GLint programHandle2) {
 	m_iProgramHandle = programHandle2;
-	Position = Translate2;
-	Rotation = Rotate2;
-	CurrentScale = Scale2;
+	m_Position = Translate2;
+	m_Rotation = Rotate2;
+	m_CurrentScale = Scale2;
 	loadObj(Obj);
 	init(sTex);
 }
@@ -54,8 +54,7 @@ void Model::init(std::string sTex){
 
 }
 
-void Model::update(){
-}
+
 
 void Model::start()
 {
@@ -172,7 +171,7 @@ void Model::loadObj(std::string sDir)
 	std::string line; //Holds the line being read
 	std::string token = ""; //Holds the part of the line being read
 
-	Dimensions = glm::vec3(0, 0, 0); //Resetting the dimensions vector
+	m_Dimensions = glm::vec3(0, 0, 0); //Resetting the dimensions vector
 
 	while (getline(modelfile, line))
 	{
@@ -282,40 +281,40 @@ void Model::loadObj(std::string sDir)
 	modelfile.close();
 
 
-	Dimensions = (dimHigh - dimLow) * CurrentScale;
+	m_Dimensions = (dimHigh - dimLow) * m_CurrentScale;
 }
 
 glm::vec3 Model::getRotation()
 {
-	return Rotation;
+	return m_Rotation;
 }
 
 glm::vec3 Model::getCurrentScale()
 {
-	return CurrentScale;
+	return m_CurrentScale;
 }
 
 glm::vec3 Model::getPosition()
 {
-	return Position;
+	return m_Position;
 }
 
 glm::vec3 Model::getDimensions()
 {
-	return Dimensions;
+	return m_Dimensions;
 }
 
 void Model::setCurrentScale(glm::vec3 newVect)
 {
-	CurrentScale = newVect;
+	m_CurrentScale = newVect;
 }
 
 void Model::setPosition(glm::vec3 newVect)
 {
-	Position = newVect;
+	m_Position = newVect;
 }
 
 void Model::setRotation(glm::vec3 newVect)
 {
-	Rotation = newVect;
+	m_Rotation = newVect;
 }

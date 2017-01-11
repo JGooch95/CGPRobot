@@ -4,7 +4,7 @@
 class Collectable
 {
 	private: 
-		Model* Model1;
+		Model* model1;
 		int Rot;
 		glm::vec3 Position;
 		float BounceSpeed;
@@ -12,6 +12,6 @@ class Collectable
 	public:
 		Collectable(Model* NewModel);
 		void Move();
-		int Colliding(glm::vec3 Position);
+		bool Colliding(glm::vec3 Position);
 		bool Collected;
 };
