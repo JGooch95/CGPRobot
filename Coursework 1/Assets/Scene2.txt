@@ -1,29 +1,63 @@
-b 0 | os 0.05 0.05 0.05| ot 8 0 9 | or 0 0 0 | p
-b 0 | prt 0 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0 3.5 0   | r 0 0 0  | s 1 1 1       | p
-b 0 | prt 1 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0 2 0     | r 0 0 0  | s 1 2 1       | p
-b 0 | prt 2 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t -0.25 0 0 | r 0 0 0  | s 0.5 2 0.5   | p
-b 0 | prt 3 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0.25 0 0  | r 0 0 0  | s 0.5 2 0.5   | p
-b 0 | prt 4 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t -0.75 2 0 | r 0 0 0  | s 0.5 2 0.5   | p
-b 0 | prt 5 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0.75 2 0  | r 0 0 0  | s 0.5 2 0.5   | p
+b 0 | os 1 1 1 | ot 6.944 0 3.818 | or 0 0 0 | p
+b 0 | prt 0 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0 2.285 0      | r 0 0 0  | s 0.465 0.465 0.465   | p
+b 0 | prt 1 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0 1.534 0      | r 0 0 0  | s 0.615 1.026 0.593 | p
+b 0 | prt 2 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0.387 1.533 0  | r 0 0 0  | s 0.191 1.026 0.184   | p
+b 0 | prt 3 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t -0.387 1.533 0 | r 0 0 0  | s 0.191 1.026 0.184   | p
+b 0 | prt 4 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0.169  0.511 0 | r 0 0 0  | s 0.278 1.026 0.268   | p
+b 0 | prt 5 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t -0.169 0.511 0  | r 0 0 0  | s 0.278 1.026 0.268   | p
 p
-m 1 | os  1 1 1 | ot 0 0 0 | or 0 45 0 | p
-m 1 | prt 0 | obj Assets/box.obj   | tex Assets/CrateMap.jpg | t 0 0 0     | r 0 0 0  | s 0.1 0.1 0.1 | p
+m 1 | os  0.583 3.651 8.216 | ot 4.473 0 10.372 | or 0 90 0 | p
+m 1 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg | t 0 0 0     | r 0 0 0  | s 1 1 1 | p
 p
-m 2 | os  1 1 1 | ot 10 0 9 | or 0 0 0 | p
-m 2 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg  | t 0 0 0    | r 0 0 0  | s 0.1 1 1     | p
+m 2 | os 0.583 3.651 21.896 | ot 8.890 0 -0.275 | or 0 0 0 | p
+m 2 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg  | t 0 0 0    | r 0 0 0  | s 1 1 1     | p
 p
-coll 3 | os  1 1 1 | ot 9 0 9 | or 0 45 0 | p
-coll 3 | prt 0 | obj Assets/box.obj   | tex Assets/CrateMap.jpg | t 0 0 0   | r 0 0 0 | s 0.1 0.1 0.1  | p
+m 3 | os  0.583 3.651 8.216  | ot 4.473 0 -10.942 | or 0 90 0 | p
+m 3 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg  | t 0 0 0    | r 0 0 0  | s 1 1 1     | p
 p
-coll 4 | os  1 1 1 | ot 9 0 10 | or 0 45 0 | p
-coll 4 | prt 0 | obj Assets/box.obj   | tex Assets/CrateMap.jpg | t 0 0 0   | r 0 0 0 | s 0.1 0.1 0.1  | p
+m 4 | os  0.583 3.651 8.216   | ot 0.074  0 -7.139 | or 0 0 0 | p
+m 4 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg  | t 0 0 0    | r 0 0 0  | s 1 1 1     | p
 p
-m 5 | os  1 1 1 | ot 0 0 0 | or 0 0 0 | p
-m 5 | prt 0 | obj Assets/Floor.obj | tex Assets/WallMap.jpg  | t 0 0 0     | r 0 0 0  | s 1 1 1       | p
+m 5 | os  0.583 3.651 8.216  | ot -4.315 0 -10.962 | or 0 90 0 | p
+m 5 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg  | t 0 0 0    | r 0 0 0  | s 1 1 1     | p
 p
-c 100 45 0 p 0 p 0 1 0 | p
-c -60 45 0 p 0 p 0 1 0 | p
-c  1  1  0  10  1  0  0 1 0 | p
-c -1  1  0 -10  1  0  0 1 0 | p
-c  0  1  1  0   1  10  0 1 0 | p
-c  0  0 -1  0  0 -10  0 1 0 | p
+m 6 | os 0.583 3.651 21.896 | ot -8.726  0 -0.301 | or 0 0 0 | p
+m 6 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg  | t 0 0 0    | r 0 0 0  | s 1 1 1     | p
+p
+m 7 | os 0.583 3.651 8.216  | ot -4.315 0 10.369 | or 0 90 0 | p
+m 7 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg  | t 0 0 0    | r 0 0 0  | s 1 1 1     | p
+p
+m 8 | os 0.583 3.651 8.216  | ot 0.074 0 6.554 | or 0 0 0 | p
+m 8 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg  | t 0 0 0    | r 0 0 0  | s 1 1 1     | p
+p
+m 9 | os 22.227 1 22.227 | ot 0 0 0 | or 0 0 0 | p
+m 9 | prt 0 | obj Assets/Plane.obj | tex Assets/WallMap.jpg  | t 0 0 0     | r 0 0 0  | s 1 1 1       | p
+p
+m 10 | os  1 1 1 | ot 1.686 0 8.191 | or 0 37.728 0 | p
+m 10 | prt 0 | obj Assets/box.obj | tex Assets/CrateMap.jpg  | t 0 0 0     | r 0 0 0  | s 1 1 1       | p
+p
+m 11 | os  1 1 1 | ot -5.264 0 8.853 | or 0 -48.935 0 | p
+m 11 | prt 0 | obj Assets/box.obj | tex Assets/CrateMap.jpg  | t 0 0 0     | r 0 0 0  | s 1 1 1       | p
+p
+m 12 | os  1 1 1 | ot -5.284 1 8.191 | or 0 37.728 0 | p
+m 12 | prt 0 | obj Assets/box.obj | tex Assets/CrateMap.jpg  | t 0 0 0     | r 0 0 0  | s 1 1 1       | p
+p
+m 13 | os  1 1 1 | ot -5.264 0 7.363 | or 0 0 0 | p
+m 13 | prt 0 | obj Assets/box.obj | tex Assets/CrateMap.jpg  | t 0 0 0     | r 0 0 0  | s 1 1 1       | p
+p
+m 14 | os  1 1 1 | ot -1.009 0 -3.301 | or 0 37.728 0 | p
+m 14 | prt 0 | obj Assets/box.obj | tex Assets/CrateMap.jpg  | t 0 0 0     | r 0 0 0  | s 1 1 1       | p
+p
+m 15 | os  1 1 1 | ot -2.369 0 -3.301 | or 0 -17.335 0 | p
+m 15 | prt 0 | obj Assets/box.obj | tex Assets/CrateMap.jpg  | t 0 0 0     | r 0 0 0  | s 1 1 1       | p
+p
+m 16 | os  1 1 1 | ot -1.554 1 -3.301 | or 0 37.316 0 | p
+m 16 | prt 0 | obj Assets/box.obj | tex Assets/CrateMap.jpg  | t 0 0 0     | r 0 0 0  | s 1 1 1       | p
+p
+coll 17 | os  0.5 0.5 0.5 | ot -1.554 1 -4.401 | or 0 37.316 0 | p
+coll 17 | prt 0 | obj Assets/box.obj | tex Assets/BoxMap.jpg  | t 0 0 0     | r 45 0 45  | s 1 1 1       | p
+p
+c 8.599 3.505 10.272 p p p 0 1 0 | p
+c -8.223 3.505 10.082 p p p 0 1 0 | p
+c -8.211 3.505 -10.467 p p p 0 1 0 | p
+c 8.397 3.505 -10.467 p p p 0 1 0 | p

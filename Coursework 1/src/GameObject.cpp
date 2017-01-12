@@ -15,8 +15,8 @@ void GameObject::update()
 			m_vParts.at(i)->translate(m_vParts.at(i)->getPosition()); // Moves the part to its position
 			m_vParts.at(i)->rotate(m_vParts.at(i)->getRotation(), WORLD_COORDS);//Rotates the part to its rotation
 			
-			m_vParts.at(i)->scale(m_Scale); //Scales the part to the model scale
-			m_vParts.at(i)->rotate(m_Rotation, WORLD_COORDS); // Rotates the part to the model scale
+			m_vParts.at(i)->scale(m_Scale); //Scales the pdddart to the model scale
+			m_vParts.at(i)->rotate(m_Rotation, LOCAL_COORDS); // Rotates the part to the model scale
 			m_vParts.at(i)->translate(m_Position); //Translates the part to the model position
 	}
 }

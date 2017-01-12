@@ -1,7 +1,0 @@
-o Assets/box.obj | t 0 3.5 0          | r 0 0 0    | s 1 1 1       | tex Assets/BoxMap.jpg | prt hd   | p
-o Assets/box.obj | t 0 2 0          | r 0 0 0    | s 1 2 1       | tex Assets/BoxMap.jpg  | prt bdy  | p
-o Assets/box.obj | t -0.25 0 0       | r 0 0 0    | s 0.5 2 0.5   | tex Assets/BoxMap.jpg  | prt l1   | p
-o Assets/box.obj | t 0.25 0 0      | r 0 0 0    | s 0.5 2 0.5   | tex Assets/BoxMap.jpg  | prt l2   | p
-o Assets/box.obj | t -0.75 2 0        | r 0 0 0    | s 0.5 2 0.5   | tex Assets/BoxMap.jpg  | prt a1   | p
-o Assets/box.obj | t 0.75 2 0       | r 0 0 0    | s 0.5 2 0.5   | tex Assets/BoxMap.jpg  | prt a2   | p
-os 0.05 0.05 0.05 | p

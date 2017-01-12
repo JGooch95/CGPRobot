@@ -81,7 +81,7 @@ void Robot::animate()
 
 void Robot::Move(float Direction)
 {
-	float fSpeed = 0.02f; //The default speed of the movement
+	float fSpeed = 0.1f; //The default speed of the movement
 
 	float fTemp = (cosf(glm::radians(m_Rotation.y - 45))) + (sinf(glm::radians(m_Rotation.y - 45))); //Calculates the x of the unit direction vector
 	m_Position.x += -Direction * fSpeed * fTemp; //Increments position

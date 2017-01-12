@@ -4,7 +4,7 @@
 
 Collectable::Collectable()
 {
-	m_fBounceSpeed = 0.001f; //Sets the default bounce speed
+	m_fBounceSpeed = 0.01f; //Sets the default bounce speed
 }
 
 void Collectable::animate()
@@ -14,7 +14,7 @@ void Collectable::animate()
 		m_Position.y += m_fBounceSpeed; //Move the collectable by the bounce speed
 
 		//If the boundaries of the bounce are passed
-		if (m_Position.y > 0.5f * m_vParts.at(0)->getScale().y || m_Position.y < 0.0f)
+		if (m_Position.y > 1.0f  || m_Position.y < 0.0f)
 		{
 			m_fBounceSpeed *= -1.0f; //Flip the direction
 		}
@@ -54,7 +54,7 @@ bool Collectable::colliding(glm::vec3 newPosition)
 	float fMag = sqrtf(pow(dist.x, 2) + pow(dist.z, 2));
 
 	//If the magnitude is less than the collision range
-	if (fMag < 0.1f)
+	if (fMag < 1.0f)
 	{
 		m_bCollected = true; //The collectible has been collected
 		return true; 

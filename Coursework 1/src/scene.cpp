@@ -9,7 +9,7 @@ Scene::Scene()
 	init();
 
 	//Sets up the pespective and passes it to the shader
-	glm::mat4 PerspMatrix = glm::perspective(glm::radians(60.0f), 1280.0f / 720.0f, 0.1f, 1000.0f);
+	glm::mat4 PerspMatrix = glm::perspective(60.0f, 1280.0f / 720.0f, 0.1f, 1000.0f);
 	GLint projectionMatrixID = gl::GetUniformLocation(m_uiProgramHandle, "mProjection");
 	gl::UniformMatrix4fv(projectionMatrixID, 1, gl::FALSE_, glm::value_ptr(PerspMatrix));
 
