@@ -4,63 +4,51 @@
 
 Collectable::Collectable()
 {
-	BounceSpeed = 0.001f;
+	m_fBounceSpeed = 0.001f; //Sets the default bounce speed
 }
-Collectable::Collectable(Model* newModel)
-{
-	BounceSpeed = 0.001f;
-};
 
-void Collectable::update()
+void Collectable::animate()
 {
-	if (!Collected)
+	if (!m_bCollected) //If the collectable hasn't been picked up
 	{
-		Position.y += BounceSpeed;
+		m_Position.y += m_fBounceSpeed; //Move the collectable by the bounce speed
 
-		if (Position.y > 0.5f * m_vParts.at(0)->getScale().y || Position.y < 0.0f)
+		//If the boundaries of the bounce are passed
+		if (m_Position.y > 0.5f * m_vParts.at(0)->getScale().y || m_Position.y < 0.0f)
 		{
-			BounceSpeed *= -1.0f;
+			m_fBounceSpeed *= -1.0f; //Flip the direction
 		}
 
-		Rotation.y += 1.0f;
-		if (Rotation.y >= 360.0f)
-		{
-			Rotation.y = 0.0f;
-		}
-		else if (Rotation.y < 0.0f)
-		{
-			Rotation.y = 359.0f;
-		}
+		m_Rotation.y += 1.0f; //Increases the rotation
 
-		m_vParts.at(0)->start();
-		m_vParts.at(0)->scale(m_vParts.at(0)->getScale().x, m_vParts.at(0)->getScale().y, m_vParts.at(0)->getScale().z);
-		m_vParts.at(0)->translate(0.0f, m_vParts.at(0)->getScale().y / 2.0f, 0.0f);
-		m_vParts.at(0)->rotate(0.0f, Rotation.y, 0.0f, LOCAL_COORDS);
-		m_vParts.at(0)->translate(m_vParts.at(0)->getPosition().x, m_vParts.at(0)->getPosition().y, m_vParts.at(0)->getPosition().z);
-		m_vParts.at(0)->rotate(m_vParts.at(0)->getRotation().x, m_vParts.at(0)->getRotation().y, m_vParts.at(0)->getRotation().z, WORLD_COORDS);
-		m_vParts.at(0)->translate(0.0f, Position.y, 0.0f);
-
-		m_vParts.at(0)->scale(Scale.x, Scale.y, Scale.z);
-		m_vParts.at(0)->rotate(Rotation.x, Rotation.y, Rotation.z, WORLD_COORDS);
-		m_vParts.at(0)->translate(Position.x, Position.y, Position.z);
+		//Limits the rotation to be between 0 and 360
+		if (m_Rotation.y >= 360.0f)
+		{
+			m_Rotation.y -=360;
+		}
+		else if (m_Rotation.y < 0.0f)
+		{
+			m_Rotation.y += 360.0f;
+		}
 	}
 }
 
 void Collectable::render()
 {
-	if (!Collected)
+	if (!m_bCollected) //If the collectable hasn't been picked up
 	{
-		for (int i = 0; i < m_vParts.size(); i++) //For every model in the scene
+		//Render every part
+		for (int i = 0; i < m_vParts.size(); i++)
 		{
-			m_vParts.at(i)->render();
+			m_vParts.at(i)->render(); 
 		}
 	}
 }
 
-bool Collectable::Colliding(glm::vec3 newPosition)
+bool Collectable::colliding(glm::vec3 newPosition)
 {
 	//Calculates the vector between the models
-	glm::vec3 dist = newPosition - Position;
+	glm::vec3 dist = newPosition - m_Position;
 
 	//Calculates the magnitude between them
 	float fMag = sqrtf(pow(dist.x, 2) + pow(dist.z, 2));
@@ -68,7 +56,7 @@ bool Collectable::Colliding(glm::vec3 newPosition)
 	//If the magnitude is less than the collision range
 	if (fMag < 0.1f)
 	{
-		Collected = true; //The collectible has been collected
+		m_bCollected = true; //The collectible has been collected
 		return true; 
 	}
 	return false;

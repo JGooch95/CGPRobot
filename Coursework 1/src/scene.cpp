@@ -6,7 +6,15 @@
 
 Scene::Scene()
 {
+	init();
 
+	//Sets up the pespective and passes it to the shader
+	glm::mat4 PerspMatrix = glm::perspective(glm::radians(60.0f), 1280.0f / 720.0f, 0.1f, 1000.0f);
+	GLint projectionMatrixID = gl::GetUniformLocation(m_uiProgramHandle, "mProjection");
+	gl::UniformMatrix4fv(projectionMatrixID, 1, gl::FALSE_, glm::value_ptr(PerspMatrix));
+
+	m_iCurrentCamera = 0; //Sets the current camera to the first camera
+	m_iCollectableCount - 0; //Sets the collectable count to 0
 }
 
 void Scene::init()
@@ -113,10 +121,6 @@ void Scene::init()
 	}
 
 	linkMe(vertShader, fragShader);
-
-	//Sets the view distance and angle of view.
-	m_PerspMatrix = glm::perspective(glm::radians(60.0f), 1280.0f/720.0f, 0.1f, 1000.0f);
-	m_iCurrentCamera = 0;
 }
 
 void Scene::linkMe(GLint vertShader, GLint fragShader) {
@@ -158,8 +162,6 @@ void Scene::linkMe(GLint vertShader, GLint fragShader) {
 	else {
 		gl::UseProgram(m_uiProgramHandle);
 	}
-
-	m_iCollectableCount = 0;
 }
 
 void Scene::update()
@@ -167,9 +169,8 @@ void Scene::update()
 	//Clear the buffers ready for drawing
 	gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 	
-	//Gets the location of the view and projection variables for the camera.
+	//Gets the location of the view variable for the camera and the shaders.
 	GLint viewMatrixID = gl::GetUniformLocation(m_uiProgramHandle, "mView");
-	GLint projectionMatrixID = gl::GetUniformLocation(m_uiProgramHandle, "mProjection");
 
 	//Check every coordinate in the camera to see if it's locked to the player
 	for (int i = 0; i <  m_vbUsePlayerPos.at(m_iCurrentCamera).size(); i++) 
@@ -216,21 +217,21 @@ void Scene::update()
 							  glm::vec3(m_vCameras.at(m_iCurrentCamera)[1].x, m_vCameras.at(m_iCurrentCamera)[1].y, m_vCameras.at(m_iCurrentCamera)[1].z),
 							  glm::vec3(m_vCameras.at(m_iCurrentCamera)[2].x, m_vCameras.at(m_iCurrentCamera)[2].y, m_vCameras.at(m_iCurrentCamera)[2].z));
 
-	//Sets the matrix for the camera
+	//Sets the matrix for the camera and shaders
 	gl::UniformMatrix4fv(viewMatrixID, 1, gl::FALSE_, glm::value_ptr(ViewMatrix));
-	gl::UniformMatrix4fv(projectionMatrixID, 1, gl::FALSE_, glm::value_ptr(m_PerspMatrix));
 
 	for (int i = 0; i < m_vObjects.size(); i++) //For every model in the scene
 	{
-		//Transform and render the model
+		//Animate and update the objects
+		m_vObjects.at(i)->animate();
 		m_vObjects.at(i)->update();
 	}
 	
 	for (int i = 0; i < m_vCollectables.size(); i++) //For every collectable
 	{
-		if (!m_vCollectables.at(i)->Collected) //If the collectable has been collected
+		if (!m_vCollectables.at(i)->m_bCollected) //If the collectable hasn't been collected
 		{
-			if (m_vCollectables.at(i)->Colliding(m_vRobots.at(0)->getPosition()))//If collision between robot and Collectables occurs
+			if (m_vCollectables.at(i)->colliding(m_vRobots.at(0)->getPosition()))//If collision between robot and Collectables occurs
 			{
 				m_iCollectableCount++;					   //Increment collectable count
 				std::cout << m_iCollectableCount << "\n"; //Output the amount of Collectables collected
@@ -238,9 +239,9 @@ void Scene::update()
 		}
 	}
 	
-	for (int i = 0; i < m_vObjects.size(); i++) //For every model in the scene
+	for (int i = 0; i < m_vObjects.size(); i++) //For every object in the scene
 	{
-		m_vObjects.at(i)->render();
+		m_vObjects.at(i)->render(); //render the object
 	}
 }
 
@@ -258,28 +259,13 @@ void Scene::load(std::string dir)
 
 	std::string line; //Holds the line being read
 	std::string token = ""; //Holds the part of the string that was last read
-	glm::vec3 TempTranslationVect; //Holds the vector to rotate, translate or scale by
-	glm::vec3 TempRotationVect; //Holds the vector to rotate, translate or scale by
-	glm::vec3 TempScaleVect; //Holds the vector to rotate, translate or scale by
-	std::vector<std::string> TextureDirs;
-	glm::mat3 TempCamera;
-	bool TextureFound = false;
-	std::string TextureDirectory;
-	std::string ObjDirectory;
-	glm::vec3 tempRotate;
-	glm::vec3 tempScale;
-	glm::vec3 tempTranslate;
-	//std::vector<GameObject*> NewObjects;
-	std::vector<GameObject*> newObjects;
-	std::vector<Model*> NewModels;
-
-	int iCurrentObject;
-	int iCurrentPart;
-	bool isCollectable = false;
-	int pos = 0;
+	glm::vec3 tempTransform; //Holds a temporary transform variable
+	int iCurrentObject; //Holds the index of the current object
+	int iCurrentPart; //Holds the part of the current object
 	bool LoadingModel = false; //States whether a model is being loaded
-	bool LoadingObject = false;
-	bool loadingRobot = false;
+	bool LoadingObject = false; //States whether an object is being loaded
+
+	//std::vector<std::string> TextureDirs;
 
 	//While there are lines to be read
 	while (getline(Scenefile, line))
@@ -287,18 +273,16 @@ void Scene::load(std::string dir)
 		std::istringstream iss(line); //Holds the data that is read
 		token = "";
 
-		isCollectable = false;
-
 		//While the token is not the "push" token
 		while (token != "p") //(p = Push onto vector)
 		{
 			iss >> token; // read to first whitespace
 
-			if (token == "m") //If its an OBJ directory
+			if (token == "m") //If its a general model
 			{
-				iss >> iCurrentObject;
+				iss >> iCurrentObject; 
 				
-				if (iCurrentObject >= m_vObjects.size())
+				if (iCurrentObject >= m_vObjects.size()) 
 				{
 					m_vObjects.push_back(new GameObject);
 				}
@@ -349,92 +333,100 @@ void Scene::load(std::string dir)
 
 			else if (token == "obj") //If its an OBJ directory
 			{
-				iss >> ObjDirectory; //Read the item
+				std::string objDirectory; //Holds the object directory
+				iss >> objDirectory; //Read the item
+
 				if (LoadingModel)
 				{
-					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->loadObj(ObjDirectory);
+					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->loadObj(objDirectory);
 				}
 				
 			}
 			else if (token == "tex") //If its a texture
 			{
-				iss >> TextureDirectory; //Read the item
+				std::string textureDirectory; //Holds the texture directory
+				iss >> textureDirectory; //Read the item
 				if (LoadingModel)
 				{
-					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setTexture(TextureDirectory);
+					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setTexture(textureDirectory);
 				}
 			}
 
 			else if (token == "t") //If its a translation transform
 			{
-				iss >> TempTranslationVect.x; //Read the x value
-				iss >> TempTranslationVect.y; //Read the y value
-				iss >> TempTranslationVect.z; //Read the z value
+				iss >> tempTransform.x; //Read the x value
+				iss >> tempTransform.y; //Read the y value
+				iss >> tempTransform.z; //Read the z value
 				if (LoadingModel)
 				{
-					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setPosition(TempTranslationVect);
+					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setPosition(tempTransform);
 				}
 			}
 			else if (token == "s") //If its a scale transform
 			{
-				iss >> TempScaleVect.x; //Read the x value
-				iss >> TempScaleVect.y; //Read the y value
-				iss >> TempScaleVect.z; //Read the z value
+				iss >> tempTransform.x; //Read the x value
+				iss >> tempTransform.y; //Read the y value
+				iss >> tempTransform.z; //Read the z value
 				if (LoadingModel)
 				{
-					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setScale(TempScaleVect);
+					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setScale(tempTransform);
 				}
 			}
 			else if (token == "r") //If its a rotation transform
 			{
-				iss >> TempRotationVect.x; //Read the x value
-				iss >> TempRotationVect.y; //Read the y value
-				iss >> TempRotationVect.z; //Read the z value
+				iss >> tempTransform.x; //Read the x value
+				iss >> tempTransform.y; //Read the y value
+				iss >> tempTransform.z; //Read the z value
 				if (LoadingModel)
 				{
-					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setRotation(TempRotationVect);
+					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setRotation(tempTransform);
 				}
 			}
 
 			else if (token == "c") //If its a texture
 			{
+				 glm::mat3 tempCamera; //Holds a temporary camera for building 
 				 m_vbUsePlayerPos.push_back(std::vector<bool>{false, false, false, 
 														 false, false, false});
-				for (int i = 0; i < 6; i++)
+
+				for (int i = 0; i < 6; i++) //For the first 6 values
 				{
-					iss >> token;
-					if (token == "p")
+					iss >> token; //Read the value
+					if (token == "p") //If the value is a p
 					{
-						 m_vbUsePlayerPos[ m_vbUsePlayerPos.size() - 1][i] = true;
+						 m_vbUsePlayerPos[ m_vbUsePlayerPos.size() - 1][i] = true; //Set the camera to follow that coordinate
 					}
-					else
+					else 
 					{
+						//Camera Position
 						if (i <3)
-							TempCamera[0][i] = stoi(token); //Read the item
+							tempCamera[0][i] = stoi(token); //Set the camera to that value
+						//Camera view
 						else
-							TempCamera[1][i - 3] = stoi(token);  //Read the item
+							tempCamera[1][i - 3] = stoi(token);  //Set the camera to that value
 					}
 				}
 				
-				iss >> TempCamera[2].x; //Read the item
-				iss >> TempCamera[2].y; //Read the item
-				iss >> TempCamera[2].z; //Read the item
+				//Reads the up vector
+				iss >> tempCamera[2].x; //Read the item
+				iss >> tempCamera[2].y; //Read the item
+				iss >> tempCamera[2].z; //Read the item
 				
 
-				m_vCameras.push_back(glm::mat3(TempCamera[0].x, TempCamera[0].y, TempCamera[0].z,
-											TempCamera[1].x, TempCamera[1].y, TempCamera[1].z,
-											TempCamera[2].x, TempCamera[2].y, TempCamera[2].z));
+				m_vCameras.push_back(glm::mat3(tempCamera[0].x, tempCamera[0].y, tempCamera[0].z,
+											tempCamera[1].x, tempCamera[1].y, tempCamera[1].z,
+											tempCamera[2].x, tempCamera[2].y, tempCamera[2].z));
 			}
 
 			else if (token == "os") //If its an OBJ directory
 			{
 				if (LoadingObject)
 				{
-					iss >> tempScale.x; //Read the x value
-					iss >> tempScale.y; //Read the y value
-					iss >> tempScale.z; //Read the z value
+					iss >> tempTransform.x; //Read the x value
+					iss >> tempTransform.y; //Read the y value
+					iss >> tempTransform.z; //Read the z value
 
-					m_vObjects.at(iCurrentObject)->setScale(tempScale);
+					m_vObjects.at(iCurrentObject)->setScale(tempTransform);
 					
 				}
 			}
@@ -443,11 +435,11 @@ void Scene::load(std::string dir)
 			{
 				if (LoadingObject)
 				{
-					iss >> tempRotate.x; //Read the x value
-					iss >> tempRotate.y; //Read the y value
-					iss >> tempRotate.z; //Read the z value
+					iss >> tempTransform.x; //Read the x value
+					iss >> tempTransform.y; //Read the y value
+					iss >> tempTransform.z; //Read the z value
 
-					m_vObjects.at(iCurrentObject)->setRotation(tempRotate);
+					m_vObjects.at(iCurrentObject)->setRotation(tempTransform);
 					
 				}
 			}
@@ -456,17 +448,16 @@ void Scene::load(std::string dir)
 			{
 				if (LoadingObject)
 				{
-					iss >> tempTranslate.x; //Read the x value
-					iss >> tempTranslate.y; //Read the y value
-					iss >> tempTranslate.z; //Read the z value
+					iss >> tempTransform.x; //Read the x value
+					iss >> tempTransform.y; //Read the y value
+					iss >> tempTransform.z; //Read the z value
 
-					m_vObjects.at(iCurrentObject)->setPosition(tempTranslate);
+					m_vObjects.at(iCurrentObject)->setPosition(tempTransform);
 					
 				}
 			}
 		}
 		
-
 		if (LoadingModel)
 		{
 			LoadingModel = false;
@@ -477,24 +468,23 @@ void Scene::load(std::string dir)
 		}
 	}
 	Scenefile.close(); //Closes the file
-
-	for (int i = 0; i < m_vRobots.size(); i++)
-	{
-		m_vRobots.at(i)->Setup();
-	}
 }
 
 void Scene::moveRobot(float Direction)
 {
-	m_vRobots.at(0)->Move(Direction);
+	m_vRobots.at(0)->Move(Direction); 
 }
+
 void Scene::turnRobot(float Direction)
 {
 	m_vRobots.at(0)->Turn(Direction);
 }
+
 void Scene::switchCamera(int Direction)
 {
-	m_iCurrentCamera += Direction;
+	m_iCurrentCamera += Direction; //Changes the current camera variable
+
+	//Sets a loop if the boundaries are passed
 	if (m_iCurrentCamera < 0)
 	{
 		m_iCurrentCamera = m_vCameras.size() - 1;
@@ -502,5 +492,24 @@ void Scene::switchCamera(int Direction)
 	if (m_iCurrentCamera >= m_vCameras.size())
 	{
 		m_iCurrentCamera = 0;
+	}
+}
+
+Scene::~Scene()
+{
+	//Clears all of the data and pointers for all of the vectors.
+	for (int i = 0; i < m_vObjects.size(); i++)
+	{
+		m_vObjects.at(i)->~GameObject();
+		delete(m_vObjects.at(i));
+		m_vObjects.at(i) = NULL;
+	}
+	for (int i = 0; i < m_vRobots.size(); i++)
+	{
+		m_vRobots.at(i) = NULL;
+	}
+	for (int i = 0; i < m_vCollectables.size(); i++)
+	{
+		m_vCollectables.at(i) = NULL;
 	}
 }

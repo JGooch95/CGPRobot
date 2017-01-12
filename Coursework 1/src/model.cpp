@@ -11,90 +11,54 @@ Model::Model(GLint programHandle2)
 	m_iProgramHandle = programHandle2;
 }
 
-Model::Model(std::string Obj, glm::vec3 Translate2, glm::vec3 Rotate2, glm::vec3 Scale2, GLint programHandle2) {
-	m_iProgramHandle = programHandle2;
-	m_Position = Translate2;
-	m_Rotation = Rotate2;
-	loadObj(Obj);
-	init();
-}
-
-void Model::init(){
-	// Create and populate the buffer objects using separate buffers
-	gl::GenBuffers(2, m_uiVBOHandles);
-
-	GLuint positionBufferHandle = m_uiVBOHandles[0];
-	GLuint uvBufferHandle = m_uiVBOHandles[1];
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, positionBufferHandle);
-	gl::BufferData(gl::ARRAY_BUFFER, m_vfPositionData.size() * sizeof(float), &m_vfPositionData[0], gl::STATIC_DRAW);
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, uvBufferHandle);
-	gl::BufferData(gl::ARRAY_BUFFER, m_vfUvData.size() * sizeof(float), &m_vfUvData[0], gl::STATIC_DRAW);
-
-	// Create and set-up the vertex array object
-	gl::GenVertexArrays(1, &m_uiVAOHandle);
-	gl::BindVertexArray(m_uiVAOHandle);
-
-	gl::EnableVertexAttribArray(0);  // Vertex position
-	gl::EnableVertexAttribArray(1);  // Vertex color
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, positionBufferHandle);
-	gl::VertexAttribPointer(0, 3, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, uvBufferHandle);
-	gl::VertexAttribPointer(1, 2, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
-
-}
-
 void Model::start()
 {
 	//The model matrix
 	m_ModelMatrix = glm::mat4(1.0f);
 }
 
-void Model::scale(float fX, float fY, float fZ)
+void Model::scale(glm::vec3 newScale)
 {
-	m_ModelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(fX, fY, fZ))*  m_ModelMatrix; // Apply the scale to the model matrix
+	m_ModelMatrix = glm::scale(glm::mat4(1.0f), newScale)*  m_ModelMatrix; // Apply the scale to the model matrix
 }
 
-void Model::rotate(float fX, float fY, float fZ, CoordinateType Coord)
+void Model::rotate(glm::vec3 newRotation, CoordinateType Coord)
 {
 	//X rotation 
-	if (fX >= 360) //Upper bound
+	if (newRotation.x >= 360) //Upper bound
 	{
-		fX -= 360;
+		newRotation.x  -= 360;
 	}
-	else if (fX < 0) //Lower bound
+	else if (newRotation.x < 0) //Lower bound
 	{
-		fX += 360;
+		newRotation.x += 360;
 	}
 
-	glm::mat4 rotMatrix = glm::rotate(glm::mat4(1.0f), fX, glm::vec3(1, 0, 0));
+	glm::mat4 rotMatrix = glm::rotate(glm::mat4(1.0f), newRotation.x, glm::vec3(1, 0, 0)); //Apply X transform to rotation matrix
 
 	//Y rotation
-	if (fY >= 360) //Upper bound
+	if (newRotation.y >= 360) //Upper bound
 	{
-		fY -= 360;
+		newRotation.y -= 360;
 	}
-	else if (fY < 0) //Lower bound
+	else if (newRotation.y < 0) //Lower bound
 	{
-		fY += 360;
+		newRotation.y += 360;
 	}
 
-	rotMatrix *= glm::rotate(glm::mat4(1.0f), fY, glm::vec3(0, 1, 0));
+	rotMatrix *= glm::rotate(glm::mat4(1.0f), newRotation.y, glm::vec3(0, 1, 0)); //Apply Y transform to rotation matrix
 
 	//Z Rotation
-	if (fZ >= 360) //Upper bound
+	if (newRotation.z >= 360) //Upper bound
 	{
-		fZ -= 360;
+		newRotation.z -= 360;
 	}
-	else if (fZ < 0) //Lower bound
+	else if (newRotation.z < 0) //Lower bound
 	{
-		fZ += 360;
+		newRotation.z += 360;
 	}
 
-	rotMatrix *= glm::rotate(glm::mat4(1.0f), fZ, glm::vec3(0, 0, 1));
+	rotMatrix *= glm::rotate(glm::mat4(1.0f), newRotation.z, glm::vec3(0, 0, 1)); //Apply Z transform to rotation matrix
 
 	//If rotating around world coordinates
 	if (Coord == WORLD_COORDS)
@@ -108,9 +72,9 @@ void Model::rotate(float fX, float fY, float fZ, CoordinateType Coord)
 	}
 }
 
-void Model::translate(float fX, float fY, float fZ)
+void Model::translate(glm::vec3 newPosition)
 {
-	m_ModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(fX, fY, fZ)) *  m_ModelMatrix; // Apply the translation to the model matrix
+	m_ModelMatrix = glm::translate(glm::mat4(1.0f), newPosition) *  m_ModelMatrix; // Apply the translation to the model matrix
 }
 
 
@@ -148,7 +112,7 @@ void Model::loadObj(std::string sDir)
 		return;	//ERROR!!!
 	}
 
-	std::vector<glm::vec3> vertices; //Holds each individual type of vertex in the file
+	std::vector<glm::vec3> vertices; // Holds each individual type of vertex in the file
 	std::vector<glm::vec2> uvCoords; // Holds each individual uv coordinate in the file
 
 	glm::vec3 dimHigh(0,0,0); //Holds the highest x, y and z for the model dimensions
@@ -263,8 +227,33 @@ void Model::loadObj(std::string sDir)
 		}
 	}
 	modelfile.close();
-	init();
-	m_Dimensions = (dimHigh - dimLow);
+	
+	// Create and populate the buffer objects using separate buffers
+	gl::GenBuffers(2, m_uiVBOHandles);
+
+	GLuint positionBufferHandle = m_uiVBOHandles[0];
+	GLuint uvBufferHandle = m_uiVBOHandles[1];
+
+	gl::BindBuffer(gl::ARRAY_BUFFER, positionBufferHandle);
+	gl::BufferData(gl::ARRAY_BUFFER, m_vfPositionData.size() * sizeof(float), &m_vfPositionData[0], gl::STATIC_DRAW);
+
+	gl::BindBuffer(gl::ARRAY_BUFFER, uvBufferHandle);
+	gl::BufferData(gl::ARRAY_BUFFER, m_vfUvData.size() * sizeof(float), &m_vfUvData[0], gl::STATIC_DRAW);
+
+	// Create and set-up the vertex array object
+	gl::GenVertexArrays(1, &m_uiVAOHandle);
+	gl::BindVertexArray(m_uiVAOHandle);
+
+	gl::EnableVertexAttribArray(0);  // Vertex position
+	gl::EnableVertexAttribArray(1);  // Vertex color
+
+	gl::BindBuffer(gl::ARRAY_BUFFER, positionBufferHandle);
+	gl::VertexAttribPointer(0, 3, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
+
+	gl::BindBuffer(gl::ARRAY_BUFFER, uvBufferHandle);
+	gl::VertexAttribPointer(1, 2, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
+
+	m_Dimensions = (dimHigh - dimLow); //Sets the dimensions to be the High - low
 }
 
 glm::vec3 Model::getRotation()
@@ -302,14 +291,15 @@ void Model::setScale(glm::vec3 newVect)
 
 void Model::setTexture(std::string newTexture)
 {
+	if (m_Texture != NULL) //If a texture is already in the location
+	{
+		delete(m_Texture); //Delete the texture
+		m_Texture = NULL;  //Remove the pointer
+	}
+
 	//Load the texture
 	Bitmap bmp = Bitmap::bitmapFromFile(newTexture);
 	bmp.flipVertically();
-	if (m_Texture != NULL)
-	{
-		delete(m_Texture);
-		m_Texture = NULL;
-	}
 	m_Texture = new Texture(bmp);
 
 	//Set texture
@@ -317,5 +307,13 @@ void Model::setTexture(std::string newTexture)
 	gl::BindTexture(gl::TEXTURE_2D, m_Texture->object());
 	GLint loc = gl::GetUniformLocation(m_iProgramHandle, "tex");
 	gl::Uniform1f(loc, 0);
+}
+
+
+Model::~Model()
+{	
+	//Deletes the texture and clears the pointer
+	delete(m_Texture);
+	m_Texture = NULL;
 }
 

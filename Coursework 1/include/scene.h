@@ -6,24 +6,28 @@
 class Scene
 {
 	private:
-		std::vector<GameObject*> m_vObjects;
-		std::vector<Collectable*> m_vCollectables;
-		std::vector<Texture*> m_vTextures;
-		std::vector<Robot*> m_vRobots;
-		GLuint m_uiProgramHandle;
-		std::vector<glm::mat3> m_vCameras;
-		glm::mat4 m_PerspMatrix;
-		std::vector<std::vector<bool>> m_vbUsePlayerPos;
-		int m_iCurrentCamera;
-		int m_iCollectableCount;
+		GLuint m_uiProgramHandle; //Holds the current programHandle
+
+		std::vector<GameObject*> m_vObjects; //Holds pointers to every object
+		std::vector<Robot*> m_vRobots; //Holds pointers to every robot
+
+		std::vector<Collectable*> m_vCollectables; //Holds pointers to every collectable
+		int m_iCollectableCount; //Holds how many collectables have been collected
+
+		std::vector<glm::mat3> m_vCameras; //Holds all of the camera positions
+		std::vector<std::vector<bool>> m_vbUsePlayerPos; //Holds which camera coordinates will follow the player
+		int m_iCurrentCamera; //Holds which the index for the camera being used
+
+		//std::vector<Texture*> m_vTextures;
 
 	public:
-		Scene();
-		void init();
-		void update();
-		void load(std::string dir);
-		void linkMe(GLint vertShader, GLint fragShader);
-		void moveRobot(float Direction);
-		void turnRobot(float Direction);
-		void switchCamera(int Direction);
+		Scene(); //Default constructor
+		void init(); //Initializes the shaders
+		void update(); //Updates every object in the scene
+		void load(std::string dir); //Loads everything in the scene
+		void linkMe(GLint vertShader, GLint fragShader); //Links the shaders
+		void moveRobot(float Direction); //Moves the robot in the given direction
+		void turnRobot(float Direction); //Turns the robot in the given direction
+		void switchCamera(int Direction); //Switches to the next camera in the given direction
+		~Scene();  //Deconstructor
 };

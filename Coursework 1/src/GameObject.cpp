@@ -2,12 +2,6 @@
 
 GameObject::GameObject()
 {
-
-}
-
-GameObject::GameObject(GLint programHandle, std::vector<Model*> NewModels)
-{
-
 }
 
 void GameObject::update()
@@ -15,58 +9,66 @@ void GameObject::update()
 	for (int i = 0; i < m_vParts.size(); i++) //For every model in the scene
 	{
 		//Transform and render the model
-		m_vParts.at(i)->start();
-			m_vParts.at(i)->scale(m_vParts.at(i)->getScale().x, m_vParts.at(i)->getScale().y, m_vParts.at(i)->getScale().z);
-			m_vParts.at(i)->translate(0, m_vParts.at(i)->getDimensions().y / 2, 0);
-			m_vParts.at(i)->rotate(m_vParts.at(i)->getRotation().x, m_vParts.at(i)->getRotation().y, m_vParts.at(i)->getRotation().z, WORLD_COORDS);
-			m_vParts.at(i)->translate(m_vParts.at(i)->getPosition().x, m_vParts.at(i)->getPosition().y, m_vParts.at(i)->getPosition().z);
+		m_vParts.at(i)->start(); //Resets the model to default
+			m_vParts.at(i)->scale(m_vParts.at(i)->getScale());  //Scales the part to its size
+			m_vParts.at(i)->translate(glm::vec3(0, (m_vParts.at(i)->getDimensions().y *m_vParts.at(i)->getScale().y) / 2, 0)); //Moves the part up to be positioned from the bottom
+			m_vParts.at(i)->translate(m_vParts.at(i)->getPosition()); // Moves the part to its position
+			m_vParts.at(i)->rotate(m_vParts.at(i)->getRotation(), WORLD_COORDS);//Rotates the part to its rotation
 			
-			m_vParts.at(i)->scale(Scale.x, Scale.y, Scale.z);
-			m_vParts.at(i)->rotate(Rotation.x, Rotation.y, Rotation.z, WORLD_COORDS);
-			m_vParts.at(i)->translate(Position.x, Position.y, Position.z);
+			m_vParts.at(i)->scale(m_Scale); //Scales the part to the model scale
+			m_vParts.at(i)->rotate(m_Rotation, WORLD_COORDS); // Rotates the part to the model scale
+			m_vParts.at(i)->translate(m_Position); //Translates the part to the model position
 	}
 }
 
 void GameObject::render()
 {
-	for (int i = 0; i < m_vParts.size(); i++) //For every model in the scene
+	for (int i = 0; i < m_vParts.size(); i++) //For every part of the object
 	{
-		m_vParts.at(i)->render();
+		m_vParts.at(i)->render(); //Render it
 	}
+}
+
+void GameObject::animate()
+{
 }
 
 void GameObject::setRotation(glm::vec3 newRotation)
 {
-	Rotation = newRotation;
+	m_Rotation = newRotation;
 }
 
 void GameObject::setPosition(glm::vec3 newPosition)
 {
-	Position = newPosition;
+	m_Position = newPosition; 
 }
 
 void GameObject::setScale(glm::vec3 newScale)
 {
-	Scale = newScale;
+	m_Scale = newScale; 
 }
 
 glm::vec3 GameObject::getRotation()
 {
-	return Rotation;
+	return m_Rotation;
 }
 
 glm::vec3 GameObject::getPosition()
 {
-	return Position;
+	return m_Position;
 }
 
 glm::vec3 GameObject::getScale()
 {
-	return Scale;
+	return m_Scale;
 }
 
 GameObject::~GameObject()
 {
-
+	for (int i = 0; i < m_vParts.size(); i++) //For every part of the model
+	{
+		delete(m_vParts.at(i)); //Delete the data at the pointer location
+		m_vParts.at(i) = NULL; //Remove the pointer
+	}
 }
 

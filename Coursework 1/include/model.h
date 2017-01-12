@@ -17,39 +17,38 @@ class Model
 		GLuint m_uiVAOHandle;
 		GLint m_iProgramHandle;
 
-		Texture* m_Texture;
+		Texture* m_Texture; // Holds a pointer to the texture being used
 
-		glm::mat4 m_ModelMatrix;
-
-		std::vector<float> m_vfPositionData;
-		std::vector<float> m_vfUvData;
+		std::vector<float> m_vfPositionData; //Holds the vertex data to be rendered
+		std::vector<float> m_vfUvData; //Holds the Uv's to map the texture to the vertices
 		
-		glm::vec3 m_Rotation;
-		glm::vec3 m_Position;
-		glm::vec3 m_Scale;
-		glm::vec3 m_Dimensions;
+		glm::mat4 m_ModelMatrix; //Holds the matrix to transform the model by
+
+		glm::vec3 m_Rotation; //Holds the default rotation
+		glm::vec3 m_Position; //Holds the default position
+		glm::vec3 m_Scale;  //Holds the default scale
+		glm::vec3 m_Dimensions;  //Holds the dimensions of the model
 
 public:
-		Model(GLint programHandle2);
-		Model(std::string Obj, glm::vec3 Translate2, glm::vec3 Rotate2, glm::vec3 Scale2, GLint programHandle2);
-		void init();
-		void render();
-		void loadObj(std::string sDir);
+		Model(GLint programHandle2); //Constructor
+		void loadObj(std::string sDir); //Loads the obj file and fills the buffers
+		void render(); //Renders the model
 
-		void start();
+		void start(); //Resets the model matrix ready for transforms
 
-		void scale(float fX, float fY, float fZ);
-		void rotate(float fX, float fY, float fZ, CoordinateType Coord);
-		void translate(float fX, float fY, float fZ);
+		void scale(glm::vec3 newScale); //Scales the current model matrix
+		void rotate(glm::vec3 newRotation, CoordinateType Coord); //Rotates the current model matrix
+		void translate(glm::vec3 newPosition); //Translates the current model matrix
 
-		glm::vec3 getRotation();
-		glm::vec3 getPosition();
-		glm::vec3 getScale();
-		glm::vec3 getDimensions();
+		glm::vec3 getRotation(); //Returns the models default rotation
+		glm::vec3 getPosition(); //Returns the models default position
+		glm::vec3 getScale();    //Returns the models default scale
+		glm::vec3 getDimensions(); //Returns the dimensions of the model
 
-		void setPosition(glm::vec3 newVect);
-		void setRotation(glm::vec3 newVect);
-		void setScale(glm::vec3 newVect);
-		void setTexture(std::string newTexture);
+		void setPosition(glm::vec3 newVect); //Sets the models default rotation
+		void setRotation(glm::vec3 newVect); //Sets the models default position
+		void setScale(glm::vec3 newVect);	 //Sets the models default scale
+		void setTexture(std::string newTexture); //Sets the texture of the model
+		~Model(); //Deconstructor
 		
 };

@@ -4,48 +4,47 @@
 #include "scene.h"
 
 GLFWwindow *window;
-Scene *scene1;
+Scene *currentScene;
 
 void init()
 {
 	gl::ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-	scene1 = new Scene;
-	scene1->init();
-	scene1->load("Assets/Scene2.txt");
+	currentScene = new Scene;
+	currentScene->load("Assets/Scene2.txt");
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_W && action == GLFW_REPEAT)
-		if (scene1)
-			scene1->moveRobot(1.0f);
+		if (currentScene)
+			currentScene->moveRobot(1.0f);
 
 	if (key == GLFW_KEY_S && action == GLFW_REPEAT)
-		if (scene1)
-			scene1->moveRobot(-1.0f);
+		if (currentScene)
+			currentScene->moveRobot(-1.0f);
 
 	if (key == GLFW_KEY_A && action == GLFW_REPEAT)
-		if (scene1)
-			scene1->turnRobot(1.0f);
+		if (currentScene)
+			currentScene->turnRobot(1.0f);
 
 	if (key == GLFW_KEY_D && action == GLFW_REPEAT)
-		if (scene1)
-			scene1->turnRobot(-1.0f);
+		if (currentScene)
+			currentScene->turnRobot(-1.0f);
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-		scene1->switchCamera(+1);
+		currentScene->switchCamera(+1);
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-		scene1->switchCamera(-1);
+		currentScene->switchCamera(-1);
 }
 
 void gameLoop()
 {
 	while (!glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE))
 	{
-		scene1->update();
+		currentScene->update();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -86,5 +85,12 @@ void main()
 	gameLoop();
 
 	glfwTerminate();
+
+	//Clears all pointers
+	window = NULL;
+	currentScene->~Scene();
+	delete(currentScene);
+	currentScene = NULL;
+
 	exit(EXIT_FAILURE);
 }
