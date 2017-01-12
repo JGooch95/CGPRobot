@@ -11,7 +11,7 @@ void init()
 	gl::ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	scene1 = new Scene;
 	scene1->init();
-	scene1->load("Assets/Scene1.txt");
+	scene1->load("Assets/Scene2.txt");
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

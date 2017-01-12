@@ -6,16 +6,20 @@
 
 #define GLM_FORCE_RADIANS
 
-Model::Model(std::string Obj, glm::vec3 Translate2, glm::vec3 Rotate2, glm::vec3 Scale2, std::string sTex, GLint programHandle2) {
+Model::Model(GLint programHandle2)
+{
+	m_iProgramHandle = programHandle2;
+}
+
+Model::Model(std::string Obj, glm::vec3 Translate2, glm::vec3 Rotate2, glm::vec3 Scale2, GLint programHandle2) {
 	m_iProgramHandle = programHandle2;
 	m_Position = Translate2;
 	m_Rotation = Rotate2;
-	m_CurrentScale = Scale2;
 	loadObj(Obj);
-	init(sTex);
+	init();
 }
 
-void Model::init(std::string sTex){
+void Model::init(){
 	// Create and populate the buffer objects using separate buffers
 	gl::GenBuffers(2, m_uiVBOHandles);
 
@@ -41,34 +45,12 @@ void Model::init(std::string sTex){
 	gl::BindBuffer(gl::ARRAY_BUFFER, uvBufferHandle);
 	gl::VertexAttribPointer(1, 2, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
 
-	//Load the texture
-	Bitmap bmp = Bitmap::bitmapFromFile(sTex);
-	bmp.flipVertically();
-	m_Texture = new Texture(bmp);
-
-	//Set texture
-	gl::ActiveTexture(gl::TEXTURE0);
-	gl::BindTexture(gl::TEXTURE_2D, m_Texture->object());
-	GLint loc = gl::GetUniformLocation(m_iProgramHandle, "tex");
-	gl::Uniform1f(loc, 0);
-
 }
-
-
 
 void Model::start()
 {
 	//The model matrix
 	m_ModelMatrix = glm::mat4(1.0f);
-}
-
-void Model::end()
-{
-	//Links each variable to the matrixID value.
-	GLint modelMatrixID = gl::GetUniformLocation(m_iProgramHandle, "mModel");
-
-	//The matrixId is then passed the values to be applied to the variables. 
-	gl::UniformMatrix4fv(modelMatrixID, 1, gl::FALSE_, glm::value_ptr(m_ModelMatrix));
 }
 
 void Model::scale(float fX, float fY, float fZ)
@@ -126,8 +108,6 @@ void Model::rotate(float fX, float fY, float fZ, CoordinateType Coord)
 	}
 }
 
-
-
 void Model::translate(float fX, float fY, float fZ)
 {
 	m_ModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(fX, fY, fZ)) *  m_ModelMatrix; // Apply the translation to the model matrix
@@ -135,6 +115,12 @@ void Model::translate(float fX, float fY, float fZ)
 
 
 void Model::render(){
+	//Links each variable to the matrixID value.
+	GLint modelMatrixID = gl::GetUniformLocation(m_iProgramHandle, "mModel");
+
+	//The matrixId is then passed the values to be applied to the variables. 
+	gl::UniformMatrix4fv(modelMatrixID, 1, gl::FALSE_, glm::value_ptr(m_ModelMatrix));
+
 	gl::Enable(gl::DEPTH_TEST);
 	
 	//Set texture0 to the model's texture
@@ -191,6 +177,36 @@ void Model::loadObj(std::string sDir)
 			iss >> Vert.y;
 			iss >> Vert.z;
 
+			//Checks against the current dimensions and alters them if the vertices exceed the bounds
+			if (Vert.x > dimHigh.x) //Upper Bound
+			{
+				dimHigh.x = Vert.x;
+			}
+			if (Vert.x < dimLow.x) //Lower Bound
+			{
+				dimLow.x = Vert.x;
+			}
+
+			//Checks against the current dimensions and alters them if the vertices exceed the bounds
+			if (Vert.y > dimHigh.y) //Upper Bound
+			{
+				dimHigh.y = Vert.y;
+			}
+			if (Vert.y < dimLow.y) //Lower Bound
+			{
+				dimLow.y = Vert.y;
+			}
+
+			//Checks against the current dimensions and alters them if the vertices exceed the bounds
+			if (Vert.z > dimHigh.z) //Upper Bound
+			{
+				dimHigh.z = Vert.y;
+			}
+			if (Vert.z < dimLow.z) //Lower Bound
+			{
+				dimLow.z = Vert.y;
+			}
+
 			vertices.push_back(Vert);
 		}
 
@@ -217,40 +233,8 @@ void Model::loadObj(std::string sDir)
 				int lookAhead = iss.peek();  	// peek character
 
 				m_vfPositionData.push_back(vertices.at(value - 1).x); //Adds the x for the vertex at that index to the position data
-
-				//Checks against the current dimensions and alters them if the vertices exceed the bounds
-				if (m_vfPositionData.at(m_vfPositionData.size()-1) > dimHigh.x) //Upper Bound
-				{
-					dimHigh.x = m_vfPositionData.at(m_vfPositionData.size()-1);
-				}
-				if (m_vfPositionData.at(m_vfPositionData.size() - 1) < dimLow.x) //Lower Bound
-				{
-					dimLow.x = m_vfPositionData.at(m_vfPositionData.size() - 1);
-				}
-
 				m_vfPositionData.push_back(vertices.at(value - 1).y); //Adds the y for the vertex at that index to the position data
-
-				//Checks against the current dimensions and alters them if the vertices exceed the bounds
-				if (m_vfPositionData.at(m_vfPositionData.size()-1) > dimHigh.y) //Upper Bound
-				{
-					dimHigh.y = m_vfPositionData.at(m_vfPositionData.size()-1);
-				}
-				if (m_vfPositionData.at(m_vfPositionData.size() - 1) < dimLow.y) //Lower Bound
-				{
-					dimLow.y = m_vfPositionData.at(m_vfPositionData.size() - 1);
-				}
-
 				m_vfPositionData.push_back(vertices.at(value - 1).z); //Adds the z for the vertex at that index to the position data
-
-				//Checks against the current dimensions and alters them if the vertices exceed the bounds
-				if (m_vfPositionData.at(m_vfPositionData.size()-1) > dimHigh.z) //Upper Bound
-				{
-					dimHigh.z = m_vfPositionData.at(m_vfPositionData.size()-1);
-				}
-				if (m_vfPositionData.at(m_vfPositionData.size() - 1) < dimLow.z) //Lower Bound
-				{
-					dimLow.z = m_vfPositionData.at(m_vfPositionData.size() - 1);
-				}
 
 				if (lookAhead == forwardSlash)    //If the next character is a "/"
 				{
@@ -279,9 +263,8 @@ void Model::loadObj(std::string sDir)
 		}
 	}
 	modelfile.close();
-
-
-	m_Dimensions = (dimHigh - dimLow) * m_CurrentScale;
+	init();
+	m_Dimensions = (dimHigh - dimLow);
 }
 
 glm::vec3 Model::getRotation()
@@ -289,24 +272,18 @@ glm::vec3 Model::getRotation()
 	return m_Rotation;
 }
 
-glm::vec3 Model::getCurrentScale()
-{
-	return m_CurrentScale;
-}
-
 glm::vec3 Model::getPosition()
 {
 	return m_Position;
+}
+glm::vec3 Model::getScale()
+{
+	return m_Scale;
 }
 
 glm::vec3 Model::getDimensions()
 {
 	return m_Dimensions;
-}
-
-void Model::setCurrentScale(glm::vec3 newVect)
-{
-	m_CurrentScale = newVect;
 }
 
 void Model::setPosition(glm::vec3 newVect)
@@ -318,3 +295,27 @@ void Model::setRotation(glm::vec3 newVect)
 {
 	m_Rotation = newVect;
 }
+void Model::setScale(glm::vec3 newVect)
+{
+	m_Scale = newVect;
+}
+
+void Model::setTexture(std::string newTexture)
+{
+	//Load the texture
+	Bitmap bmp = Bitmap::bitmapFromFile(newTexture);
+	bmp.flipVertically();
+	if (m_Texture != NULL)
+	{
+		delete(m_Texture);
+		m_Texture = NULL;
+	}
+	m_Texture = new Texture(bmp);
+
+	//Set texture
+	gl::ActiveTexture(gl::TEXTURE0);
+	gl::BindTexture(gl::TEXTURE_2D, m_Texture->object());
+	GLint loc = gl::GetUniformLocation(m_iProgramHandle, "tex");
+	gl::Uniform1f(loc, 0);
+}
+

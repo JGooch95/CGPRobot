@@ -1,17 +1,18 @@
 #pragma once
 #include "model.h"
+#include "GameObject.h"
 
-class Collectable
+class Collectable : public GameObject
 {
 	private: 
-		Model* model1;
-		int Rot;
-		glm::vec3 Position;
 		float BounceSpeed;
 
 	public:
+		Collectable();
 		Collectable(Model* NewModel);
-		void Move();
-		bool Colliding(glm::vec3 Position);
+		void update();
+		bool Colliding(glm::vec3 newPosition);
+		void render();
 		bool Collected;
+
 };

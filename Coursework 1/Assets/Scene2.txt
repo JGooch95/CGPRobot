@@ -1,16 +1,29 @@
-m 0 | os 0.05 0.05 0.05 | p
-m 0 | prt 0 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0 3.5 0   | r 0 0 0  | s 1 1 1       | p
-m 0 | prt 1 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0 2 0     | r 0 0 0  | s 1 2 1       | p
-m 0 | prt 2 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t -0.25 0 0 | r 0 0 0  | s 0.5 2 0.5   | p
-m 0 | prt 3 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0.25 0 0  | r 0 0 0  | s 0.5 2 0.5   | p
-m 0 | prt 4 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t -0.75 2 0 | r 0 0 0  | s 0.5 2 0.5   | p
-m 0 | prt 5 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0.75 2 0  | r 0 0 0  | s 0.5 2 0.5   | p
-
-m 1 | prt 0 | obj Assets/box.obj   | tex Assets/CrateMap.jpg | t 0 0 0     | r 0 45 0 | s 0.1 0.1 0.1 | p
-m 2 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg  | t 10 0 9    | r 0 0 0  | s 0.1 1 1     | p
-m 3 | prt 0 | obj Assets/box.obj   | tex Assets/CrateMap.jpg | t 10 0 10   | r 0 45 0 | s 0.1 0.1 0.1 | coll | p
-m 4 | prt 0 | obj Assets/box.obj   | tex Assets/CrateMap.jpg | t 9.3 0 9.3 | r 0 45 0 | s 0.1 0.1 0.1 | coll | p
+b 0 | os 0.05 0.05 0.05| ot 8 0 9 | or 0 0 0 | p
+b 0 | prt 0 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0 3.5 0   | r 0 0 0  | s 1 1 1       | p
+b 0 | prt 1 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0 2 0     | r 0 0 0  | s 1 2 1       | p
+b 0 | prt 2 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t -0.25 0 0 | r 0 0 0  | s 0.5 2 0.5   | p
+b 0 | prt 3 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0.25 0 0  | r 0 0 0  | s 0.5 2 0.5   | p
+b 0 | prt 4 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t -0.75 2 0 | r 0 0 0  | s 0.5 2 0.5   | p
+b 0 | prt 5 | obj Assets/box.obj   | tex Assets/BoxMap.jpg   | t 0.75 2 0  | r 0 0 0  | s 0.5 2 0.5   | p
+p
+m 1 | os  1 1 1 | ot 0 0 0 | or 0 45 0 | p
+m 1 | prt 0 | obj Assets/box.obj   | tex Assets/CrateMap.jpg | t 0 0 0     | r 0 0 0  | s 0.1 0.1 0.1 | p
+p
+m 2 | os  1 1 1 | ot 10 0 9 | or 0 0 0 | p
+m 2 | prt 0 | obj Assets/box.obj   | tex Assets/WallMap.jpg  | t 0 0 0    | r 0 0 0  | s 0.1 1 1     | p
+p
+coll 3 | os  1 1 1 | ot 9 0 9 | or 0 45 0 | p
+coll 3 | prt 0 | obj Assets/box.obj   | tex Assets/CrateMap.jpg | t 0 0 0   | r 0 0 0 | s 0.1 0.1 0.1  | p
+p
+coll 4 | os  1 1 1 | ot 9 0 10 | or 0 45 0 | p
+coll 4 | prt 0 | obj Assets/box.obj   | tex Assets/CrateMap.jpg | t 0 0 0   | r 0 0 0 | s 0.1 0.1 0.1  | p
+p
+m 5 | os  1 1 1 | ot 0 0 0 | or 0 0 0 | p
 m 5 | prt 0 | obj Assets/Floor.obj | tex Assets/WallMap.jpg  | t 0 0 0     | r 0 0 0  | s 1 1 1       | p
-
+p
 c 100 45 0 p 0 p 0 1 0 | p
 c -60 45 0 p 0 p 0 1 0 | p
+c  1  1  0  10  1  0  0 1 0 | p
+c -1  1  0 -10  1  0  0 1 0 | p
+c  0  1  1  0   1  10  0 1 0 | p
+c  0  0 -1  0  0 -10  0 1 0 | p
