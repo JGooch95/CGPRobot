@@ -1,8 +1,9 @@
 ﻿  scene.cpp
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(17): warning C4552: '-': operator has no effect; expected operator with side-effect
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(405): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(408): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(492): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(18): warning C4552: '-': operator has no effect; expected operator with side-effect
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(686): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
   GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  tinyxml2.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Coursework 1.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\Debug\x64\Coursework 1.exe
   Coursework 1.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\Debug\x64\Coursework 1.pdb (Partial PDB)

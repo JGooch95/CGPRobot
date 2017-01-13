@@ -3,6 +3,7 @@
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <tinyxml2.h>
 
 Scene::Scene()
 {
@@ -249,227 +250,420 @@ void Scene::update()
 
 void Scene::load(std::string dir)
 {
-	std::fstream Scenefile(dir, std::ios_base::in); //Attempt to open the file given
-
-	if (!Scenefile.is_open()) //If the file didnt open
-	{
-		std::cerr << "File " << dir << " not found."; //Output an error that the file didnt open
-		DebugBreak(); //Input a breakpoint.
-		throw std::invalid_argument("File not found"); //Throw a file not found error
-		return;	//ERROR!!!
-	}
-
-	std::string line; //Holds the line being read
-	std::string token = ""; //Holds the part of the string that was last read
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile(dir.c_str());
+	tinyxml2::XMLNode* node = doc.FirstChild();
+	std::string Reading;
 	glm::vec3 tempTransform; //Holds a temporary transform variable
-	int iCurrentObject; //Holds the index of the current object
-	int iCurrentPart; //Holds the part of the current object
-	bool LoadingModel = false; //States whether a model is being loaded
-	bool LoadingObject = false; //States whether an object is being loaded
-
-	//std::vector<std::string> TextureDirs;
-
-	//While there are lines to be read
-	while (getline(Scenefile, line))
+	for (tinyxml2::XMLNode* currentChild = node; currentChild != NULL; currentChild = currentChild->NextSibling())
 	{
-		std::istringstream iss(line); //Holds the data that is read
-		token = "";
-
-		//While the token is not the "push" token
-		while (token != "p") //(p = Push onto vector)
+		const char* val = currentChild->Value();
+		printf("Name of play (1): %s\n", val);
+		
+		if (strcmp(currentChild->Value(), "SCENE") ==0)
 		{
-			iss >> token; // read to first whitespace
-
-			if (token == "m") //If its a general model
+			for (tinyxml2::XMLNode* currentChild2 = currentChild->FirstChild(); currentChild2 != NULL; currentChild2 = currentChild2->NextSibling())
 			{
-				iss >> iCurrentObject; 
-				
-				if (iCurrentObject >= m_vObjects.size()) 
-				{
-					m_vObjects.push_back(new GameObject);
-				}
-
-				LoadingObject = true;
-			}
-
-			else if (token == "coll") //If its an OBJ directory
-			{
-				iss >> iCurrentObject;
-				if (iCurrentObject >= m_vObjects.size())
-				{
-					Collectable* newCollect = new Collectable;
-					m_vObjects.push_back(newCollect);
-					m_vCollectables.push_back(newCollect);
-					newCollect = NULL;
-				}
-				LoadingObject = true;
-			}
-
-			else if (token == "b") //If its an OBJ directory
-			{
-				iss >> iCurrentObject;
-				if (iCurrentObject >= m_vObjects.size())
+				val = currentChild2->Value();
+				printf("Name of play (1): %s\n", val);
+				if (strcmp(currentChild2->Value(), "ROBOT") == 0)
 				{
 					Robot* newBot = new Robot;
 					m_vObjects.push_back(newBot);
 					m_vRobots.push_back(newBot);
 					newBot = NULL;
-				}
-				LoadingObject = true;
-			}
 
-			else if (token == "prt") //If its an OBJ directory
-			{
-				iss >> iCurrentPart;
-				if (LoadingObject)
-				{
-					
-					if (m_vObjects.at(iCurrentObject)->m_vParts.size() >= iCurrentPart)
+					for (tinyxml2::XMLNode* currentChild3 = currentChild2->FirstChild(); currentChild3 != NULL; currentChild3 = currentChild3->NextSibling())
 					{
-						m_vObjects.at(iCurrentObject)->m_vParts.push_back(new Model(m_uiProgramHandle));
+						val = currentChild3->Value();
+						printf("Name of play (1): %s\n", val);
+						if (strcmp(currentChild3->Value(), "SCALE") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> tempTransform.x; //Read the x value
+								iss >> tempTransform.y; //Read the y value
+								iss >> tempTransform.z; //Read the z value
+							}
+
+							m_vObjects.at(m_vObjects.size() - 1)->setScale(tempTransform);
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "ROTATE") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> tempTransform.x; //Read the x value
+								iss >> tempTransform.y; //Read the y value
+								iss >> tempTransform.z; //Read the z value
+							}
+
+							m_vObjects.at(m_vObjects.size() - 1)->setRotation(tempTransform);
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "TRANSLATE") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> tempTransform.x; //Read the x value
+								iss >> tempTransform.y; //Read the y value
+								iss >> tempTransform.z; //Read the z value
+							}
+
+							m_vObjects.at(m_vObjects.size() - 1)->setPosition(tempTransform);
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "MODEL") == 0)
+						{
+							m_vObjects.at(m_vObjects.size()-1)->m_vParts.push_back(new Model(m_uiProgramHandle));
+							for (tinyxml2::XMLNode* currentChild4 = currentChild3->FirstChild(); currentChild4 != NULL; currentChild4 = currentChild4->NextSibling())
+							{
+								val = currentChild4->Value();
+								printf("Name of play (1): %s\n", val);
+								if (strcmp(currentChild4->Value(), "OBJECT") == 0)
+								{
+									m_vObjects.at(m_vObjects.size()-1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->loadObj(currentChild4->ToElement()->GetText());
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "TEXTURE") == 0)
+								{
+									m_vObjects.at(m_vObjects.size()-1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setTexture(currentChild4->ToElement()->GetText());
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "SCALE") == 0)
+								{
+									std::istringstream iss(currentChild4->ToElement()->GetText());
+									for (int i = 0; i < 3; i++)
+									{
+										iss >> tempTransform.x; //Read the x value
+										iss >> tempTransform.y; //Read the y value
+										iss >> tempTransform.z; //Read the z value
+									}
+
+									m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setScale(tempTransform);
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "ROTATE") == 0)
+								{
+									std::istringstream iss(currentChild4->ToElement()->GetText());
+									for (int i = 0; i < 3; i++)
+									{
+										iss >> tempTransform.x; //Read the x value
+										iss >> tempTransform.y; //Read the y value
+										iss >> tempTransform.z; //Read the z value
+									}
+
+									m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setRotation(tempTransform);
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "TRANSLATE") == 0)
+								{
+									std::istringstream iss(currentChild4->ToElement()->GetText());
+									for (int i = 0; i < 3; i++)
+									{
+										iss >> tempTransform.x; //Read the x value
+										iss >> tempTransform.y; //Read the y value
+										iss >> tempTransform.z; //Read the z value
+									}
+
+									m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setPosition(tempTransform);
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+							}
+						}
 					}
-					
-					LoadingModel = true;
 				}
-			}
-
-			else if (token == "obj") //If its an OBJ directory
-			{
-				std::string objDirectory; //Holds the object directory
-				iss >> objDirectory; //Read the item
-
-				if (LoadingModel)
+				if (strcmp(currentChild2->Value(), "GAMEOBJECT") == 0) 
 				{
-					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->loadObj(objDirectory);
-				}
-				
-			}
-			else if (token == "tex") //If its a texture
-			{
-				std::string textureDirectory; //Holds the texture directory
-				iss >> textureDirectory; //Read the item
-				if (LoadingModel)
-				{
-					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setTexture(textureDirectory);
-				}
-			}
-
-			else if (token == "t") //If its a translation transform
-			{
-				iss >> tempTransform.x; //Read the x value
-				iss >> tempTransform.y; //Read the y value
-				iss >> tempTransform.z; //Read the z value
-				if (LoadingModel)
-				{
-					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setPosition(tempTransform);
-				}
-			}
-			else if (token == "s") //If its a scale transform
-			{
-				iss >> tempTransform.x; //Read the x value
-				iss >> tempTransform.y; //Read the y value
-				iss >> tempTransform.z; //Read the z value
-				if (LoadingModel)
-				{
-					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setScale(tempTransform);
-				}
-			}
-			else if (token == "r") //If its a rotation transform
-			{
-				iss >> tempTransform.x; //Read the x value
-				iss >> tempTransform.y; //Read the y value
-				iss >> tempTransform.z; //Read the z value
-				if (LoadingModel)
-				{
-					m_vObjects.at(iCurrentObject)->m_vParts.at(iCurrentPart)->setRotation(tempTransform);
-				}
-			}
-
-			else if (token == "c") //If its a texture
-			{
-				 glm::mat3 tempCamera; //Holds a temporary camera for building 
-				 m_vbUsePlayerPos.push_back(std::vector<bool>{false, false, false, 
-														 false, false, false});
-
-				for (int i = 0; i < 6; i++) //For the first 6 values
-				{
-					iss >> token; //Read the value
-					if (token == "p") //If the value is a p
+					m_vObjects.push_back(new GameObject);
+					for (tinyxml2::XMLNode* currentChild3 = currentChild2->FirstChild(); currentChild3 != NULL; currentChild3 = currentChild3->NextSibling())
 					{
-						 m_vbUsePlayerPos[ m_vbUsePlayerPos.size() - 1][i] = true; //Set the camera to follow that coordinate
+						val = currentChild3->Value();
+						printf("Name of play (1): %s\n", val);
+						if (strcmp(currentChild3->Value(), "SCALE") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> tempTransform.x; //Read the x value
+								iss >> tempTransform.y; //Read the y value
+								iss >> tempTransform.z; //Read the z value
+							}
+
+							m_vObjects.at(m_vObjects.size() - 1)->setScale(tempTransform);
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "ROTATE") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> tempTransform.x; //Read the x value
+								iss >> tempTransform.y; //Read the y value
+								iss >> tempTransform.z; //Read the z value
+							}
+
+							m_vObjects.at(m_vObjects.size() - 1)->setRotation(tempTransform);
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "TRANSLATE") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> tempTransform.x; //Read the x value
+								iss >> tempTransform.y; //Read the y value
+								iss >> tempTransform.z; //Read the z value
+							}
+
+							m_vObjects.at(m_vObjects.size() - 1)->setPosition(tempTransform);
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "MODEL") == 0)
+						{
+							m_vObjects.at(m_vObjects.size() - 1)->m_vParts.push_back(new Model(m_uiProgramHandle));
+							for (tinyxml2::XMLNode* currentChild4 = currentChild3->FirstChild(); currentChild4 != NULL; currentChild4 = currentChild4->NextSibling())
+							{
+								val = currentChild4->Value();
+								printf("Name of play (1): %s\n", val);
+								if (strcmp(currentChild4->Value(), "OBJECT") == 0)
+								{
+									m_vObjects.at(m_vObjects.size()-1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->loadObj(currentChild4->ToElement()->GetText());
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "TEXTURE") == 0)
+								{
+									m_vObjects.at(m_vObjects.size()-1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setTexture(currentChild4->ToElement()->GetText());
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "SCALE") == 0)
+								{
+									std::istringstream iss(currentChild4->ToElement()->GetText());
+									for (int i = 0; i < 3; i++)
+									{
+										iss >> tempTransform.x; //Read the x value
+										iss >> tempTransform.y; //Read the y value
+										iss >> tempTransform.z; //Read the z value
+									}
+
+									m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setScale(tempTransform);
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "ROTATE") == 0)
+								{
+									std::istringstream iss(currentChild4->ToElement()->GetText());
+									for (int i = 0; i < 3; i++)
+									{
+										iss >> tempTransform.x; //Read the x value
+										iss >> tempTransform.y; //Read the y value
+										iss >> tempTransform.z; //Read the z value
+									}
+
+									m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setRotation(tempTransform);
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "TRANSLATE") == 0)
+								{
+									std::istringstream iss(currentChild4->ToElement()->GetText());
+									for (int i = 0; i < 3; i++)
+									{
+										iss >> tempTransform.x; //Read the x value
+										iss >> tempTransform.y; //Read the y value
+										iss >> tempTransform.z; //Read the z value
+									}
+
+									m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setPosition(tempTransform);
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+							}
+						}
 					}
-					else 
+				}
+				if (strcmp(currentChild2->Value(), "COLLECTABLE") == 0) 
+				{
+					Collectable* newCollect = new Collectable;
+					m_vObjects.push_back(newCollect);
+					m_vCollectables.push_back(newCollect);
+					newCollect = NULL;
+					for (tinyxml2::XMLNode* currentChild3 = currentChild2->FirstChild(); currentChild3 != NULL; currentChild3 = currentChild3->NextSibling())
 					{
-						//Camera Position
-						if (i <3)
-							tempCamera[0][i] = stoi(token); //Set the camera to that value
-						//Camera view
-						else
-							tempCamera[1][i - 3] = stoi(token);  //Set the camera to that value
+						val = currentChild3->Value();
+						printf("Name of play (1): %s\n", val);
+						if (strcmp(currentChild3->Value(), "SCALE") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> tempTransform.x; //Read the x value
+								iss >> tempTransform.y; //Read the y value
+								iss >> tempTransform.z; //Read the z value
+							}
+
+							m_vObjects.at(m_vObjects.size() - 1)->setScale(tempTransform);
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "ROTATE") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> tempTransform.x; //Read the x value
+								iss >> tempTransform.y; //Read the y value
+								iss >> tempTransform.z; //Read the z value
+							}
+
+							m_vObjects.at(m_vObjects.size() - 1)->setRotation(tempTransform);
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "TRANSLATE") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> tempTransform.x; //Read the x value
+								iss >> tempTransform.y; //Read the y value
+								iss >> tempTransform.z; //Read the z value
+							}
+
+							m_vObjects.at(m_vObjects.size() - 1)->setPosition(tempTransform);
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "MODEL") == 0)
+						{
+							m_vObjects.at(m_vObjects.size() - 1)->m_vParts.push_back(new Model(m_uiProgramHandle));
+						
+							for (tinyxml2::XMLNode* currentChild4 = currentChild3->FirstChild(); currentChild4 != NULL; currentChild4 = currentChild4->NextSibling())
+							{
+								val = currentChild4->Value();
+								printf("Name of play (1): %s\n", val);
+								if (strcmp(currentChild4->Value(), "OBJECT") == 0)
+								{
+									m_vObjects.at(m_vObjects.size()-1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->loadObj(currentChild4->ToElement()->GetText());
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "TEXTURE") == 0)
+								{	
+									m_vObjects.at(m_vObjects.size()-1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setTexture(currentChild4->ToElement()->GetText());
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "SCALE") == 0)
+								{
+									std::istringstream iss(currentChild4->ToElement()->GetText());
+									for (int i = 0; i < 3; i++)
+									{
+										iss >> tempTransform.x; //Read the x value
+										iss >> tempTransform.y; //Read the y value
+										iss >> tempTransform.z; //Read the z value
+									}
+
+									m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setScale(tempTransform);
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "ROTATE") == 0)
+								{
+									std::istringstream iss(currentChild4->ToElement()->GetText());
+									for (int i = 0; i < 3; i++)
+									{
+										iss >> tempTransform.x; //Read the x value
+										iss >> tempTransform.y; //Read the y value
+										iss >> tempTransform.z; //Read the z value
+									}
+
+									m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setRotation(tempTransform);
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+								if (strcmp(currentChild4->Value(), "TRANSLATE") == 0)
+								{
+									std::istringstream iss(currentChild4->ToElement()->GetText());
+									for (int i = 0; i < 3; i++)
+									{
+										iss >> tempTransform.x; //Read the x value
+										iss >> tempTransform.y; //Read the y value
+										iss >> tempTransform.z; //Read the z value
+									}
+									
+									m_vObjects.at(m_vObjects.size()-1)->m_vParts.at(m_vObjects.at(m_vObjects.size()-1)->m_vParts.size()-1)->setPosition(tempTransform);
+
+								
+									printf("Name of play (1): %s\n", currentChild4->ToElement()->GetText());
+								}
+							}
+						}
 					}
 				}
-				
-				//Reads the up vector
-				iss >> tempCamera[2].x; //Read the item
-				iss >> tempCamera[2].y; //Read the item
-				iss >> tempCamera[2].z; //Read the item
-				
-
-				m_vCameras.push_back(glm::mat3(tempCamera[0].x, tempCamera[0].y, tempCamera[0].z,
-											tempCamera[1].x, tempCamera[1].y, tempCamera[1].z,
-											tempCamera[2].x, tempCamera[2].y, tempCamera[2].z));
-			}
-
-			else if (token == "os") //If its an OBJ directory
-			{
-				if (LoadingObject)
+				if (strcmp(currentChild2->Value(), "CAMERA") == 0) 
 				{
-					iss >> tempTransform.x; //Read the x value
-					iss >> tempTransform.y; //Read the y value
-					iss >> tempTransform.z; //Read the z value
+					glm::mat3 tempCamera; //Holds a temporary camera for building 
+					m_vbUsePlayerPos.push_back(std::vector<bool>{false, false, false,
+						false, false, false});
 
-					m_vObjects.at(iCurrentObject)->setScale(tempTransform);
-					
+					for (tinyxml2::XMLNode* currentChild3 = currentChild2->FirstChild(); currentChild3 != NULL; currentChild3 = currentChild3->NextSibling())
+					{
+						val = currentChild3->Value();
+						printf("Name of play (1): %s\n", val);
+						if (strcmp(currentChild3->Value(), "POSITION") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							std::string token;
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> token;
+								if (token == "p") //If the value is a p
+								{
+									m_vbUsePlayerPos[m_vbUsePlayerPos.size() - 1][i] = true; //Set the camera to follow that coordinate
+								}
+								else
+								{
+									if(i == 0)
+										tempCamera[0].x = stof(token); //Read the item
+									if(i == 1)
+										tempCamera[0].y = stof(token); //Read the item
+									if(i==2)
+										tempCamera[0].z = stof(token); //Read the item
+								}
+							}
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "VIEW") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							std::string token;
+							for (int i = 0; i < 3; i++)
+							{
+								iss >> token;
+								if (token == "p") //If the value is a p
+								{
+									m_vbUsePlayerPos[m_vbUsePlayerPos.size() - 1][i+3] = true; //Set the camera to follow that coordinate
+								}
+								else
+								{
+									if (i == 0)
+										tempCamera[1].x = stof(token); //Read the item
+									if (i == 1)
+										tempCamera[1].y = stof(token); //Read the item
+									if (i == 2)
+										tempCamera[1].z = stof(token); //Read the item
+								}
+							}
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+						if (strcmp(currentChild3->Value(), "UP") == 0)
+						{
+							std::istringstream iss(currentChild3->ToElement()->GetText());
+							iss >> tempCamera[2].x;
+							iss >> tempCamera[2].y;
+							iss >> tempCamera[2].z;
+							printf("Name of play (1): %s\n", currentChild3->ToElement()->GetText());
+						}
+					}
+					m_vCameras.push_back(tempCamera);
 				}
 			}
-
-			else if (token == "or") //If its an OBJ directory
-			{
-				if (LoadingObject)
-				{
-					iss >> tempTransform.x; //Read the x value
-					iss >> tempTransform.y; //Read the y value
-					iss >> tempTransform.z; //Read the z value
-
-					m_vObjects.at(iCurrentObject)->setRotation(tempTransform);
-					
-				}
-			}
-
-			else if (token == "ot") //If its an OBJ directory
-			{
-				if (LoadingObject)
-				{
-					iss >> tempTransform.x; //Read the x value
-					iss >> tempTransform.y; //Read the y value
-					iss >> tempTransform.z; //Read the z value
-
-					m_vObjects.at(iCurrentObject)->setPosition(tempTransform);
-					
-				}
-			}
-		}
-		
-		if (LoadingModel)
-		{
-			LoadingModel = false;
-		}
-		if (LoadingObject)
-		{
-			LoadingObject = false;
 		}
 	}
-	Scenefile.close(); //Closes the file
 }
 
 void Scene::moveRobot(float Direction)

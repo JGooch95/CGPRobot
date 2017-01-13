@@ -90,7 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./include;../../Libraries/glm;..\..\Libraries\GLFW\glfw-3.0.4.bin.WIN32\include\GLFW;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;../../Libraries/glm;..\..\Libraries\GLFW\glfw-3.0.4.bin.WIN32\include\GLFW;../../Libraries/tinyxml2;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\Libraries\GLFW\glfw-3.0.4.bin.WIN32\lib-msvc120\;</AdditionalLibraryDirectories>
@@ -102,7 +102,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./include;../../Libraries/glm;..\..\Libraries\GLFW\glfw-3.2.1.bin.WIN64\include\GLFW;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;../../Libraries/glm;..\..\Libraries\GLFW\glfw-3.2.1.bin.WIN64\include\GLFW;../../Libraries/tinyxml2;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -116,7 +116,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./include;../../Libraries/glm;..\..\Libraries\GLFW\glfw-3.0.4.bin.WIN32\include\GLFW;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;../../Libraries/glm;..\..\Libraries\GLFW\glfw-3.0.4.bin.WIN32\include\GLFW;../../Libraries/tinyxml2;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -132,7 +132,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./include;../../Libraries/glm;..\..\Libraries\GLFW\glfw-3.2.1.bin.WIN64\include\GLFW;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;../../Libraries/glm;..\..\Libraries\GLFW\glfw-3.2.1.bin.WIN64\include\GLFW;../../Libraries/tinyxml2;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Libraries\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="src\Bitmap.cpp" />
     <ClCompile Include="src\Collectable.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Libraries\tinyxml2\tinyxml2.h" />
     <ClInclude Include="include\Bitmap.h" />
     <ClInclude Include="include\Collectable.h" />
     <ClInclude Include="include\GameObject.h" />
@@ -168,6 +170,9 @@
     <None Include="Assets\shader\diffuse.frag" />
     <None Include="Assets\shader\diffuse.vert" />
     <None Include="Assets\shader\modifiedBasic.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Assets\scenes\Scene.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

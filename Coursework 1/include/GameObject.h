@@ -18,7 +18,6 @@ class GameObject
 		void setPosition(glm::vec3 newPosition); //Sets the overall position of the model
 		void setScale(glm::vec3 newScale); //Sets the overall scale of the model
 
-		void configureLighting();
 		glm::vec3 getRotation(); //Gets the overall rotation of the model
 		glm::vec3 getPosition(); //Gets the overall position of the model
 		glm::vec3 getScale(); //Gets the overall scale of the model
