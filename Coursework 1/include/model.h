@@ -13,7 +13,7 @@ enum CoordinateType{ LOCAL_COORDS, WORLD_COORDS };
 class Model
 {
 	private:
-		GLuint m_uiVBOHandles[2];
+		GLuint m_uiVBOHandles[3];
 		GLuint m_uiVAOHandle;
 		GLint m_iProgramHandle;
 
@@ -21,7 +21,8 @@ class Model
 
 		std::vector<float> m_vfPositionData; //Holds the vertex data to be rendered
 		std::vector<float> m_vfUvData; //Holds the Uv's to map the texture to the vertices
-		
+		std::vector<float> m_vfNormalsData; //Holds the Uv's to map the texture to the vertices
+
 		glm::mat4 m_ModelMatrix; //Holds the matrix to transform the model by
 
 		glm::vec3 m_Rotation; //Holds the default rotation

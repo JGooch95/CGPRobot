@@ -79,5 +79,11 @@
     <None Include="Assets\shader\modifiedBasic.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Assets\shader\diffuse.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\shader\diffuse.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

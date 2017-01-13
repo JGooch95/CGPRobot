@@ -79,11 +79,14 @@ void Model::translate(glm::vec3 newPosition)
 
 
 void Model::render(){
-	//Links each variable to the matrixID value.
-	GLint modelMatrixID = gl::GetUniformLocation(m_iProgramHandle, "mModel");
+	//Links each variable to the shaders
+	gl::UniformMatrix4fv(gl::GetUniformLocation(m_iProgramHandle, "M"), 1, gl::FALSE_, glm::value_ptr(m_ModelMatrix));
+	
+	//Sends the material data to the shaders
+	//gl::Uniform1i(gl::GetUniformLocation(m_iProgramHandle, "material.diffuse"), m_Texture->object());
+	//gl::Uniform1i(gl::GetUniformLocation(m_iProgramHandle, "material.specular"), m_Texture->object());
+	gl::Uniform1f(gl::GetUniformLocation(m_iProgramHandle, "material.shininess"), 32.0f);
 
-	//The matrixId is then passed the values to be applied to the variables. 
-	gl::UniformMatrix4fv(modelMatrixID, 1, gl::FALSE_, glm::value_ptr(m_ModelMatrix));
 
 	gl::Enable(gl::DEPTH_TEST);
 	
@@ -114,6 +117,7 @@ void Model::loadObj(std::string sDir)
 
 	std::vector<glm::vec3> vertices; // Holds each individual type of vertex in the file
 	std::vector<glm::vec2> uvCoords; // Holds each individual uv coordinate in the file
+	std::vector<glm::vec3> vertNorms; // Holds each individual vertex normal in the file
 
 	glm::vec3 dimHigh(0,0,0); //Holds the highest x, y and z for the model dimensions
 	glm::vec3 dimLow(0,0,0);  //Holds the lowest x, y and z for the model dimensions
@@ -183,7 +187,15 @@ void Model::loadObj(std::string sDir)
 			iss >> UV.y;
 			uvCoords.push_back(UV);
 		}
+		else if (token == "vn")  //If the line is a vertex normal
+		{
+			glm::vec3 norm;
+			iss >> norm.x;
+			iss >> norm.y;
+			iss >> norm.z;
 
+			vertNorms.push_back(norm);
+		}
 		else if (token == "f") //If the line is a face
 		{
 			//Triangles
@@ -212,15 +224,9 @@ void Model::loadObj(std::string sDir)
 						iss.ignore(1); //Ignore it
 
 						iss >> value; //Reads the face normal index
-					}
-
-					else //If the next character is not a "/"
-					{
-						iss >> value; //Reads the face texture index
-
-						iss.ignore(1); //Ignore the slash
-
-						iss >> value; //Reads the face normal index
+						m_vfNormalsData.push_back(vertNorms.at(value - 1).x); //Adds the x for the vertex at that index to the position data
+						m_vfNormalsData.push_back(vertNorms.at(value - 1).y); //Adds the y for the vertex at that index to the position data
+						m_vfNormalsData.push_back(vertNorms.at(value - 1).z); //Adds the z for the vertex at that index to the position data
 					}
 				}
 			}
@@ -229,10 +235,11 @@ void Model::loadObj(std::string sDir)
 	modelfile.close();
 	
 	// Create and populate the buffer objects using separate buffers
-	gl::GenBuffers(2, m_uiVBOHandles);
+	gl::GenBuffers(3, m_uiVBOHandles);
 
 	GLuint positionBufferHandle = m_uiVBOHandles[0];
 	GLuint uvBufferHandle = m_uiVBOHandles[1];
+	GLuint normalsBufferHandle = m_uiVBOHandles[2];
 
 	gl::BindBuffer(gl::ARRAY_BUFFER, positionBufferHandle);
 	gl::BufferData(gl::ARRAY_BUFFER, m_vfPositionData.size() * sizeof(float), &m_vfPositionData[0], gl::STATIC_DRAW);
@@ -240,18 +247,25 @@ void Model::loadObj(std::string sDir)
 	gl::BindBuffer(gl::ARRAY_BUFFER, uvBufferHandle);
 	gl::BufferData(gl::ARRAY_BUFFER, m_vfUvData.size() * sizeof(float), &m_vfUvData[0], gl::STATIC_DRAW);
 
+	gl::BindBuffer(gl::ARRAY_BUFFER, normalsBufferHandle);
+	gl::BufferData(gl::ARRAY_BUFFER, m_vfNormalsData.size() * sizeof(float), &m_vfNormalsData[0], gl::STATIC_DRAW);
+
 	// Create and set-up the vertex array object
 	gl::GenVertexArrays(1, &m_uiVAOHandle);
 	gl::BindVertexArray(m_uiVAOHandle);
 
 	gl::EnableVertexAttribArray(0);  // Vertex position
 	gl::EnableVertexAttribArray(1);  // Vertex color
+	gl::EnableVertexAttribArray(2);  // Vertex normals
 
 	gl::BindBuffer(gl::ARRAY_BUFFER, positionBufferHandle);
 	gl::VertexAttribPointer(0, 3, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
 
 	gl::BindBuffer(gl::ARRAY_BUFFER, uvBufferHandle);
 	gl::VertexAttribPointer(1, 2, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
+
+	gl::BindBuffer(gl::ARRAY_BUFFER, normalsBufferHandle);
+	gl::VertexAttribPointer(2, 3, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
 
 	m_Dimensions = (dimHigh - dimLow); //Sets the dimensions to be the High - low
 }

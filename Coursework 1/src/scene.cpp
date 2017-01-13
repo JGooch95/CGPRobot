@@ -10,8 +10,8 @@ Scene::Scene()
 
 	//Sets up the pespective and passes it to the shader
 	glm::mat4 PerspMatrix = glm::perspective(60.0f, 1280.0f / 720.0f, 0.1f, 1000.0f);
-	GLint projectionMatrixID = gl::GetUniformLocation(m_uiProgramHandle, "mProjection");
-	gl::UniformMatrix4fv(projectionMatrixID, 1, gl::FALSE_, glm::value_ptr(PerspMatrix));
+
+	gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "P"), 1, gl::FALSE_, glm::value_ptr(PerspMatrix));
 
 	m_iCurrentCamera = 0; //Sets the current camera to the first camera
 	m_iCollectableCount - 0; //Sets the collectable count to 0
@@ -24,7 +24,7 @@ void Scene::init()
 	//////////////////////////////////////////////////////
 
 	// Load contents of file
-	std::ifstream inFile("Assets/shader/modifiedBasic.vert");
+	std::ifstream inFile("Assets/shader/diffuse.vert");
 	if (!inFile) {
 		fprintf(stderr, "Error opening file: shader/modifiedBasic.vert\n");
 		exit(1);
@@ -75,7 +75,7 @@ void Scene::init()
 	//////////////////////////////////////////////////////
 
 	// Load contents of file into shaderCode here
-	std::ifstream fragFile("Assets/shader/basic.frag");
+	std::ifstream fragFile("Assets/shader/diffuse.frag");
 	if (!fragFile) {
 		fprintf(stderr, "Error opening file: shader/basic.frag\n");
 		exit(1);
@@ -168,9 +168,6 @@ void Scene::update()
 {
 	//Clear the buffers ready for drawing
 	gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
-	
-	//Gets the location of the view variable for the camera and the shaders.
-	GLint viewMatrixID = gl::GetUniformLocation(m_uiProgramHandle, "mView");
 
 	//Check every coordinate in the camera to see if it's locked to the player
 	for (int i = 0; i <  m_vbUsePlayerPos.at(m_iCurrentCamera).size(); i++) 
@@ -212,13 +209,18 @@ void Scene::update()
 		}
 	}
 
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.position"), 0.0f, 1.0f, 0.0f);
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.ambient") , 0.5f, 0.5f, 0.5f);
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.diffuse") , 0.4f, 0.4f, 0.4f);
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.specular"), 0.5f, 0.5f, 0.5f);
+
 	//Set ViewMatrix to be a lookat function for the new values
 	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(m_vCameras.at(m_iCurrentCamera)[0].x, m_vCameras.at(m_iCurrentCamera)[0].y, m_vCameras.at(m_iCurrentCamera)[0].z),
 							  glm::vec3(m_vCameras.at(m_iCurrentCamera)[1].x, m_vCameras.at(m_iCurrentCamera)[1].y, m_vCameras.at(m_iCurrentCamera)[1].z),
 							  glm::vec3(m_vCameras.at(m_iCurrentCamera)[2].x, m_vCameras.at(m_iCurrentCamera)[2].y, m_vCameras.at(m_iCurrentCamera)[2].z));
 
 	//Sets the matrix for the camera and shaders
-	gl::UniformMatrix4fv(viewMatrixID, 1, gl::FALSE_, glm::value_ptr(ViewMatrix));
+	gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "V"), 1, gl::FALSE_, glm::value_ptr(ViewMatrix));
 
 	for (int i = 0; i < m_vObjects.size(); i++) //For every model in the scene
 	{

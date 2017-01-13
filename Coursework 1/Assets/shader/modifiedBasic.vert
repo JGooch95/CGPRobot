@@ -19,6 +19,5 @@ void main()
 	texCoord = fragTexCoord;
 
 	//Transform from local to world to camera to NDCs
-	gl_Position = mProjection * mView * mModel 
-	* vertPosition;
+	gl_Position = mProjection * mView * mModel * vertPosition;
 }

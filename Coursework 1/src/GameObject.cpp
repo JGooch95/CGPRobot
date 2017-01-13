@@ -21,6 +21,10 @@ void GameObject::update()
 	}
 }
 
+void GameObject::configureLighting()
+{
+}
+
 void GameObject::render()
 {
 	for (int i = 0; i < m_vParts.size(); i++) //For every part of the object

@@ -10,7 +10,7 @@ void init()
 {
 	gl::ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	currentScene = new Scene;
-	currentScene->load("Assets/Scene2.txt");
+	currentScene->load("Assets/scenes/Scene2.txt");
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
