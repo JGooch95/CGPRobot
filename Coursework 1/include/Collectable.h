@@ -10,7 +10,7 @@ class Collectable : public GameObject
 	public:
 		Collectable(); //Default constructor
 		void animate(); //Animates the collectable
-		bool colliding(glm::vec3 newPosition); //Checks for collisions at the position
+		bool colliding(glm::vec3 Position2); //Checks for collisions at the position
 		void render(); //Renders the object
 
 		bool m_bCollected; //States whether the collectable has been picked up

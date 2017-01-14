@@ -6,56 +6,217 @@
 
 #define GLM_FORCE_RADIANS
 
-Model::Model(GLint programHandle2)
+Model::Model(GLuint uiProgramHandle2)
 {
-	m_iProgramHandle = programHandle2;
+	m_uiProgramHandle = uiProgramHandle2;
+}
+
+void Model::loadObj(std::string sDir)
+{
+	std::fstream modelfile(sDir, std::ios_base::in);
+
+	//If the file doesn't load output an error
+	if (!modelfile.is_open())
+	{
+		std::cerr << "File " << sDir << " not found.";
+		DebugBreak();
+		throw std::invalid_argument("File not found");
+		return;	//ERROR!!!
+	}
+
+	std::vector<glm::vec3> vertices; // Holds each individual type of vertex in the file
+	std::vector<glm::vec2> uvCoords; // Holds each individual uv coordinate in the file
+	std::vector<glm::vec3> vertNorms; // Holds each individual vertex normal in the file
+
+	glm::vec3 dimHigh(0.0f, 0.0f, 0.0f); //Holds the highest x, y and z for the model dimensions
+	glm::vec3 dimLow(0.0f, 0.0f, 0.0f);  //Holds the lowest x, y and z for the model dimensions
+
+	std::string sLine; //Holds the line being read
+	std::string sToken = ""; //Holds the part of the line being read
+
+	m_Dimensions = glm::vec3(0.0f, 0.0f, 0.0f); //Resetting the dimensions vector
+	glm::vec3 tempVect; //A vector holding temporary data
+
+	while (getline(modelfile, sLine)) //While new lines are being read
+	{
+		std::istringstream iss(sLine);
+
+		//Process the line
+		sToken = "";
+		iss >> sToken; // read to first whitespace
+
+		if (sToken == "v") //If the line is a vertex position
+		{
+			iss >> tempVect.x;
+			iss >> tempVect.y;
+			iss >> tempVect.z;
+
+			//Checks against the current dimensions and alters them if the vertices exceed the bounds
+			if (tempVect.x > dimHigh.x) //Upper Bound
+			{
+				dimHigh.x = tempVect.x;
+			}
+			if (tempVect.x < dimLow.x) //Lower Bound
+			{
+				dimLow.x = tempVect.x;
+			}
+
+			//Checks against the current dimensions and alters them if the vertices exceed the bounds
+			if (tempVect.y > dimHigh.y) //Upper Bound
+			{
+				dimHigh.y = tempVect.y;
+			}
+			if (tempVect.y < dimLow.y) //Lower Bound
+			{
+				dimLow.y = tempVect.y;
+			}
+
+			//Checks against the current dimensions and alters them if the vertices exceed the bounds
+			if (tempVect.z > dimHigh.z) //Upper Bound
+			{
+				dimHigh.z = tempVect.y;
+			}
+			if (tempVect.z < dimLow.z) //Lower Bound
+			{
+				dimLow.z = tempVect.y;
+			}
+
+			vertices.push_back(tempVect); //Adds the vertex to the vertices
+		}
+
+		else if (sToken == "vt")  //If the line is a uv Coordinate 
+		{
+			iss >> tempVect.x;
+			iss >> tempVect.y;
+			uvCoords.push_back(glm::vec2(tempVect.x,tempVect.y)); //Adds the uvCoordinate to the uvCoordinates
+		}
+		else if (sToken == "vn")  //If the line is a vertex normal
+		{
+			iss >> tempVect.x;
+			iss >> tempVect.y;
+			iss >> tempVect.z;
+
+			vertNorms.push_back(tempVect); //Adds the vertex normal to teh vertex normals
+		}
+		else if (sToken == "f") //If the line is a face
+		{
+			unsigned int uiValue; //Holds the value to be stored
+			static const int s_ciForwardSlash = 0x2F; // "/" character
+
+			for (int i = 0; i <3; i++)  //For every item
+			{
+				iss >> uiValue; //Reads the face index
+				int iLookAhead = iss.peek(); // peek character
+
+				m_vfPositionData.push_back(vertices.at(uiValue - 1).x); //Adds the x for the vertex at that index to the position data
+				m_vfPositionData.push_back(vertices.at(uiValue - 1).y); //Adds the y for the vertex at that index to the position data
+				m_vfPositionData.push_back(vertices.at(uiValue - 1).z); //Adds the z for the vertex at that index to the position data
+
+				if (iLookAhead == s_ciForwardSlash) //If the next character is a "/"
+				{
+					iss.ignore(1); //Ignore it
+					iss >> uiValue;
+					m_vfUvData.push_back(uvCoords.at(uiValue - 1).x); //Adds the UV x position to the uv coordinates
+					m_vfUvData.push_back(uvCoords.at(uiValue - 1).y); //Adds the UV y position to the uv coordinates
+
+					if (iLookAhead == s_ciForwardSlash) //If the next character is a "/"
+					{
+						iss.ignore(1); //Ignore it
+
+						iss >> uiValue; //Reads the face normal index
+						m_vfNormalsData.push_back(vertNorms.at(uiValue - 1).x); //Adds the x for the vertex normal at that index to vertNormals
+						m_vfNormalsData.push_back(vertNorms.at(uiValue - 1).y); //Adds the y for the vertex normal at that index to vertNormals
+						m_vfNormalsData.push_back(vertNorms.at(uiValue - 1).z); //Adds the z for the vertex normal at that index to vertNormals
+					}
+				}
+			}
+		}
+	}
+	modelfile.close(); //Closes the file
+
+	// Create and populate the buffer objects using separate buffers
+	gl::GenBuffers(3, m_uiVBOHandles);
+
+	GLuint uiPositionBufferHandle = m_uiVBOHandles[0];
+	GLuint uiUvBufferHandle = m_uiVBOHandles[1];
+	GLuint uiNormalsBufferHandle = m_uiVBOHandles[2];
+
+	//Fills the vertex position buffers
+	gl::BindBuffer(gl::ARRAY_BUFFER, uiPositionBufferHandle);
+	gl::BufferData(gl::ARRAY_BUFFER, m_vfPositionData.size() * sizeof(float), &m_vfPositionData[0], gl::STATIC_DRAW);
+	
+	//Fills the UV Coordinate buffers
+	gl::BindBuffer(gl::ARRAY_BUFFER, uiUvBufferHandle);
+	gl::BufferData(gl::ARRAY_BUFFER, m_vfUvData.size() * sizeof(float), &m_vfUvData[0], gl::STATIC_DRAW);
+
+	//Fills the vertex normal buffers
+	gl::BindBuffer(gl::ARRAY_BUFFER, uiNormalsBufferHandle);
+	gl::BufferData(gl::ARRAY_BUFFER, m_vfNormalsData.size() * sizeof(float), &m_vfNormalsData[0], gl::STATIC_DRAW);
+
+	// Create and set-up the vertex array object
+	gl::GenVertexArrays(1, &m_uiVAOHandle);
+	gl::BindVertexArray(m_uiVAOHandle);
+
+	gl::EnableVertexAttribArray(0);  // Vertex position
+	gl::EnableVertexAttribArray(1);  // Vertex color
+	gl::EnableVertexAttribArray(2);  // Vertex normals
+
+	gl::BindBuffer(gl::ARRAY_BUFFER, uiPositionBufferHandle);
+	gl::VertexAttribPointer(0, 3, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
+
+	gl::BindBuffer(gl::ARRAY_BUFFER, uiUvBufferHandle);
+	gl::VertexAttribPointer(1, 2, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
+
+	gl::BindBuffer(gl::ARRAY_BUFFER, uiNormalsBufferHandle);
+	gl::VertexAttribPointer(2, 3, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
+
+	m_Dimensions = (dimHigh - dimLow); //Sets the dimensions to be the High - low
 }
 
 void Model::start()
 {
-	//The model matrix
-	m_ModelMatrix = glm::mat4(1.0f);
+	m_ModelMatrix = glm::mat4(1.0f); //Resets the model matrix
 }
 
 void Model::scale(glm::vec3 newScale)
 {
-	m_ModelMatrix = glm::scale(glm::mat4(1.0f), newScale)*  m_ModelMatrix; // Apply the scale to the model matrix
+	m_ModelMatrix = glm::scale(glm::mat4(1.0f), newScale) *  m_ModelMatrix; // Apply the scale to the model matrix
 }
 
 void Model::rotate(glm::vec3 newRotation, CoordinateType Coord)
 {
-	//X rotation 
-	if (newRotation.x >= 360) //Upper bound
+	//Limits the X rotation to be between 0 and 360 
+	if (newRotation.x >= 360.0f) //Upper bound
 	{
 		newRotation.x  -= 360;
 	}
-	else if (newRotation.x < 0) //Lower bound
+	else if (newRotation.x < 0.0f) //Lower bound
 	{
-		newRotation.x += 360;
+		newRotation.x += 360.0f;
 	}
 
 	glm::mat4 rotMatrix = glm::rotate(glm::mat4(1.0f), newRotation.x, glm::vec3(1, 0, 0)); //Apply X transform to rotation matrix
 
-	//Y rotation
-	if (newRotation.y >= 360) //Upper bound
+	//Limits the Y rotation to be between 0 and 360 
+	if (newRotation.y >= 360.0f) //Upper bound
 	{
-		newRotation.y -= 360;
+		newRotation.y -= 360.0f;
 	}
-	else if (newRotation.y < 0) //Lower bound
+	else if (newRotation.y < 0.0f) //Lower bound
 	{
-		newRotation.y += 360;
+		newRotation.y += 360.0f;
 	}
 
 	rotMatrix *= glm::rotate(glm::mat4(1.0f), newRotation.y, glm::vec3(0, 1, 0)); //Apply Y transform to rotation matrix
 
-	//Z Rotation
-	if (newRotation.z >= 360) //Upper bound
+	//Limits the Z rotation to be between 0 and 360 
+	if (newRotation.z >= 360.0f) //Upper bound
 	{
-		newRotation.z -= 360;
+		newRotation.z -= 360.0f;
 	}
-	else if (newRotation.z < 0) //Lower bound
+	else if (newRotation.z < 0.0f) //Lower bound
 	{
-		newRotation.z += 360;
+		newRotation.z += 360.0f;
 	}
 
 	rotMatrix *= glm::rotate(glm::mat4(1.0f), newRotation.z, glm::vec3(0, 0, 1)); //Apply Z transform to rotation matrix
@@ -80,13 +241,12 @@ void Model::translate(glm::vec3 newPosition)
 
 void Model::render(){
 	//Links each variable to the shaders
-	gl::UniformMatrix4fv(gl::GetUniformLocation(m_iProgramHandle, "M"), 1, gl::FALSE_, glm::value_ptr(m_ModelMatrix));
-	
+	gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "M"), 1, gl::FALSE_, glm::value_ptr(m_ModelMatrix));
+
 	//Sends the material data to the shaders
+	gl::Uniform1f(gl::GetUniformLocation(m_uiProgramHandle, "material.shininess"), 32.0f);
 	//gl::Uniform1i(gl::GetUniformLocation(m_iProgramHandle, "material.diffuse"), m_Texture->object());
 	//gl::Uniform1i(gl::GetUniformLocation(m_iProgramHandle, "material.specular"), m_Texture->object());
-	gl::Uniform1f(gl::GetUniformLocation(m_iProgramHandle, "material.shininess"), 32.0f);
-
 
 	gl::Enable(gl::DEPTH_TEST);
 	
@@ -100,174 +260,6 @@ void Model::render(){
 
 	gl::BindTexture(gl::TEXTURE_2D, NULL); //Unbind the Texture
 	gl::BindVertexArray(NULL); //Unbind the VAO
-}
-
-void Model::loadObj(std::string sDir)
-{
-	std::fstream modelfile(sDir, std::ios_base::in);
-
-	//If the file doesn't load output an error
-	if (!modelfile.is_open())
-	{
-		std::cerr << "File " << sDir << " not found.";
-		DebugBreak();
-		throw std::invalid_argument("File not found");
-		return;	//ERROR!!!
-	}
-
-	std::vector<glm::vec3> vertices; // Holds each individual type of vertex in the file
-	std::vector<glm::vec2> uvCoords; // Holds each individual uv coordinate in the file
-	std::vector<glm::vec3> vertNorms; // Holds each individual vertex normal in the file
-
-	glm::vec3 dimHigh(0,0,0); //Holds the highest x, y and z for the model dimensions
-	glm::vec3 dimLow(0,0,0);  //Holds the lowest x, y and z for the model dimensions
-
-	std::string line; //Holds the line being read
-	std::string token = ""; //Holds the part of the line being read
-
-	m_Dimensions = glm::vec3(0, 0, 0); //Resetting the dimensions vector
-
-	while (getline(modelfile, line))
-	{
-		std::istringstream iss(line);
-
-		// process the line
-		token = "";
-
-		iss >> token; // read to first whitespace
-
-		if (token == "v") //If the line is a vertex
-		{
-			//Vertex position
-			glm::vec3 Vert;
-
-			iss >> Vert.x;
-			iss >> Vert.y;
-			iss >> Vert.z;
-
-			//Checks against the current dimensions and alters them if the vertices exceed the bounds
-			if (Vert.x > dimHigh.x) //Upper Bound
-			{
-				dimHigh.x = Vert.x;
-			}
-			if (Vert.x < dimLow.x) //Lower Bound
-			{
-				dimLow.x = Vert.x;
-			}
-
-			//Checks against the current dimensions and alters them if the vertices exceed the bounds
-			if (Vert.y > dimHigh.y) //Upper Bound
-			{
-				dimHigh.y = Vert.y;
-			}
-			if (Vert.y < dimLow.y) //Lower Bound
-			{
-				dimLow.y = Vert.y;
-			}
-
-			//Checks against the current dimensions and alters them if the vertices exceed the bounds
-			if (Vert.z > dimHigh.z) //Upper Bound
-			{
-				dimHigh.z = Vert.y;
-			}
-			if (Vert.z < dimLow.z) //Lower Bound
-			{
-				dimLow.z = Vert.y;
-			}
-
-			vertices.push_back(Vert);
-		}
-
-		else if (token == "vt")  //If the line is a uv Coordinate 
-		{
-			//UV coordinates
-			glm::vec2 UV;
-			
-			iss >> UV.x;
-			iss >> UV.y;
-			uvCoords.push_back(UV);
-		}
-		else if (token == "vn")  //If the line is a vertex normal
-		{
-			glm::vec3 norm;
-			iss >> norm.x;
-			iss >> norm.y;
-			iss >> norm.z;
-
-			vertNorms.push_back(norm);
-		}
-		else if (token == "f") //If the line is a face
-		{
-			//Triangles
-			unsigned int value; //Holds the value to be stored
-			static const int forwardSlash = 0x2F; // "/" character
-
-												  //For every item
-			for (int i = 0; i <3; i++)
-			{
-				iss >> value; //Reads the face index
-				int lookAhead = iss.peek();  	// peek character
-
-				m_vfPositionData.push_back(vertices.at(value - 1).x); //Adds the x for the vertex at that index to the position data
-				m_vfPositionData.push_back(vertices.at(value - 1).y); //Adds the y for the vertex at that index to the position data
-				m_vfPositionData.push_back(vertices.at(value - 1).z); //Adds the z for the vertex at that index to the position data
-
-				if (lookAhead == forwardSlash)    //If the next character is a "/"
-				{
-					iss.ignore(1); //Ignore it
-					iss >> value;
-					m_vfUvData.push_back(uvCoords.at(value - 1).x);
-					m_vfUvData.push_back(uvCoords.at(value - 1).y);
-
-					if (lookAhead == forwardSlash) //If the next character is a "/"
-					{
-						iss.ignore(1); //Ignore it
-
-						iss >> value; //Reads the face normal index
-						m_vfNormalsData.push_back(vertNorms.at(value - 1).x); //Adds the x for the vertex at that index to the position data
-						m_vfNormalsData.push_back(vertNorms.at(value - 1).y); //Adds the y for the vertex at that index to the position data
-						m_vfNormalsData.push_back(vertNorms.at(value - 1).z); //Adds the z for the vertex at that index to the position data
-					}
-				}
-			}
-		}
-	}
-	modelfile.close();
-	
-	// Create and populate the buffer objects using separate buffers
-	gl::GenBuffers(3, m_uiVBOHandles);
-
-	GLuint positionBufferHandle = m_uiVBOHandles[0];
-	GLuint uvBufferHandle = m_uiVBOHandles[1];
-	GLuint normalsBufferHandle = m_uiVBOHandles[2];
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, positionBufferHandle);
-	gl::BufferData(gl::ARRAY_BUFFER, m_vfPositionData.size() * sizeof(float), &m_vfPositionData[0], gl::STATIC_DRAW);
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, uvBufferHandle);
-	gl::BufferData(gl::ARRAY_BUFFER, m_vfUvData.size() * sizeof(float), &m_vfUvData[0], gl::STATIC_DRAW);
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, normalsBufferHandle);
-	gl::BufferData(gl::ARRAY_BUFFER, m_vfNormalsData.size() * sizeof(float), &m_vfNormalsData[0], gl::STATIC_DRAW);
-
-	// Create and set-up the vertex array object
-	gl::GenVertexArrays(1, &m_uiVAOHandle);
-	gl::BindVertexArray(m_uiVAOHandle);
-
-	gl::EnableVertexAttribArray(0);  // Vertex position
-	gl::EnableVertexAttribArray(1);  // Vertex color
-	gl::EnableVertexAttribArray(2);  // Vertex normals
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, positionBufferHandle);
-	gl::VertexAttribPointer(0, 3, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, uvBufferHandle);
-	gl::VertexAttribPointer(1, 2, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
-
-	gl::BindBuffer(gl::ARRAY_BUFFER, normalsBufferHandle);
-	gl::VertexAttribPointer(2, 3, gl::FLOAT, FALSE, 0, (GLubyte *)NULL);
-
-	m_Dimensions = (dimHigh - dimLow); //Sets the dimensions to be the High - low
 }
 
 glm::vec3 Model::getRotation()
@@ -319,7 +311,7 @@ void Model::setTexture(std::string newTexture)
 	//Set texture
 	gl::ActiveTexture(gl::TEXTURE0);
 	gl::BindTexture(gl::TEXTURE_2D, m_Texture->object());
-	GLint loc = gl::GetUniformLocation(m_iProgramHandle, "tex");
+	GLint loc = gl::GetUniformLocation(m_uiProgramHandle, "tex");
 	gl::Uniform1f(loc, 0);
 }
 

@@ -15,13 +15,13 @@ class Model
 	private:
 		GLuint m_uiVBOHandles[3];
 		GLuint m_uiVAOHandle;
-		GLint m_iProgramHandle;
+		GLuint m_uiProgramHandle;
 
 		Texture* m_Texture; // Holds a pointer to the texture being used
 
 		std::vector<float> m_vfPositionData; //Holds the vertex data to be rendered
-		std::vector<float> m_vfUvData; //Holds the Uv's to map the texture to the vertices
-		std::vector<float> m_vfNormalsData; //Holds the Uv's to map the texture to the vertices
+		std::vector<float> m_vfUvData; //Holds the UV's to map the texture to the vertices
+		std::vector<float> m_vfNormalsData; //Holds the normals used for lighting the model
 
 		glm::mat4 m_ModelMatrix; //Holds the matrix to transform the model by
 
@@ -31,7 +31,7 @@ class Model
 		glm::vec3 m_Dimensions;  //Holds the dimensions of the model
 
 public:
-		Model(GLint programHandle2); //Constructor
+		Model(GLuint uiProgramHandle2); //Constructor
 		void loadObj(std::string sDir); //Loads the obj file and fills the buffers
 		void render(); //Renders the model
 

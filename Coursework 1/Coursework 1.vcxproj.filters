@@ -79,12 +79,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\shader\basic.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\shader\modifiedBasic.vert">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Assets\shader\diffuse.frag">
       <Filter>Resource Files</Filter>
     </None>

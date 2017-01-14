@@ -14,19 +14,19 @@ void Collectable::animate()
 		m_Position.y += m_fBounceSpeed; //Move the collectable by the bounce speed
 
 		//If the boundaries of the bounce are passed
-		if (m_Position.y > 1.0f  || m_Position.y < 0.0f)
+		if (m_Position.y > m_vParts.at(0)->getDimensions().y +0.75f || m_Position.y < m_vParts.at(0)->getDimensions().y / 2.0f)
 		{
 			m_fBounceSpeed *= -1.0f; //Flip the direction
 		}
 
-		m_Rotation.y += 1.0f; //Increases the rotation
+		m_Rotation.y += 1.0f; //Increases the rotation angle for the spin
 
 		//Limits the rotation to be between 0 and 360
-		if (m_Rotation.y >= 360.0f)
+		if (m_Rotation.y >= 360.0f) //Upper bound
 		{
-			m_Rotation.y -=360;
+			m_Rotation.y -=360.0f;
 		}
-		else if (m_Rotation.y < 0.0f)
+		else if (m_Rotation.y < 0.0f) //Lower bound
 		{
 			m_Rotation.y += 360.0f;
 		}
@@ -37,7 +37,7 @@ void Collectable::render()
 {
 	if (!m_bCollected) //If the collectable hasn't been picked up
 	{
-		//Render every part
+		//Render every part of the model
 		for (int i = 0; i < m_vParts.size(); i++)
 		{
 			m_vParts.at(i)->render(); 
@@ -45,19 +45,19 @@ void Collectable::render()
 	}
 }
 
-bool Collectable::colliding(glm::vec3 newPosition)
+bool Collectable::colliding(glm::vec3 Position2)
 {
-	//Calculates the vector between the models
-	glm::vec3 dist = newPosition - m_Position;
+	//Calculates the vector between the objects
+	glm::vec3 dist = Position2 - m_Position;
 
 	//Calculates the magnitude between them
-	float fMag = sqrtf(pow(dist.x, 2) + pow(dist.z, 2));
+	float fMag = sqrtf(pow(dist.x, 2.0f) + pow(dist.z, 2.0f));
 
 	//If the magnitude is less than the collision range
 	if (fMag < 1.0f)
 	{
 		m_bCollected = true; //The collectible has been collected
-		return true; 
+		return true;
 	}
 	return false;
 }

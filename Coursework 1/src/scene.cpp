@@ -7,15 +7,14 @@
 
 Scene::Scene()
 {
-	init();
+	init(); //Initialises the shaders
 
 	//Sets up the pespective and passes it to the shader
-	glm::mat4 PerspMatrix = glm::perspective(60.0f, 1280.0f / 720.0f, 0.1f, 1000.0f);
-
-	gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "P"), 1, gl::FALSE_, glm::value_ptr(PerspMatrix));
+	glm::mat4 perspMatrix = glm::perspective(60.0f, 1280.0f / 720.0f, 0.1f, 1000.0f);
+	gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "P"), 1, gl::FALSE_, glm::value_ptr(perspMatrix));
 
 	m_iCurrentCamera = 0; //Sets the current camera to the first camera
-	m_iCollectableCount - 0; //Sets the collectable count to 0
+	m_iCollectableCount = 0; //Sets the collectable count to 0
 }
 
 void Scene::init()
@@ -210,17 +209,14 @@ void Scene::update()
 		}
 	}
 
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.position"), 0.0f, 1.0f, 0.0f);
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.ambient") , 0.5f, 0.5f, 0.5f);
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.diffuse") , 0.4f, 0.4f, 0.4f);
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.specular"), 0.5f, 0.5f, 0.5f);
+	configureLights();
 
 	//Set ViewMatrix to be a lookat function for the new values
 	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(m_vCameras.at(m_iCurrentCamera)[0].x, m_vCameras.at(m_iCurrentCamera)[0].y, m_vCameras.at(m_iCurrentCamera)[0].z),
 							  glm::vec3(m_vCameras.at(m_iCurrentCamera)[1].x, m_vCameras.at(m_iCurrentCamera)[1].y, m_vCameras.at(m_iCurrentCamera)[1].z),
 							  glm::vec3(m_vCameras.at(m_iCurrentCamera)[2].x, m_vCameras.at(m_iCurrentCamera)[2].y, m_vCameras.at(m_iCurrentCamera)[2].z));
 
-	//Sets the matrix for the camera and shaders
+	//Sends the view matrix to the shaders
 	gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "V"), 1, gl::FALSE_, glm::value_ptr(ViewMatrix));
 
 	for (int i = 0; i < m_vObjects.size(); i++) //For every model in the scene
@@ -236,7 +232,7 @@ void Scene::update()
 		{
 			if (m_vCollectables.at(i)->colliding(m_vRobots.at(0)->getPosition()))//If collision between robot and Collectables occurs
 			{
-				m_iCollectableCount++;					   //Increment collectable count
+				m_iCollectableCount++; //Increment collectable count
 				std::cout << m_iCollectableCount << "\n"; //Output the amount of Collectables collected
 			}
 		}
@@ -248,14 +244,13 @@ void Scene::update()
 	}
 }
 
-void Scene::load(std::string dir)
+void Scene::load(std::string sDir)
 {
 	tinyxml2::XMLDocument doc;
-	doc.LoadFile(dir.c_str());
-	tinyxml2::XMLNode* node = doc.FirstChild();
-	std::string Reading;
+	doc.LoadFile(sDir.c_str());
 	glm::vec3 tempTransform; //Holds a temporary transform variable
-	for (tinyxml2::XMLNode* currentChild = node; currentChild != NULL; currentChild = currentChild->NextSibling())
+
+	for (tinyxml2::XMLNode* currentChild = doc.FirstChild(); currentChild != NULL; currentChild = currentChild->NextSibling())
 	{
 		const char* val = currentChild->Value();
 		printf("Name of play (1): %s\n", val);
@@ -488,6 +483,7 @@ void Scene::load(std::string dir)
 					m_vObjects.push_back(newCollect);
 					m_vCollectables.push_back(newCollect);
 					newCollect = NULL;
+
 					for (tinyxml2::XMLNode* currentChild3 = currentChild2->FirstChild(); currentChild3 != NULL; currentChild3 = currentChild3->NextSibling())
 					{
 						val = currentChild3->Value();
@@ -664,21 +660,29 @@ void Scene::load(std::string dir)
 			}
 		}
 	}
+	m_iCameraCount = m_vCameras.size(); 
+	m_iCollectableAmount = m_vCollectables.size();
 }
 
-void Scene::moveRobot(float Direction)
+void Scene::moveRobot(float fDirection)
 {
-	m_vRobots.at(0)->Move(Direction); 
+	if (!m_vRobots.empty())
+	{
+		m_vRobots.at(0)->move(fDirection);
+	}
 }
 
-void Scene::turnRobot(float Direction)
+void Scene::turnRobot(float fDirection)
 {
-	m_vRobots.at(0)->Turn(Direction);
+	if (!m_vRobots.empty())
+	{
+		m_vRobots.at(0)->turn(fDirection);
+	}
 }
 
-void Scene::switchCamera(int Direction)
+void Scene::switchCamera(int iDirection)
 {
-	m_iCurrentCamera += Direction; //Changes the current camera variable
+	m_iCurrentCamera += iDirection; //Changes the current camera variable
 
 	//Sets a loop if the boundaries are passed
 	if (m_iCurrentCamera < 0)
@@ -689,6 +693,15 @@ void Scene::switchCamera(int Direction)
 	{
 		m_iCurrentCamera = 0;
 	}
+}
+
+void Scene::configureLights()
+{
+	//Sets up the light and passes it to the shader
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.position"), 0.0f, 1.0f, 0.0f);
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.ambient"), 0.5f, 0.5f, 0.5f);
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.diffuse"), 0.4f, 0.4f, 0.4f);
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.specular"), 0.5f, 0.5f, 0.5f);
 }
 
 Scene::~Scene()

@@ -1,92 +1,103 @@
 #include <gl_core_4_3.hpp>
-#include <glfw3.h>
 #include <iostream>
 #include "scene.h"
+#include "SFML/Graphics.hpp"
 
-GLFWwindow *window;
+sf::RenderWindow *window;
 Scene *currentScene;
 
 void init()
 {
-	gl::ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	gl::ClearColor(0.5f, 0.5f, 0.5f, 1.0f); //Sets the screen clear colour
+
+	//Loads a new scene 
 	currentScene = new Scene;
 	currentScene->load("Assets/scenes/Scene.xml");
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_W && action == GLFW_REPEAT)
-		if (currentScene)
-			currentScene->moveRobot(1.0f);
-
-	if (key == GLFW_KEY_S && action == GLFW_REPEAT)
-		if (currentScene)
-			currentScene->moveRobot(-1.0f);
-
-	if (key == GLFW_KEY_A && action == GLFW_REPEAT)
-		if (currentScene)
-			currentScene->turnRobot(1.0f);
-
-	if (key == GLFW_KEY_D && action == GLFW_REPEAT)
-		if (currentScene)
-			currentScene->turnRobot(-1.0f);
-}
-
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
-{
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-		currentScene->switchCamera(+1);
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-		currentScene->switchCamera(-1);
-}
-
 void gameLoop()
 {
-	while (!glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE))
+	sf::Clock clock; //Makes a clock to control the frame rate
+
+	while (window->isOpen())
 	{
-		currentScene->update();
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		sf::Event event;
+		while (window->pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+			{
+				window->close();
+			}
+			else if (event.type == sf::Event::Resized)
+			{
+			}
+			if (event.type == sf::Event::MouseButtonPressed)
+			{
+				if (event.key.code == sf::Mouse::Left)
+				{
+					currentScene->switchCamera(+1);
+				}
+				if (event.key.code == sf::Mouse::Right)
+				{
+					currentScene->switchCamera(-1);
+				}
+			}
+		}
+
+		if (clock.getElapsedTime().asSeconds() > 1.0f / 60.0f) //Limits the update rate to be 60 frames per second
+		{
+			//Robot Controls
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+			{
+				currentScene->moveRobot(1.0f * clock.getElapsedTime().asSeconds());
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+			{
+				currentScene->turnRobot(1.0f * clock.getElapsedTime().asSeconds());
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+			{
+				currentScene->moveRobot(-1.0f * clock.getElapsedTime().asSeconds());
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+			{
+				currentScene->turnRobot(-1.0f * clock.getElapsedTime().asSeconds());
+			}
+
+			currentScene->update(); //Update the scene
+			window->display();
+			clock.restart();
+		}
 	}
 }
 
 void main()
 {
-	//If glfw didnt initialise exit with a failure
-	if (!glfwInit()) exit(EXIT_FAILURE);
+	//Sets up the settings used for the window
+	sf::ContextSettings settings;
+	settings.depthBits = 24;
+	settings.stencilBits = 8;
+	settings.antialiasingLevel = 4;
+	settings.majorVersion = 4;
+	settings.minorVersion = 3;
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, FALSE);
-	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, TRUE);
+	//Adds a new window
+	window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Open GL", sf::Style::Default, settings);
 
-	window = glfwCreateWindow(1280, 720, "Robot CW", NULL, NULL);
-
-	if (!window)
-	{
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-	glfwMakeContextCurrent(window);
-	glfwSetKeyCallback(window, key_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-
+	//Loads openGL and checks if it has loaded correctly
 	gl::exts::LoadTest GLLoaded = gl::sys::LoadFunctions();
-	
-
-	if (!GLLoaded) {
-		glfwTerminate();
-		exit(EXIT_FAILURE);
+	if (!GLLoaded)
+	{
+		std::cout << "openGL failed to load";
 	}
-
-	init();
-	gameLoop();
-
-	glfwTerminate();
+	else //If openGL has loaded load the start the software
+	{
+		init();
+		gameLoop();
+	}
 
 	//Clears all pointers
+	delete(window);
 	window = NULL;
 	currentScene->~Scene();
 	delete(currentScene);

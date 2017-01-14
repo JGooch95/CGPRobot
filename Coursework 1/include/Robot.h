@@ -1,6 +1,7 @@
 #pragma once
 #include "model.h"
 #include "GameObject.h"
+
 class Robot : public GameObject
 {
 	private:
@@ -11,6 +12,6 @@ class Robot : public GameObject
 		Robot(); //Default constructor
 		void animate(); //Animates the arms and legs
 		void update(); //Updates the model matrices for the parts
-		void Move(float Direction); //Moves the robot in the direction given
-		void Turn(float Direction); //Turns the robot in the direction given
+		void move(float fDirection); //Moves the robot in the direction given
+		void turn(float fDirection); //Turns the robot in the direction given
 };

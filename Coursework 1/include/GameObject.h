@@ -11,7 +11,7 @@ class GameObject
 	public:
 		GameObject(); //Default Constructor
 		virtual void update(); //Updates the transformations
-		virtual void render(); //renders the parts of the model
+		virtual void render(); //Renders the parts of the model
 		virtual void animate(); //Changes the data for animating
 
 		void setRotation(glm::vec3 newRotation); //Sets the overall rotation of the model

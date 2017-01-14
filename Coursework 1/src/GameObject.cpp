@@ -11,7 +11,6 @@ void GameObject::update()
 		//Transform and render the model
 		m_vParts.at(i)->start(); //Resets the model to default
 			m_vParts.at(i)->scale(m_vParts.at(i)->getScale());  //Scales the part to its size
-			m_vParts.at(i)->translate(glm::vec3(0, (m_vParts.at(i)->getDimensions().y *m_vParts.at(i)->getScale().y) / 2, 0)); //Moves the part up to be positioned from the bottom
 			m_vParts.at(i)->translate(m_vParts.at(i)->getPosition()); // Moves the part to its position
 			m_vParts.at(i)->rotate(m_vParts.at(i)->getRotation(), WORLD_COORDS);//Rotates the part to its rotation
 			
