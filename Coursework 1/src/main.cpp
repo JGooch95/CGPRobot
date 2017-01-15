@@ -42,26 +42,49 @@ void gameLoop()
 					currentScene->switchCamera(-1);
 				}
 			}
+			if (event.type == sf::Event::KeyReleased)
+			{
+				if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up)
+				{
+					currentScene->setRobotMoving(false);
+				}
+				if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left)
+				{
+					currentScene->setRobotMoving(false);
+				}
+				if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down)
+				{
+					currentScene->setRobotMoving(false);
+				}
+				if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right)
+				{
+					currentScene->setRobotMoving(false);
+				}
+			}
 		}
 
 		if (clock.getElapsedTime().asSeconds() > 1.0f / 60.0f) //Limits the update rate to be 60 frames per second
 		{
 			//Robot Controls
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
 			{
 				currentScene->moveRobot(1.0f * clock.getElapsedTime().asSeconds());
+				currentScene->setRobotMoving(true);
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
 			{
 				currentScene->turnRobot(1.0f * clock.getElapsedTime().asSeconds());
+				currentScene->setRobotMoving(true);
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
 			{
 				currentScene->moveRobot(-1.0f * clock.getElapsedTime().asSeconds());
+				currentScene->setRobotMoving(true);
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
 			{
 				currentScene->turnRobot(-1.0f * clock.getElapsedTime().asSeconds());
+				currentScene->setRobotMoving(true);
 			}
 
 			currentScene->update(); //Update the scene

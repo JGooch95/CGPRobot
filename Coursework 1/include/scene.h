@@ -3,6 +3,7 @@
 #include "Robot.h"
 #include "Collectable.h"
 #include "GameObject.h"
+#include <tinyxml2.h>
 #include <Array>
 
 class Scene
@@ -23,6 +24,8 @@ class Scene
 		int m_iCollectableCount; //Holds how many collectables have been collected
 		int m_iCollectableAmount; //Holds the amount of collectables in the scene
 
+		glm::mat3 tempCamera; //Holds a temporary camera for building 
+
 	public:
 		Scene(); //Default constructor
 		void init(); //Initializes the shaders
@@ -33,5 +36,7 @@ class Scene
 		void turnRobot(float fDirection); //Turns the robot in the given direction
 		void switchCamera(int iDirection); //Switches to the next camera in the given direction
 		void configureLights(); //Configures the lighting
+		void setRobotMoving(bool bValue); //Sets whether the robot is moving or not
+		void read(tinyxml2::XMLNode* currentChild); //Reads the next line of an xml file
 		~Scene();  //Deconstructor
 };

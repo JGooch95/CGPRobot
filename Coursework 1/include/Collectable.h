@@ -6,6 +6,7 @@ class Collectable : public GameObject
 {
 	private: 
 		float m_fBounceSpeed; //The speed the collectable bounces
+		float m_fBouncePos; //The How far into the bounce the object is
 
 	public:
 		Collectable(); //Default constructor

@@ -5,19 +5,22 @@
 Collectable::Collectable()
 {
 	m_fBounceSpeed = 0.01f; //Sets the default bounce speed
+	m_fBouncePos = 0.0f; //Sets the default bounce position
 }
 
 void Collectable::animate()
 {
 	if (!m_bCollected) //If the collectable hasn't been picked up
 	{
-		m_Position.y += m_fBounceSpeed; //Move the collectable by the bounce speed
+		 m_fBouncePos += m_fBounceSpeed; //Move the collectable by the bounce speed
 
 		//If the boundaries of the bounce are passed
-		if (m_Position.y > m_vParts.at(0)->getDimensions().y +0.75f || m_Position.y < m_vParts.at(0)->getDimensions().y / 2.0f)
+		if (m_fBouncePos > 0.75f || m_fBouncePos < 0.0f)
 		{
 			m_fBounceSpeed *= -1.0f; //Flip the direction
 		}
+
+		m_Position.y += m_fBounceSpeed; //Adds the bounce speed to the position
 
 		m_Rotation.y += 1.0f; //Increases the rotation angle for the spin
 

@@ -18,6 +18,8 @@ Robot::Robot()
 	//Leg Rotation Speeds
 	m_vfLimbRotSpeeds.push_back(1.0f);
 	m_vfLimbRotSpeeds.push_back(-1.0f);
+
+	m_bMoving = false; //Sets default setting for moving
 }
 
 void Robot::update()
@@ -59,19 +61,36 @@ void Robot::animate()
 	//0 & 1 Arms, 2 & 3 Legs
 	for (int i = 0; i < 4; i++) //For every limb
 	{
-		m_vfLimbAngles.at(i) += m_vfLimbRotSpeeds.at(i); //Increment it's angle
-		if (abs(m_vfLimbAngles.at(i)) > 45.0f) //If the angle goes over the boundary
+		if (m_bMoving) //If the robot is moving
 		{
-			m_vfLimbRotSpeeds.at(i) *= -1.0f;	//Flip the direction of the animation
+			m_vfLimbAngles.at(i) += m_vfLimbRotSpeeds.at(i); //Increment it's angle
+			if (abs(m_vfLimbAngles.at(i)) > 45.0f) //If the angle goes over the boundary
+			{
+				m_vfLimbRotSpeeds.at(i) *= -1.0f;	//Flip the direction of the animation
 
-			//Move the angle back to the boundary
-			if (m_vfLimbAngles.at(i) > 45.0f) //Upper bound
-			{
-				m_vfLimbAngles.at(i) = 45.0f;
+				//Move the angle back to the boundary
+				if (m_vfLimbAngles.at(i) > 45.0f) //Upper bound
+				{
+					m_vfLimbAngles.at(i) = 45.0f;
+				}
+				else if (m_vfLimbAngles.at(i) < -45.0f) //Lower bound
+				{
+					m_vfLimbAngles.at(i) = -45.0f;
+				}
 			}
-			else if (m_vfLimbAngles.at(i) < -45.0f) //Lower bound
+		}
+		else
+		{
+			if (m_vfLimbAngles.at(i) != 0.0f)
 			{
-				m_vfLimbAngles.at(i) = -45.0f;
+				if (m_vfLimbAngles.at(i) > 0.0f)
+				{
+					m_vfLimbAngles.at(i) -= 1.0f;
+				}
+				if (m_vfLimbAngles.at(i) < 0.0f)
+				{
+					m_vfLimbAngles.at(i) += 1.0f;
+				}
 			}
 		}
 	}
@@ -93,4 +112,9 @@ void Robot::turn(float fDirection)
 {
 	float fSpeed = 90.0f; //The default speed of the rotation
 	m_Rotation.y += fDirection * fSpeed; //Increments rotation
+}
+
+void Robot::setMoving(bool bValue)
+{
+	m_bMoving = bValue;
 }
