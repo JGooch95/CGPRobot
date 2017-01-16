@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include <tinyxml2.h>
 #include <Array>
+#include "HUD.h"
+
 
 class Scene
 {
@@ -13,9 +15,8 @@ class Scene
 
 		std::vector<GameObject*> m_vObjects; //Holds pointers to every object
 		std::vector<Robot*> m_vRobots; //Holds pointers to every robot
-
 		std::vector<Collectable*> m_vCollectables; //Holds pointers to every collectable
-
+		std::vector<GameObject*> m_vHUD;
 		std::vector<glm::mat3> m_vCameras; //Holds all of the camera positions
 		std::vector<std::vector<bool>> m_vbUsePlayerPos; //Holds which camera coordinates will follow the player
 
@@ -31,12 +32,13 @@ class Scene
 		void init(); //Initializes the shaders
 		void update(); //Updates every object in the scene
 		void load(std::string sDir); //Loads everything in the scene
+		void read(tinyxml2::XMLNode* currentChild); //Reads the next line of an xml file
 		void linkMe(GLint vertShader, GLint fragShader); //Links the shaders
 		void moveRobot(float fDirection); //Moves the robot in the given direction
 		void turnRobot(float fDirection); //Turns the robot in the given direction
 		void switchCamera(int iDirection); //Switches to the next camera in the given direction
 		void configureLights(); //Configures the lighting
+		void configureHUDLights(); //Configures the lighting
 		void setRobotMoving(bool bValue); //Sets whether the robot is moving or not
-		void read(tinyxml2::XMLNode* currentChild); //Reads the next line of an xml file
 		~Scene();  //Deconstructor
 };

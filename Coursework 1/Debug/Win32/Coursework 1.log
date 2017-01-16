@@ -1,29 +1,55 @@
 ﻿  Texture.cpp
   scene.cpp
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(172): warning C4018: '<': signed/unsigned mismatch
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(211): warning C4018: '<': signed/unsigned mismatch
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(225): warning C4018: '<': signed/unsigned mismatch
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(322): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(324): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(380): warning C4018: '>=': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(174): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(218): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(227): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(234): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(249): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(522): warning C4018: '>=': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(549): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(555): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(559): warning C4018: '<': signed/unsigned mismatch
   GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   Robot.cpp
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\robot.cpp(167): warning C4018: '<': signed/unsigned mismatch
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\robot.cpp(172): warning C4018: '<': signed/unsigned mismatch
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\robot.cpp(253): warning C4018: '<': signed/unsigned mismatch
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\robot.cpp(275): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\robot.cpp(51): warning C4018: '<': signed/unsigned mismatch
   model.cpp
   GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
   main.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\main.cpp(48): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  HUD.cpp
   gl_core_4_3.cpp
+  GameObject.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\gameobject.cpp(13): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\gameobject.cpp(30): warning C4018: '<': signed/unsigned mismatch
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\gameobject.cpp(77): warning C4018: '<': signed/unsigned mismatch
   Collectable.cpp
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\collectable.cpp(9): warning C4305: '=': truncation from 'double' to 'float'
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\collectable.cpp(33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\collectable.cpp(44): warning C4018: '<': signed/unsigned mismatch
   Bitmap.cpp
   Generating Code...
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-glfw3.lib(init.obj) : error LNK2019: unresolved external symbol __imp__vsnprintf referenced in function __glfwInputError
-MSVCRTD.lib(vsnprintf.obj) : error LNK2001: unresolved external symbol __imp__vsnprintf
-glfw3.lib(context.obj) : error LNK2019: unresolved external symbol __imp__sscanf referenced in function _parseGLVersion
-MSVCRTD.lib(vsnprintf.obj) : error LNK2001: unresolved external symbol __imp___vsnprintf
-C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\Debug\Win32\Coursework 1.exe : fatal error LNK1120: 3 unresolved externals
+gl_core_4_3.obj : error LNK2019: unresolved external symbol __imp__wglGetProcAddress@4 referenced in function "int (__stdcall*__cdecl WinGetProcAddress(char const *))(void)" (?WinGetProcAddress@@YAP6GHXZPBD@Z)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: float __thiscall sf::Time::asSeconds(void)const " (__imp_?asSeconds@Time@sf@@QBEMXZ) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: __thiscall sf::Clock::Clock(void)" (__imp_??0Clock@sf@@QAE@XZ) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: class sf::Time __thiscall sf::Clock::getElapsedTime(void)const " (__imp_?getElapsedTime@Clock@sf@@QBE?AVTime@2@XZ) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: class sf::Time __thiscall sf::Clock::restart(void)" (__imp_?restart@Clock@sf@@QAE?AVTime@2@XZ) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: __thiscall sf::String::String(char const *,class std::locale const &)" (__imp_??0String@sf@@QAE@PBDABVlocale@std@@@Z) referenced in function _main
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: __thiscall sf::String::~String(void)" (__imp_??1String@sf@@QAE@XZ) referenced in function _main
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: static bool __cdecl sf::Keyboard::isKeyPressed(enum sf::Keyboard::Key)" (__imp_?isKeyPressed@Keyboard@sf@@SA_NW4Key@12@@Z) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: __thiscall sf::VideoMode::VideoMode(unsigned int,unsigned int,unsigned int)" (__imp_??0VideoMode@sf@@QAE@III@Z) referenced in function _main
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: void __thiscall sf::Window::close(void)" (__imp_?close@Window@sf@@QAEXXZ) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: bool __thiscall sf::Window::isOpen(void)const " (__imp_?isOpen@Window@sf@@QBE_NXZ) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: bool __thiscall sf::Window::pollEvent(class sf::Event &)" (__imp_?pollEvent@Window@sf@@QAE_NAAVEvent@2@@Z) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: void __thiscall sf::Window::display(void)" (__imp_?display@Window@sf@@QAEXXZ) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: __thiscall sf::View::View(class sf::Rect<float> const &)" (__imp_??0View@sf@@QAE@ABV?$Rect@M@1@@Z) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: void __thiscall sf::RenderTarget::setView(class sf::View const &)" (__imp_?setView@RenderTarget@sf@@QAEXABVView@2@@Z) referenced in function "void __cdecl gameLoop(void)" (?gameLoop@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: __thiscall sf::RenderWindow::RenderWindow(class sf::VideoMode,class sf::String const &,unsigned int,struct sf::ContextSettings const &)" (__imp_??0RenderWindow@sf@@QAE@VVideoMode@1@ABVString@1@IABUContextSettings@1@@Z) referenced in function _main
+main.obj : error LNK2019: unresolved external symbol "__declspec(dllimport) public: virtual __thiscall sf::RenderWindow::~RenderWindow(void)" (__imp_??1RenderWindow@sf@@UAE@XZ) referenced in function "public: virtual void * __thiscall sf::RenderWindow::`scalar deleting destructor'(unsigned int)" (??_GRenderWindow@sf@@UAEPAXI@Z)
+main.obj : error LNK2001: unresolved external symbol "private: virtual bool __thiscall sf::RenderWindow::activate(bool)" (?activate@RenderWindow@sf@@EAE_N_N@Z)
+main.obj : error LNK2001: unresolved external symbol "public: virtual class sf::Vector2<unsigned int> __thiscall sf::RenderWindow::getSize(void)const " (?getSize@RenderWindow@sf@@UBE?AV?$Vector2@I@2@XZ)
+main.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall sf::RenderWindow::onCreate(void)" (?onCreate@RenderWindow@sf@@MAEXXZ)
+main.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall sf::RenderWindow::onResize(void)" (?onResize@RenderWindow@sf@@MAEXXZ)
+scene.obj : error LNK2019: unresolved external symbol "public: char const * __thiscall tinyxml2::XMLNode::Value(void)const " (?Value@XMLNode@tinyxml2@@QBEPBDXZ) referenced in function "public: void __thiscall Scene::load(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >)" (?load@Scene@@QAEXV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+scene.obj : error LNK2019: unresolved external symbol "public: char const * __thiscall tinyxml2::XMLElement::GetText(void)const " (?GetText@XMLElement@tinyxml2@@QBEPBDXZ) referenced in function "public: void __thiscall Scene::read(class tinyxml2::XMLNode *)" (?read@Scene@@QAEXPAVXMLNode@tinyxml2@@@Z)
+scene.obj : error LNK2019: unresolved external symbol "public: __thiscall tinyxml2::XMLDocument::XMLDocument(bool,enum tinyxml2::Whitespace)" (??0XMLDocument@tinyxml2@@QAE@_NW4Whitespace@1@@Z) referenced in function "public: void __thiscall Scene::load(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >)" (?load@Scene@@QAEXV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+scene.obj : error LNK2019: unresolved external symbol "public: virtual __thiscall tinyxml2::XMLDocument::~XMLDocument(void)" (??1XMLDocument@tinyxml2@@UAE@XZ) referenced in function "public: void __thiscall Scene::load(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >)" (?load@Scene@@QAEXV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+scene.obj : error LNK2019: unresolved external symbol "public: enum tinyxml2::XMLError __thiscall tinyxml2::XMLDocument::LoadFile(char const *)" (?LoadFile@XMLDocument@tinyxml2@@QAE?AW4XMLError@2@PBD@Z) referenced in function "public: void __thiscall Scene::load(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >)" (?load@Scene@@QAEXV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\Debug\Win32\Coursework 1.exe : fatal error LNK1120: 26 unresolved externals

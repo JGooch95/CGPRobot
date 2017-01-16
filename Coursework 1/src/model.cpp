@@ -1,10 +1,12 @@
 #include "model.h"
 #include "Bitmap.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <iostream>
 
 #define GLM_FORCE_RADIANS
+
+Model::Model()
+{
+
+}
 
 Model::Model(GLuint uiProgramHandle2)
 {
@@ -176,6 +178,10 @@ void Model::loadObj(std::string sDir)
 void Model::start()
 {
 	m_ModelMatrix = glm::mat4(1.0f); //Resets the model matrix
+}
+void Model::end()
+{
+	gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "M"), 1, gl::FALSE_, glm::value_ptr(m_ModelMatrix));
 }
 
 void Model::scale(glm::vec3 newScale)

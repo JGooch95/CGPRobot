@@ -5,6 +5,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 #include "glm\glm.hpp"
 #include "Texture.h"
 
@@ -12,7 +15,7 @@ enum CoordinateType{ LOCAL_COORDS, WORLD_COORDS };
 
 class Model
 {
-	private:
+	protected:
 		GLuint m_uiVBOHandles[3];
 		GLuint m_uiVAOHandle;
 		GLuint m_uiProgramHandle;
@@ -30,13 +33,14 @@ class Model
 		glm::vec3 m_Scale;  //Holds the default scale
 		glm::vec3 m_Dimensions;  //Holds the dimensions of the model
 
-public:
+	public:
+		Model();
 		Model(GLuint uiProgramHandle2); //Constructor
 		void loadObj(std::string sDir); //Loads the obj file and fills the buffers
-		void render(); //Renders the model
+		virtual void render(); //Renders the model
 
 		void start(); //Resets the model matrix ready for transforms
-
+		void end(); //Sends the model matrix to the shaders
 		void scale(glm::vec3 newScale); //Scales the current model matrix
 		void rotate(glm::vec3 newRotation, CoordinateType Coord); //Rotates the current model matrix
 		void translate(glm::vec3 newPosition); //Translates the current model matrix

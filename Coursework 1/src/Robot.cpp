@@ -53,6 +53,7 @@ void Robot::update()
 		m_vParts.at(i)->scale(m_Scale);
 		m_vParts.at(i)->rotate(glm::vec3(m_Rotation), LOCAL_COORDS);
 		m_vParts.at(i)->translate(m_Position);
+		m_vParts.at(i)->end();
 	}
 }
 

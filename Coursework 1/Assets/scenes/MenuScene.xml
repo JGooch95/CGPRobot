@@ -1,0 +1,16 @@
+<?xml version ="1.0" encoding = "utf-8"?>
+<SCENE>
+  <!--HUD1-->
+  <HUD>
+      <SCALE>2.06 1 1.2</SCALE>
+      <ROTATE> 90 0 0</ROTATE>
+      <TRANSLATE>0 0 -1</TRANSLATE>
+      <MODEL>
+        <OBJECT>Assets/objects/plane.obj</OBJECT>
+        <TEXTURE>Assets/textures/BG.jpg </TEXTURE>
+        <SCALE>1 1 1</SCALE>
+        <ROTATE>0 0 0</ROTATE>
+        <TRANSLATE>0 0 0</TRANSLATE>
+      </MODEL>
+  </HUD>
+</SCENE>

@@ -4,15 +4,30 @@
 #include "SFML/Graphics.hpp"
 
 sf::RenderWindow *window;
-Scene *currentScene;
+Scene *currentScene = NULL;
+enum Screens {Game , MainMenu};
+Screens currentScreen = MainMenu;
 
-void init()
+void loadScene()
 {
 	gl::ClearColor(0.5f, 0.5f, 0.5f, 1.0f); //Sets the screen clear colour
-
 	//Loads a new scene 
-	currentScene = new Scene;
-	currentScene->load("Assets/scenes/Scene.xml");
+	if (currentScene != NULL)
+	{
+		currentScene->~Scene();
+		delete(currentScene);
+		currentScene = NULL;
+	}
+
+	currentScene = new Scene();
+	if (currentScreen == Game)
+	{
+		currentScene->load("Assets/scenes/Scene.xml");
+	}
+	else if (currentScreen == MainMenu)
+	{
+		currentScene->load("Assets/scenes/MenuScene.xml");
+	}
 }
 
 void gameLoop()
@@ -30,61 +45,83 @@ void gameLoop()
 			}
 			else if (event.type == sf::Event::Resized)
 			{
+				window->setView(sf::View(sf::FloatRect(0.f, 0.f,window->getSize().x,window->getSize().y))); //Resizes the window view to fit to the screen
+				gl::Viewport(0, 0, window->getSize().x, window->getSize().y); //Resizes the viewport
 			}
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
-				if (event.key.code == sf::Mouse::Left)
+				if (currentScreen == Game)
 				{
-					currentScene->switchCamera(+1);
+					if (event.key.code == sf::Mouse::Left)
+					{
+						currentScene->switchCamera(+1);
+					}
+					if (event.key.code == sf::Mouse::Right)
+					{
+						currentScene->switchCamera(-1);
+					}
 				}
-				if (event.key.code == sf::Mouse::Right)
+			}
+			if (event.type == sf::Event::KeyPressed)
+			{
+				if (currentScreen == MainMenu)
 				{
-					currentScene->switchCamera(-1);
+					if (event.key.code == sf::Keyboard::Return)
+					{
+						currentScreen = Game;
+						loadScene();
+					}
 				}
 			}
 			if (event.type == sf::Event::KeyReleased)
 			{
-				if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up)
+				if (currentScreen == Game)
 				{
-					currentScene->setRobotMoving(false);
-				}
-				if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left)
-				{
-					currentScene->setRobotMoving(false);
-				}
-				if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down)
-				{
-					currentScene->setRobotMoving(false);
-				}
-				if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right)
-				{
-					currentScene->setRobotMoving(false);
+					if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up)
+					{
+						currentScene->setRobotMoving(false);
+					}
+					if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left)
+					{
+						currentScene->setRobotMoving(false);
+					}
+					if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down)
+					{
+						currentScene->setRobotMoving(false);
+					}
+					if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right)
+					{
+						currentScene->setRobotMoving(false);
+					}
 				}
 			}
 		}
 
 		if (clock.getElapsedTime().asSeconds() > 1.0f / 60.0f) //Limits the update rate to be 60 frames per second
 		{
-			//Robot Controls
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+			if (currentScreen == Game)
 			{
-				currentScene->moveRobot(1.0f * clock.getElapsedTime().asSeconds());
-				currentScene->setRobotMoving(true);
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-			{
-				currentScene->turnRobot(1.0f * clock.getElapsedTime().asSeconds());
-				currentScene->setRobotMoving(true);
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-			{
-				currentScene->moveRobot(-1.0f * clock.getElapsedTime().asSeconds());
-				currentScene->setRobotMoving(true);
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-			{
-				currentScene->turnRobot(-1.0f * clock.getElapsedTime().asSeconds());
-				currentScene->setRobotMoving(true);
+				//Robot Controls
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+				{
+					currentScene->moveRobot(1.0f * clock.getElapsedTime().asSeconds());
+					currentScene->setRobotMoving(true);
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+				{
+					currentScene->turnRobot(1.0f * clock.getElapsedTime().asSeconds());
+					currentScene->setRobotMoving(true);
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+				{
+					currentScene->moveRobot(-1.0f * clock.getElapsedTime().asSeconds());
+					currentScene->setRobotMoving(true);
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+				{
+					currentScene->turnRobot(-1.0f * clock.getElapsedTime().asSeconds());
+					currentScene->setRobotMoving(true);
+				}
 			}
 
 			currentScene->update(); //Update the scene
@@ -115,7 +152,7 @@ void main()
 	}
 	else //If openGL has loaded load the start the software
 	{
-		init();
+		loadScene();
 		gameLoop();
 	}
 

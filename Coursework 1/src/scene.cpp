@@ -9,7 +9,7 @@ Scene::Scene()
 	init(); //Initialises the shaders
 
 	//Sets up the pespective and passes it to the shader
-	glm::mat4 perspMatrix = glm::perspective(60.0f, 1280.0f / 720.0f, 0.1f, 1000.0f);
+	glm::mat4 perspMatrix = glm::perspective(60.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
 	gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "P"), 1, gl::FALSE_, glm::value_ptr(perspMatrix));
 
 	m_iCurrentCamera = 0; //Sets the current camera to the first camera
@@ -168,78 +168,103 @@ void Scene::update()
 	//Clear the buffers ready for drawing
 	gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
-	//Check every coordinate in the camera to see if it's locked to the player
-	for (int i = 0; i <  m_vbUsePlayerPos.at(m_iCurrentCamera).size(); i++) 
+	if (m_vCameras.size() > 0)
 	{
-		//If it is set it's variable to the according player position
-		if ( m_vbUsePlayerPos.at(m_iCurrentCamera).at(i))
+		//Check every coordinate in the camera to see if it's locked to the player
+		for (int i = 0; i < m_vbUsePlayerPos.at(m_iCurrentCamera).size(); i++)
 		{
-			//ViewX
-			if (i == 0)
+			//If it is set it's variable to the according player position
+			if (m_vbUsePlayerPos.at(m_iCurrentCamera).at(i))
 			{
-				m_vCameras.at(m_iCurrentCamera)[0].x = m_vRobots.at(0)->getPosition().x;
-			}
-			//ViewY
-			else if (i == 1)
-			{
-				m_vCameras.at(m_iCurrentCamera)[0].y =  m_vRobots.at(0)->getPosition().y;
-			}
-			//ViewZ
-			else if (i == 2)
-			{
-				m_vCameras.at(m_iCurrentCamera)[0].z =  m_vRobots.at(0)->getPosition().z;
-			}
+				//ViewX
+				if (i == 0)
+				{
+					m_vCameras.at(m_iCurrentCamera)[0].x = m_vRobots.at(0)->getPosition().x;
+				}
+				//ViewY
+				else if (i == 1)
+				{
+					m_vCameras.at(m_iCurrentCamera)[0].y = m_vRobots.at(0)->getPosition().y;
+				}
+				//ViewZ
+				else if (i == 2)
+				{
+					m_vCameras.at(m_iCurrentCamera)[0].z = m_vRobots.at(0)->getPosition().z;
+				}
 
-			//PositionX
-			else if (i == 3)
-			{
-				m_vCameras.at(m_iCurrentCamera)[1].x =  m_vRobots.at(0)->getPosition().x;
-			}
-			//PositionY
-			else if (i == 4)
-			{
-				m_vCameras.at(m_iCurrentCamera)[1].y =  m_vRobots.at(0)->getPosition().y;
-			}
-			//PositionZ
-			else if (i == 5)
-			{
-				m_vCameras.at(m_iCurrentCamera)[1].z = m_vRobots.at(0)->getPosition().z;
+				//PositionX
+				else if (i == 3)
+				{
+					m_vCameras.at(m_iCurrentCamera)[1].x = m_vRobots.at(0)->getPosition().x;
+				}
+				//PositionY
+				else if (i == 4)
+				{
+					m_vCameras.at(m_iCurrentCamera)[1].y = m_vRobots.at(0)->getPosition().y;
+				}
+				//PositionZ
+				else if (i == 5)
+				{
+					m_vCameras.at(m_iCurrentCamera)[1].z = m_vRobots.at(0)->getPosition().z;
+				}
 			}
 		}
 	}
 
 	configureLights();
 
-	//Set ViewMatrix to be a lookat function for the new values
-	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(m_vCameras.at(m_iCurrentCamera)[0].x, m_vCameras.at(m_iCurrentCamera)[0].y, m_vCameras.at(m_iCurrentCamera)[0].z),
-							  glm::vec3(m_vCameras.at(m_iCurrentCamera)[1].x, m_vCameras.at(m_iCurrentCamera)[1].y, m_vCameras.at(m_iCurrentCamera)[1].z),
-							  glm::vec3(m_vCameras.at(m_iCurrentCamera)[2].x, m_vCameras.at(m_iCurrentCamera)[2].y, m_vCameras.at(m_iCurrentCamera)[2].z));
-
-	//Sends the view matrix to the shaders
-	gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "V"), 1, gl::FALSE_, glm::value_ptr(ViewMatrix));
-
-	for (int i = 0; i < m_vObjects.size(); i++) //For every model in the scene
+	if (m_vObjects.size() > 0)
 	{
-		//Animate and update the objects
-		m_vObjects.at(i)->animate();
-		m_vObjects.at(i)->update();
-	}
-	
-	for (int i = 0; i < m_vCollectables.size(); i++) //For every collectable
-	{
-		if (!m_vCollectables.at(i)->m_bCollected) //If the collectable hasn't been collected
+		for (int i = 0; i < m_vObjects.size(); i++) //For every model in the scene
 		{
-			if (m_vCollectables.at(i)->colliding(m_vRobots.at(0)->getPosition()))//If collision between robot and Collectables occurs
+			//Animate and update the objects
+			m_vObjects.at(i)->animate();
+			m_vObjects.at(i)->update();
+		}
+	}
+	if (m_vHUD.size() > 0)
+	{
+		for (int i = 0; i < m_vHUD.size(); i++) //For every model in the scene
+		{
+			m_vHUD.at(i)->update();
+		}
+	}
+	if (m_vCollectables.size() > 0)
+	{
+		for (int i = 0; i < m_vCollectables.size(); i++) //For every collectable
+		{
+			if (!m_vCollectables.at(i)->m_bCollected) //If the collectable hasn't been collected
 			{
-				m_iCollectableCount++; //Increment collectable count
-				std::cout << m_iCollectableCount << "\n"; //Output the amount of Collectables collected
+				if (m_vCollectables.at(i)->colliding(m_vRobots.at(0)->getPosition()))//If collision between robot and Collectables occurs
+				{
+					m_iCollectableCount++; //Increment collectable count
+					std::cout << m_iCollectableCount << "\n"; //Output the amount of Collectables collected
+				}
 			}
 		}
 	}
-	
-	for (int i = 0; i < m_vObjects.size(); i++) //For every object in the scene
+
+	if (m_vObjects.size() > 0)
 	{
-		m_vObjects.at(i)->render(); //render the object
+		for (int i = 0; i < m_vObjects.size(); i++) //For every object in the scene
+		{
+			if (m_vObjects.at(i)->m_bUseLights)
+			{
+				configureLights();
+				//Set ViewMatrix to be a lookat function for the new values
+				glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(m_vCameras.at(m_iCurrentCamera)[0].x, m_vCameras.at(m_iCurrentCamera)[0].y, m_vCameras.at(m_iCurrentCamera)[0].z),
+					glm::vec3(m_vCameras.at(m_iCurrentCamera)[1].x, m_vCameras.at(m_iCurrentCamera)[1].y, m_vCameras.at(m_iCurrentCamera)[1].z),
+					glm::vec3(m_vCameras.at(m_iCurrentCamera)[2].x, m_vCameras.at(m_iCurrentCamera)[2].y, m_vCameras.at(m_iCurrentCamera)[2].z));
+				//Sends the view matrix to the shaders
+				gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "V"), 1, gl::FALSE_, glm::value_ptr(ViewMatrix));
+			}
+			else
+			{
+				configureHUDLights();
+				gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "V"), 1, gl::FALSE_, glm::value_ptr(glm::mat4(1)));
+			}
+			m_vObjects.at(i)->render(); //render the object
+		}
 	}
 }
 
@@ -274,6 +299,7 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 		{
 			Robot* newBot = new Robot;  //Creates a new robot
 			m_vObjects.push_back(newBot); //Adds the robot to the objects list
+			m_vObjects.at(m_vObjects.size() - 1)->m_bUseLights = true;
 			m_vRobots.push_back(newBot); //Adds the robot to the robot list
 			newBot = NULL; //Clears the pointer
 			read(currentChild); //Reads into the robot
@@ -282,6 +308,7 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 		else if (strcmp(currentChild->Value(), "GAMEOBJECT") == 0) //If the current child is a game object
 		{
 			m_vObjects.push_back(new GameObject); //Creates a new game object
+			m_vObjects.at(m_vObjects.size() - 1)->m_bUseLights = true;
 			read(currentChild); //Reads into the game object
 		}
 
@@ -289,13 +316,26 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 		{
 			Collectable* newCollect = new Collectable; //Creates a new collectable
 			m_vObjects.push_back(newCollect); //Adds the collectable to the objects list
+			m_vObjects.at(m_vObjects.size() - 1)->m_bUseLights = true;
 			m_vCollectables.push_back(newCollect); //Adds the collectable to the collectable list
 			newCollect = NULL; //Clears the pointer
 			read(currentChild); //Reads into the collectable
 		}
+		else if (strcmp(currentChild->Value(), "HUD") == 0) //If the current child is a collectable
+		{
+			GameObject* newHUD = new GameObject; //Creates a new collectable
+			m_vObjects.push_back(newHUD); //Adds the collectable to the objects list
+			m_vHUD.push_back(newHUD); //Adds the collectable to the collectable list
+			newHUD = NULL; //Clears the pointer
+			m_vObjects.at(m_vObjects.size()-1)->m_bUseLights = false; //Adds the collectable to the objects list
+			read(currentChild); //Reads into the collectable
+		}
 		else if (strcmp(currentChild->Value(), "MODEL") == 0) //If the current child is a model
 		{
-			m_vObjects.at(m_vObjects.size() - 1)->m_vParts.push_back(new Model(m_uiProgramHandle)); //Adds a model to the objects parts
+			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0 || strcmp(currentNode->Value(), "HUD") == 0)
+			{
+				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.push_back(new Model(m_uiProgramHandle)); //Adds a model to the objects parts
+			}
 			read(currentChild); //Reads into the model
 		}
 		else if (strcmp(currentChild->Value(), "SCALE") == 0) //If the current child is scale
@@ -309,7 +349,7 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 			}
 
 			//If scaling some form of object
-			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0)
+			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0 || strcmp(currentNode->Value(), "HUD") == 0)
 			{
 				m_vObjects.at(m_vObjects.size() - 1)->setScale(tempTransform); //Sets the objects scale
 			}
@@ -332,7 +372,7 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 			}
 
 			//If rotating some form of object
-			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0)
+			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0 || strcmp(currentNode->Value(), "HUD") == 0)
 			{
 				m_vObjects.at(m_vObjects.size() - 1)->setRotation(tempTransform);  //Sets the objects rotation
 			}
@@ -341,6 +381,7 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 			{
 				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setRotation(tempTransform); //Sets the models rotation
 			}
+
 		}
 		else if (strcmp(currentChild->Value(), "TRANSLATE") == 0) //If the current child is translate
 		{
@@ -354,7 +395,7 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 			}
 
 			//If translating some form of object
-			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0)
+			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0 || strcmp(currentNode->Value(), "HUD") == 0)
 			{
 				m_vObjects.at(m_vObjects.size() - 1)->setPosition(tempTransform); //Sets the objects translation
 			}
@@ -366,11 +407,17 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 		}
 		else if (strcmp(currentChild->Value(), "OBJECT") == 0) //If the current child is an object
 		{
-			m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->loadObj(currentChild->ToElement()->GetText()); //Loads the model
+			if (strcmp(currentNode->Value(), "MODEL") == 0)
+			{
+				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->loadObj(currentChild->ToElement()->GetText()); //Loads the model
+			}
 		}
 		else if (strcmp(currentChild->Value(), "TEXTURE") == 0) //If the current child is a texture
 		{
-			m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setTexture(currentChild->ToElement()->GetText()); //Loads the texture
+			if (strcmp(currentNode->Value(), "MODEL") == 0)
+			{
+				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setTexture(currentChild->ToElement()->GetText()); //Loads the texture
+			}
 		}
 		else if (strcmp(currentChild->Value(), "CAMERA") == 0) //If the current child is a camera
 		{
@@ -485,6 +532,15 @@ void Scene::configureLights()
 	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.ambient"), 0.5f, 0.5f, 0.5f);
 	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.diffuse"), 0.4f, 0.4f, 0.4f);
 	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.specular"), 0.5f, 0.5f, 0.5f);
+}
+
+void Scene::configureHUDLights()
+{
+	//Sets up the light and passes it to the shader
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.position"), 0.0f, 0.0f, 1.0f);
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.ambient"), 1.0f, 1.0f, 1.0f);
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.diffuse"), 0.0f, 0.0f, 0.0f);
+	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.specular"), 0.0f, 0.0f, 0.0f);
 }
 
 Scene::~Scene()
