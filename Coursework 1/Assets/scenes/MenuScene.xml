@@ -2,9 +2,9 @@
 <SCENE>
   <!--HUD1-->
   <HUD>
-      <SCALE>2.06 1 1.2</SCALE>
+      <SCALE>5 1 2.5</SCALE>
       <ROTATE> 90 0 0</ROTATE>
-      <TRANSLATE>0 0 -1</TRANSLATE>
+      <TRANSLATE>0 0 -2</TRANSLATE>
       <MODEL>
         <OBJECT>Assets/objects/plane.obj</OBJECT>
         <TEXTURE>Assets/textures/BG.jpg </TEXTURE>

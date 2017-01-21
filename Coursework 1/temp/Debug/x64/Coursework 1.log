@@ -1,0 +1,7 @@
+﻿  scene.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(113): warning C4804: '>': unsafe use of type 'bool' in operation
+  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  main.cpp
+  Generating Code...
+  Coursework 1.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\bin\Debug\x64\Coursework 1.exe
+  Coursework 1.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\bin\Debug\x64\Coursework 1.pdb (Partial PDB)

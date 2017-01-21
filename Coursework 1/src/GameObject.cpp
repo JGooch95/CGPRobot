@@ -21,7 +21,7 @@ void GameObject::update()
 			m_vParts.at(i)->scale(m_Scale); //Scales the pdddart to the model scale
 			m_vParts.at(i)->rotate(m_Rotation, LOCAL_COORDS); // Rotates the part to the model scale
 			m_vParts.at(i)->translate(m_Position); //Translates the part to the model position
-			m_vParts.at(i)->end();
+		m_vParts.at(i)->end();
 	}
 }
 
@@ -67,10 +67,6 @@ glm::vec3 GameObject::getScale()
 	return m_Scale;
 }
 
-void GameObject::isHUD(bool bSetting)
-{
-	m_bUseLights = bSetting;
-}
 
 GameObject::~GameObject()
 {

@@ -23,34 +23,40 @@
     <ClCompile Include="src\Bitmap.cpp" />
     <ClCompile Include="src\Collectable.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\glslprogram.cpp" />
     <ClCompile Include="src\gl_core_4_3.cpp" />
-    <ClCompile Include="src\HUD.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model.cpp" />
     <ClCompile Include="src\Robot.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\UIText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Libraries\tinyxml2\tinyxml2.h" />
     <ClInclude Include="include\Bitmap.h" />
     <ClInclude Include="include\Collectable.h" />
     <ClInclude Include="include\GameObject.h" />
+    <ClInclude Include="include\glslprogram.h" />
     <ClInclude Include="include\gl_core_4_3.hpp" />
-    <ClInclude Include="include\HUD.h" />
     <ClInclude Include="include\model.h" />
     <ClInclude Include="include\Robot.h" />
     <ClInclude Include="include\scene.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Texture.h" />
+    <ClInclude Include="include\UIText.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Assets\scenes\MenuScene.xml" />
     <Xml Include="Assets\scenes\Scene.xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\shader\2D.frag" />
+    <None Include="Assets\shader\2D.vert" />
     <None Include="Assets\shader\diffuse.frag" />
     <None Include="Assets\shader\diffuse.vert" />
+    <None Include="Assets\shader\text.frag" />
+    <None Include="Assets\shader\text.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C61D9857-6B25-4554-BBD0-7354B374C02A}</ProjectGuid>
@@ -103,20 +109,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>temp\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>temp\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>temp\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>temp\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -134,8 +140,8 @@
       <AdditionalIncludeDirectories>./include;../../Libraries/glm;../../Libraries/tinyxml2;..\..\Libraries\SFML-2.4.1\include;../../Libraries/freetype-2.7/include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\Libraries\SFML-2.4.1\lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-main-d.lib;sfml-window-d.lib;sfml-system-d.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Libraries\SFML-2.4.1\lib;..\..\Libraries\freetype-2.7\objs\vc2010\x64;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype27d.lib;sfml-graphics-d.lib;sfml-main-d.lib;sfml-window-d.lib;sfml-system-d.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -164,8 +170,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\Libraries\SFML-2.4.1\lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-main.lib;sfml-window.lib;sfml-system.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Libraries\SFML-2.4.1\lib;..\..\Libraries\freetype-2.7\objs\vc2010\x64;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype27d.lib;sfml-graphics.lib;sfml-main.lib;sfml-window.lib;sfml-system.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

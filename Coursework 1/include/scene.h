@@ -5,14 +5,14 @@
 #include "GameObject.h"
 #include <tinyxml2.h>
 #include <Array>
-#include "HUD.h"
+#include "UIText.h"
+#include "glslprogram.h"
 
 
 class Scene
 {
 	private:
-		GLuint m_uiProgramHandle; //Holds the current programHandle
-
+		std::vector<GLSLProgram*> m_vShaders;
 		std::vector<GameObject*> m_vObjects; //Holds pointers to every object
 		std::vector<Robot*> m_vRobots; //Holds pointers to every robot
 		std::vector<Collectable*> m_vCollectables; //Holds pointers to every collectable
@@ -26,19 +26,16 @@ class Scene
 		int m_iCollectableAmount; //Holds the amount of collectables in the scene
 
 		glm::mat3 tempCamera; //Holds a temporary camera for building 
+		UIText* textHolder;
 
 	public:
-		Scene(); //Default constructor
-		void init(); //Initializes the shaders
+		Scene(UIText* TextHolder); //Default constructor
 		void update(); //Updates every object in the scene
 		void load(std::string sDir); //Loads everything in the scene
 		void read(tinyxml2::XMLNode* currentChild); //Reads the next line of an xml file
-		void linkMe(GLint vertShader, GLint fragShader); //Links the shaders
 		void moveRobot(float fDirection); //Moves the robot in the given direction
 		void turnRobot(float fDirection); //Turns the robot in the given direction
 		void switchCamera(int iDirection); //Switches to the next camera in the given direction
-		void configureLights(); //Configures the lighting
-		void configureHUDLights(); //Configures the lighting
 		void setRobotMoving(bool bValue); //Sets whether the robot is moving or not
 		~Scene();  //Deconstructor
 };

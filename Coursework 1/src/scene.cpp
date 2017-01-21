@@ -4,163 +4,37 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-Scene::Scene()
+Scene::Scene(UIText* TextHolder2)
 {
-	init(); //Initialises the shaders
+	m_vShaders.push_back(new GLSLProgram);
+	m_vShaders.at(0)->compileShader("Assets/shader/diffuse.vert");
+	m_vShaders.at(0)->compileShader("Assets/shader/diffuse.frag");
+	m_vShaders.at(0)->link();
+	m_vShaders.at(0)->validate();
+	m_vShaders.at(0)->use();
 
-	//Sets up the pespective and passes it to the shader
-	glm::mat4 perspMatrix = glm::perspective(60.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
-	gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "P"), 1, gl::FALSE_, glm::value_ptr(perspMatrix));
+	m_vShaders.push_back(new GLSLProgram);
+	m_vShaders.at(1)->compileShader("Assets/shader/text.vert");
+	m_vShaders.at(1)->compileShader("Assets/shader/text.frag");
+	m_vShaders.at(1)->link();
+	m_vShaders.at(1)->validate();
+	m_vShaders.at(1)->use();
+
+	m_vShaders.push_back(new GLSLProgram);
+	m_vShaders.at(2)->compileShader("Assets/shader/2D.vert");
+	m_vShaders.at(2)->compileShader("Assets/shader/2D.frag");
+	m_vShaders.at(2)->link();
+	m_vShaders.at(2)->validate();
+	m_vShaders.at(2)->use();
 
 	m_iCurrentCamera = 0; //Sets the current camera to the first camera
 	m_iCollectableCount = 0; //Sets the collectable count to 0
-}
+	textHolder = TextHolder2;
 
-void Scene::init()
-{	
-	//////////////////////////////////////////////////////
-	/////////// Vertex shader //////////////////////////
-	//////////////////////////////////////////////////////
-
-	// Load contents of file
-	std::ifstream inFile("Assets/shader/diffuse.vert");
-	if (!inFile) {
-		fprintf(stderr, "Error opening file: shader/modifiedBasic.vert\n");
-		exit(1);
-	}
-
-	std::stringstream code;
-	code << inFile.rdbuf();
-	inFile.close();
-	std::string codeStr(code.str());
-
-	// Create the shader object
-	GLuint vertShader = gl::CreateShader(gl::VERTEX_SHADER);
-	if (0 == vertShader) {
-		fprintf(stderr, "Error creating vertex shader.\n");
-		exit(EXIT_FAILURE);
-	}
-
-	// Load the source code into the shader object
-	const GLchar* codeArray[] = { codeStr.c_str() };
-	gl::ShaderSource(vertShader, 1, codeArray, NULL);
-
-	// Compile the shader
-	gl::CompileShader(vertShader);
-
-	// Check compilation status
-	GLint result;
-	gl::GetShaderiv(vertShader, gl::COMPILE_STATUS, &result);
-	if (FALSE == result) {
-		fprintf(stderr, "Vertex shader compilation failed!\n");
-
-		GLint logLen;
-		gl::GetShaderiv(vertShader, gl::INFO_LOG_LENGTH, &logLen);
-
-		if (logLen > 0) {
-			char * log = (char *)malloc(logLen);
-
-			GLsizei written;
-			gl::GetShaderInfoLog(vertShader, logLen, &written, log);
-
-			fprintf(stderr, "Shader log: \n%s", log);
-
-			free(log);
-		}
-	}
-
-	//////////////////////////////////////////////////////
-	/////////// Fragment shader //////////////////////////
-	//////////////////////////////////////////////////////
-
-	// Load contents of file into shaderCode here
-	std::ifstream fragFile("Assets/shader/diffuse.frag");
-	if (!fragFile) {
-		fprintf(stderr, "Error opening file: shader/basic.frag\n");
-		exit(1);
-	}
-
-	std::stringstream fragCode;
-	fragCode << fragFile.rdbuf();
-	fragFile.close();
-	codeStr = fragCode.str();
-
-	// Create the shader object
-	GLuint fragShader = gl::CreateShader(gl::FRAGMENT_SHADER);
-	if (0 == fragShader) {
-		fprintf(stderr, "Error creating fragment shader.\n");
-		exit(1);
-	}
-
-	// Load the source code into the shader object
-	codeArray[0] = codeStr.c_str();
-	gl::ShaderSource(fragShader, 1, codeArray, NULL);
-
-	// Compile the shader
-	gl::CompileShader(fragShader);
-
-	// Check compilation status
-	gl::GetShaderiv(fragShader, gl::COMPILE_STATUS, &result);
-	if (FALSE == result) {
-		fprintf(stderr, "Fragment shader compilation failed!\n");
-
-		GLint logLen;
-		gl::GetShaderiv(fragShader, gl::INFO_LOG_LENGTH, &logLen);
-
-		if (logLen > 0) {
-			char * log = (char *)malloc(logLen);
-
-			GLsizei written;
-			gl::GetShaderInfoLog(fragShader, logLen, &written, log);
-
-			fprintf(stderr, "Shader log: \n%s", log);
-
-			free(log);
-		}
-	}
-
-	linkMe(vertShader, fragShader);
-}
-
-void Scene::linkMe(GLint vertShader, GLint fragShader) {
-	// Create the program object
-	m_uiProgramHandle = gl::CreateProgram();
-	if (0 == m_uiProgramHandle) {
-		fprintf(stderr, "Error creating program object.\n");
-		exit(1);
-	}
-
-	// Attach the shaders to the program object
-	gl::AttachShader(m_uiProgramHandle, vertShader);
-	gl::AttachShader(m_uiProgramHandle, fragShader);
-
-	// Link the program
-	gl::LinkProgram(m_uiProgramHandle);
-
-	// Check for successful linking
-	GLint status;
-	gl::GetProgramiv(m_uiProgramHandle, gl::LINK_STATUS, &status);
-	if (FALSE == status) {
-
-		fprintf(stderr, "Failed to link shader program!\n");
-
-		GLint logLen;
-		gl::GetProgramiv(m_uiProgramHandle, gl::INFO_LOG_LENGTH, &logLen);
-
-		if (logLen > 0) {
-			char * log = (char *)malloc(logLen);
-
-			GLsizei written;
-			gl::GetProgramInfoLog(m_uiProgramHandle, logLen, &written, log);
-
-			fprintf(stderr, "Program log: \n%s", log);
-
-			free(log);
-		}
-	}
-	else {
-		gl::UseProgram(m_uiProgramHandle);
-	}
+	
+	gl::Enable(gl::BLEND);
+	gl::Enable(gl::CULL_FACE);
+	gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
 }
 
 void Scene::update()
@@ -168,7 +42,8 @@ void Scene::update()
 	//Clear the buffers ready for drawing
 	gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
-	if (m_vCameras.size() > 0)
+	glm::mat4 ViewMatrix = glm::mat4(1.0f);
+	if (!m_vCameras.empty()) 
 	{
 		//Check every coordinate in the camera to see if it's locked to the player
 		for (int i = 0; i < m_vbUsePlayerPos.at(m_iCurrentCamera).size(); i++)
@@ -209,11 +84,24 @@ void Scene::update()
 				}
 			}
 		}
+
+		//Set ViewMatrix to be a lookat function for the new values
+		ViewMatrix = glm::lookAt(glm::vec3(m_vCameras.at(m_iCurrentCamera)[0].x, m_vCameras.at(m_iCurrentCamera)[0].y, m_vCameras.at(m_iCurrentCamera)[0].z),
+			glm::vec3(m_vCameras.at(m_iCurrentCamera)[1].x, m_vCameras.at(m_iCurrentCamera)[1].y, m_vCameras.at(m_iCurrentCamera)[1].z),
+			glm::vec3(m_vCameras.at(m_iCurrentCamera)[2].x, m_vCameras.at(m_iCurrentCamera)[2].y, m_vCameras.at(m_iCurrentCamera)[2].z));
 	}
 
-	configureLights();
+	m_vShaders.at(0)->use(); //Uses the diffuse 3D shader
+	m_vShaders.at(0)->setUniform("P", glm::perspective(60.0f, 16.0f / 9.0f, 0.1f, 1000.0f));
+	m_vShaders.at(0)->setUniform("light.position", 0.0f, 1.0f, 0.0f);
+	m_vShaders.at(0)->setUniform("light.ambient", 0.5f, 0.5f, 0.5f);
+	m_vShaders.at(0)->setUniform("light.diffuse", 0.4f, 0.4f, 0.4f);
+	m_vShaders.at(0)->setUniform("light.specular", 0.5f, 0.5f, 0.5f);
 
-	if (m_vObjects.size() > 0)
+	//Sends the view matrix to the shaders
+	m_vShaders.at(0)->setUniform("V", ViewMatrix);
+
+	if (!m_vObjects.empty())
 	{
 		for (int i = 0; i < m_vObjects.size(); i++) //For every model in the scene
 		{
@@ -222,14 +110,7 @@ void Scene::update()
 			m_vObjects.at(i)->update();
 		}
 	}
-	if (m_vHUD.size() > 0)
-	{
-		for (int i = 0; i < m_vHUD.size(); i++) //For every model in the scene
-		{
-			m_vHUD.at(i)->update();
-		}
-	}
-	if (m_vCollectables.size() > 0)
+	if (!m_vCollectables.empty() > 0)
 	{
 		for (int i = 0; i < m_vCollectables.size(); i++) //For every collectable
 		{
@@ -244,27 +125,38 @@ void Scene::update()
 		}
 	}
 
-	if (m_vObjects.size() > 0)
+	if (!m_vObjects.empty())
 	{
 		for (int i = 0; i < m_vObjects.size(); i++) //For every object in the scene
 		{
-			if (m_vObjects.at(i)->m_bUseLights)
-			{
-				configureLights();
-				//Set ViewMatrix to be a lookat function for the new values
-				glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(m_vCameras.at(m_iCurrentCamera)[0].x, m_vCameras.at(m_iCurrentCamera)[0].y, m_vCameras.at(m_iCurrentCamera)[0].z),
-					glm::vec3(m_vCameras.at(m_iCurrentCamera)[1].x, m_vCameras.at(m_iCurrentCamera)[1].y, m_vCameras.at(m_iCurrentCamera)[1].z),
-					glm::vec3(m_vCameras.at(m_iCurrentCamera)[2].x, m_vCameras.at(m_iCurrentCamera)[2].y, m_vCameras.at(m_iCurrentCamera)[2].z));
-				//Sends the view matrix to the shaders
-				gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "V"), 1, gl::FALSE_, glm::value_ptr(ViewMatrix));
-			}
-			else
-			{
-				configureHUDLights();
-				gl::UniformMatrix4fv(gl::GetUniformLocation(m_uiProgramHandle, "V"), 1, gl::FALSE_, glm::value_ptr(glm::mat4(1)));
-			}
 			m_vObjects.at(i)->render(); //render the object
 		}
+	}
+
+	m_vShaders.at(2)->use();//Uses the 2D shader
+	//Sets the projection matrix and draws the HUD images
+	m_vShaders.at(2)->setUniform("P", glm::perspective(60.0f, 16.0f / 9.0f, 0.1f, 1000.0f));
+	if (!m_vHUD.empty())
+	{
+		for (int i = 0; i < m_vHUD.size(); i++) //For every HUD model in the scene
+		{
+			m_vHUD.at(i)->update();
+			m_vHUD.at(i)->render();
+		}
+	}
+
+	//Draws the Heads up display text
+	m_vShaders.at(1)->use(); //Uses the 2D HUD Shader
+	m_vShaders.at(1)->setUniform("P", glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f));
+
+	//Renders the UIText
+	if (!m_vCameras.empty()) //Cameras
+	{
+		textHolder->render(m_vShaders.at(1)->getHandle(), "Current Camera: " + std::to_string(m_iCurrentCamera + 1) + " / " + std::to_string(m_iCameraCount), 5.0f, 10.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+	}
+	if (!m_vCollectables.empty()) //Collectables
+	{
+		textHolder->render(m_vShaders.at(1)->getHandle(), "Collectables collected: " + std::to_string(m_iCollectableCount) + " / " + std::to_string(m_iCollectableAmount), 5.0f, 40.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 }
 
@@ -284,8 +176,8 @@ void Scene::load(std::string sDir)
 	}
 
 	//Set the camera and collectable counters
-	m_iCameraCount = m_vCameras.size(); 
-	m_iCollectableAmount = m_vCollectables.size();
+	m_iCameraCount = (int)m_vCameras.size(); 
+	m_iCollectableAmount = (int)m_vCollectables.size();
 }
 
 void Scene::read(tinyxml2::XMLNode* currentNode)
@@ -299,7 +191,6 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 		{
 			Robot* newBot = new Robot;  //Creates a new robot
 			m_vObjects.push_back(newBot); //Adds the robot to the objects list
-			m_vObjects.at(m_vObjects.size() - 1)->m_bUseLights = true;
 			m_vRobots.push_back(newBot); //Adds the robot to the robot list
 			newBot = NULL; //Clears the pointer
 			read(currentChild); //Reads into the robot
@@ -308,7 +199,6 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 		else if (strcmp(currentChild->Value(), "GAMEOBJECT") == 0) //If the current child is a game object
 		{
 			m_vObjects.push_back(new GameObject); //Creates a new game object
-			m_vObjects.at(m_vObjects.size() - 1)->m_bUseLights = true;
 			read(currentChild); //Reads into the game object
 		}
 
@@ -316,7 +206,6 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 		{
 			Collectable* newCollect = new Collectable; //Creates a new collectable
 			m_vObjects.push_back(newCollect); //Adds the collectable to the objects list
-			m_vObjects.at(m_vObjects.size() - 1)->m_bUseLights = true;
 			m_vCollectables.push_back(newCollect); //Adds the collectable to the collectable list
 			newCollect = NULL; //Clears the pointer
 			read(currentChild); //Reads into the collectable
@@ -324,39 +213,50 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 		else if (strcmp(currentChild->Value(), "HUD") == 0) //If the current child is a collectable
 		{
 			GameObject* newHUD = new GameObject; //Creates a new collectable
-			m_vObjects.push_back(newHUD); //Adds the collectable to the objects list
 			m_vHUD.push_back(newHUD); //Adds the collectable to the collectable list
 			newHUD = NULL; //Clears the pointer
-			m_vObjects.at(m_vObjects.size()-1)->m_bUseLights = false; //Adds the collectable to the objects list
 			read(currentChild); //Reads into the collectable
 		}
 		else if (strcmp(currentChild->Value(), "MODEL") == 0) //If the current child is a model
 		{
-			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0 || strcmp(currentNode->Value(), "HUD") == 0)
+			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0 )
 			{
-				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.push_back(new Model(m_uiProgramHandle)); //Adds a model to the objects parts
+				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.push_back(new Model(m_vShaders.at(0)->getHandle())); //Adds a model to the objects parts
+			}
+			else if (strcmp(currentNode->Value(), "HUD") == 0) //If loading a HUD
+			{
+				m_vHUD.at(m_vHUD.size() - 1)->m_vParts.push_back(new Model(m_vShaders.at(2)->getHandle()));
 			}
 			read(currentChild); //Reads into the model
 		}
 		else if (strcmp(currentChild->Value(), "SCALE") == 0) //If the current child is scale
 		{
 			std::istringstream iss(currentChild->ToElement()->GetText());
-			for (int i = 0; i < 3; i++)
-			{
-				iss >> tempTransform.x; //Read the x value
-				iss >> tempTransform.y; //Read the y value
-				iss >> tempTransform.z; //Read the z value
-			}
-
+			
+			iss >> tempTransform.x; //Read the x value
+			iss >> tempTransform.y; //Read the y value
+			iss >> tempTransform.z; //Read the z value
+			
 			//If scaling some form of object
-			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0 || strcmp(currentNode->Value(), "HUD") == 0)
+			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0)
 			{
 				m_vObjects.at(m_vObjects.size() - 1)->setScale(tempTransform); //Sets the objects scale
 			}
 			//If scaling a model
 			else if (strcmp(currentNode->Value(), "MODEL") == 0) 
 			{
-				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setScale(tempTransform); //Sets the models scale
+				if (strcmp(currentNode->Parent()->Value(), "HUD") == 0) //If loading a HUD
+				{
+					m_vHUD.at(m_vHUD.size() - 1)->m_vParts.at(m_vHUD.at(m_vHUD.size() - 1)->m_vParts.size() - 1)->setScale(tempTransform);
+				}
+				else
+				{
+					m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setScale(tempTransform); //Sets the models scale
+				}
+			}
+			else if (strcmp(currentNode->Value(), "HUD") == 0) //If loading a HUD
+			{
+				m_vHUD.at(m_vHUD.size() - 1)->setScale(tempTransform);
 			}
 		}
 
@@ -364,22 +264,30 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 		{
 			std::istringstream iss(currentChild->ToElement()->GetText());
 
-			for (int i = 0; i < 3; i++)
-			{
-				iss >> tempTransform.x; //Read the x value
-				iss >> tempTransform.y; //Read the y value
-				iss >> tempTransform.z; //Read the z value
-			}
+			iss >> tempTransform.x; //Read the x value
+			iss >> tempTransform.y; //Read the y value
+			iss >> tempTransform.z; //Read the z value
 
 			//If rotating some form of object
-			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0 || strcmp(currentNode->Value(), "HUD") == 0)
+			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0)
 			{
 				m_vObjects.at(m_vObjects.size() - 1)->setRotation(tempTransform);  //Sets the objects rotation
 			}
 			//If rotating a model
 			else if (strcmp(currentNode->Value(), "MODEL") == 0)
 			{
-				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setRotation(tempTransform); //Sets the models rotation
+				if (strcmp(currentNode->Parent()->Value(), "HUD") == 0) //If loading a HUD
+				{
+					m_vHUD.at(m_vHUD.size() - 1)->m_vParts.at(m_vHUD.at(m_vHUD.size() - 1)->m_vParts.size() - 1)->setRotation(tempTransform);
+				}
+				else
+				{
+					m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setRotation(tempTransform); //Sets the models rotation
+				}
+			}
+			else if (strcmp(currentNode->Value(), "HUD") == 0) //If loading a HUD
+			{
+				m_vHUD.at(m_vHUD.size() - 1)->setRotation(tempTransform);
 			}
 
 		}
@@ -387,36 +295,60 @@ void Scene::read(tinyxml2::XMLNode* currentNode)
 		{
 			std::istringstream iss(currentChild->ToElement()->GetText());
 
-			for (int i = 0; i < 3; i++)
-			{
-				iss >> tempTransform.x; //Read the x value
-				iss >> tempTransform.y; //Read the y value
-				iss >> tempTransform.z; //Read the z value
-			}
+			
+			iss >> tempTransform.x; //Read the x value
+			iss >> tempTransform.y; //Read the y value
+			iss >> tempTransform.z; //Read the z value
+			
 
 			//If translating some form of object
-			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0 || strcmp(currentNode->Value(), "HUD") == 0)
+			if (strcmp(currentNode->Value(), "ROBOT") == 0 || strcmp(currentNode->Value(), "GAMEOBJECT") == 0 || strcmp(currentNode->Value(), "COLLECTABLE") == 0)
 			{
 				m_vObjects.at(m_vObjects.size() - 1)->setPosition(tempTransform); //Sets the objects translation
 			}
 			//If translating a model
 			else if (strcmp(currentNode->Value(), "MODEL") == 0)
+			{ 
+				if (strcmp(currentNode->Parent()->Value(), "HUD") == 0) //If loading a HUD
+				{
+					m_vHUD.at(m_vHUD.size() - 1)->m_vParts.at(m_vHUD.at(m_vHUD.size() - 1)->m_vParts.size() - 1)->setPosition(tempTransform);
+				}
+				else
+				{
+					m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setPosition(tempTransform); //Sets the models translation
+				}
+			} 
+			else if (strcmp(currentNode->Value(), "HUD") == 0) //If loading a HUD
 			{
-				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setPosition(tempTransform); //Sets the models translation
+				m_vHUD.at(m_vHUD.size() - 1)->setPosition(tempTransform);
 			}
 		}
 		else if (strcmp(currentChild->Value(), "OBJECT") == 0) //If the current child is an object
 		{
 			if (strcmp(currentNode->Value(), "MODEL") == 0)
 			{
-				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->loadObj(currentChild->ToElement()->GetText()); //Loads the model
+				if (strcmp(currentNode->Parent()->Value(), "HUD") == 0) //If loading a HUD
+				{
+					m_vHUD.at(m_vHUD.size() - 1)->m_vParts.at(m_vHUD.at(m_vHUD.size() - 1)->m_vParts.size() - 1)->loadObj(currentChild->ToElement()->GetText());
+				}
+				else
+				{
+					m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->loadObj(currentChild->ToElement()->GetText()); //Loads the model
+				}
 			}
 		}
 		else if (strcmp(currentChild->Value(), "TEXTURE") == 0) //If the current child is a texture
 		{
 			if (strcmp(currentNode->Value(), "MODEL") == 0)
 			{
-				m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setTexture(currentChild->ToElement()->GetText()); //Loads the texture
+				if (strcmp(currentNode->Parent()->Value(), "HUD") == 0) //If loading a HUD
+				{
+					m_vHUD.at(m_vHUD.size() - 1)->m_vParts.at(m_vHUD.at(m_vHUD.size() - 1)->m_vParts.size() - 1)->setTexture(currentChild->ToElement()->GetText()); //Loads the texture
+				}
+				else
+				{
+					m_vObjects.at(m_vObjects.size() - 1)->m_vParts.at(m_vObjects.at(m_vObjects.size() - 1)->m_vParts.size() - 1)->setTexture(currentChild->ToElement()->GetText()); //Loads the texture
+				}
 			}
 		}
 		else if (strcmp(currentChild->Value(), "CAMERA") == 0) //If the current child is a camera
@@ -517,7 +449,7 @@ void Scene::switchCamera(int iDirection)
 	//Sets a loop if the boundaries are passed
 	if (m_iCurrentCamera < 0)
 	{
-		m_iCurrentCamera = m_vCameras.size() - 1;
+		m_iCurrentCamera = (int)m_vCameras.size() - 1;
 	}
 	if (m_iCurrentCamera >= m_vCameras.size())
 	{
@@ -525,39 +457,38 @@ void Scene::switchCamera(int iDirection)
 	}
 }
 
-void Scene::configureLights()
-{
-	//Sets up the light and passes it to the shader
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.position"), 0.0f, 1.0f, 0.0f);
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.ambient"), 0.5f, 0.5f, 0.5f);
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.diffuse"), 0.4f, 0.4f, 0.4f);
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.specular"), 0.5f, 0.5f, 0.5f);
-}
-
-void Scene::configureHUDLights()
-{
-	//Sets up the light and passes it to the shader
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.position"), 0.0f, 0.0f, 1.0f);
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.ambient"), 1.0f, 1.0f, 1.0f);
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.diffuse"), 0.0f, 0.0f, 0.0f);
-	gl::Uniform3f(gl::GetUniformLocation(m_uiProgramHandle, "light.specular"), 0.0f, 0.0f, 0.0f);
-}
-
 Scene::~Scene()
 {
 	//Clears all of the data and pointers for all of the vectors.
-	for (int i = 0; i < m_vObjects.size(); i++)
+	if (m_vObjects.size() > 0)
 	{
-		m_vObjects.at(i)->~GameObject();
-		delete(m_vObjects.at(i));
-		m_vObjects.at(i) = NULL;
+		for (int i = 0; i < m_vObjects.size(); i++)
+		{
+			m_vObjects.at(i)->~GameObject();
+			delete(m_vObjects.at(i));
+			m_vObjects.at(i) = NULL;
+		}
 	}
-	for (int i = 0; i < m_vRobots.size(); i++)
+	if (!m_vShaders.empty())
 	{
-		m_vRobots.at(i) = NULL;
+		for (int i = 0; i < m_vShaders.size(); i++)
+		{
+			delete(m_vShaders.at(i));
+			m_vShaders.at(i) = NULL;
+		}
 	}
-	for (int i = 0; i < m_vCollectables.size(); i++)
+	if (m_vRobots.size() > 0)
 	{
-		m_vCollectables.at(i) = NULL;
+		for (int i = 0; i < m_vRobots.size(); i++)
+		{
+			m_vRobots.at(i) = NULL;
+		}
+	}
+	if (m_vCollectables.size() > 0)
+	{
+		for (int i = 0; i < m_vCollectables.size(); i++)
+		{
+			m_vCollectables.at(i) = NULL;
+		}
 	}
 }

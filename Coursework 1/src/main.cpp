@@ -7,6 +7,7 @@ sf::RenderWindow *window;
 Scene *currentScene = NULL;
 enum Screens {Game , MainMenu};
 Screens currentScreen = MainMenu;
+UIText textHolder;
 
 void loadScene()
 {
@@ -19,7 +20,7 @@ void loadScene()
 		currentScene = NULL;
 	}
 
-	currentScene = new Scene();
+	currentScene = new Scene(&textHolder);
 	if (currentScreen == Game)
 	{
 		currentScene->load("Assets/scenes/Scene.xml");
@@ -45,7 +46,7 @@ void gameLoop()
 			}
 			else if (event.type == sf::Event::Resized)
 			{
-				window->setView(sf::View(sf::FloatRect(0.f, 0.f,window->getSize().x,window->getSize().y))); //Resizes the window view to fit to the screen
+				window->setView(sf::View(sf::FloatRect(0.0f, 0.0f,(float)window->getSize().x,(float)window->getSize().y))); //Resizes the window view to fit to the screen
 				gl::Viewport(0, 0, window->getSize().x, window->getSize().y); //Resizes the viewport
 			}
 			if (event.type == sf::Event::MouseButtonPressed)
@@ -152,6 +153,9 @@ void main()
 	}
 	else //If openGL has loaded load the start the software
 	{
+		textHolder.loadCharacters();
+		textHolder.setupBuffers();
+
 		loadScene();
 		gameLoop();
 	}

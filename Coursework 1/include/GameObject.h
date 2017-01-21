@@ -19,7 +19,6 @@ class GameObject
 		void setRotation(glm::vec3 newRotation); //Sets the overall rotation of the model
 		void setPosition(glm::vec3 newPosition); //Sets the overall position of the model
 		void setScale(glm::vec3 newScale); //Sets the overall scale of the model
-		void isHUD(bool bSetting);
 
 		glm::vec3 getRotation(); //Gets the overall rotation of the model
 		glm::vec3 getPosition(); //Gets the overall position of the model
@@ -27,5 +26,4 @@ class GameObject
 		~GameObject(); //Destructor
 
 		std::vector<Model*> m_vParts; //Holds the models for the object
-		bool m_bUseLights;
 };

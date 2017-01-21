@@ -27,9 +27,6 @@
     <ClCompile Include="src\gl_core_4_3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\HUD.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,6 +45,12 @@
     <ClCompile Include="..\..\Libraries\tinyxml2\tinyxml2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\UIText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glslprogram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Bitmap.h">
@@ -60,9 +63,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\gl_core_4_3.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\HUD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\model.h">
@@ -83,6 +83,12 @@
     <ClInclude Include="..\..\Libraries\tinyxml2\tinyxml2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\UIText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\glslprogram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Assets\scenes\MenuScene.xml">
@@ -97,6 +103,18 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Assets\shader\diffuse.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\shader\text.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\shader\text.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\shader\2D.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\shader\2D.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
