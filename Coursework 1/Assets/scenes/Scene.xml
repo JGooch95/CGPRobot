@@ -186,6 +186,20 @@
       <TRANSLATE>0 0 0</TRANSLATE>
     </MODEL>
   </GAMEOBJECT>
+
+  <!--ROOF 1-->
+  <GAMEOBJECT>
+    <SCALE>22.227 0 22.227</SCALE>
+    <ROTATE> 180 0 0</ROTATE>
+    <TRANSLATE>0 3.651 0</TRANSLATE>
+    <MODEL>
+      <OBJECT>Assets/objects/plane.obj</OBJECT>
+      <TEXTURE>Assets/textures/Roof.jpg</TEXTURE>
+      <SCALE>1 1 1</SCALE>
+      <ROTATE>0 0 0</ROTATE>
+      <TRANSLATE>0 0 0</TRANSLATE>
+    </MODEL>
+  </GAMEOBJECT>
   
   <!--BOX 1-->
   <GAMEOBJECT>
@@ -284,6 +298,34 @@
       <TRANSLATE>0 0 0</TRANSLATE>
     </MODEL>
   </GAMEOBJECT>
+
+  <!--TABLE-->
+  <GAMEOBJECT>
+    <SCALE>1 1 1</SCALE>
+    <ROTATE>0 37.316 0</ROTATE>
+    <TRANSLATE>3 1.2 -8.5</TRANSLATE>
+    <MODEL>
+      <OBJECT>Assets/objects/table.obj</OBJECT>
+      <TEXTURE>Assets/textures/table.jpg </TEXTURE>
+      <SCALE>0.01 0.01 0.01</SCALE>
+      <ROTATE>0 0 0</ROTATE>
+      <TRANSLATE>0 0 0</TRANSLATE>
+    </MODEL>
+  </GAMEOBJECT>
+
+  <!--DRAWER-->
+  <GAMEOBJECT>
+    <SCALE>1 1 1</SCALE>
+    <ROTATE>0 90 0</ROTATE>
+    <TRANSLATE>1 1 5</TRANSLATE>
+    <MODEL>
+      <OBJECT>Assets/objects/drawer.obj</OBJECT>
+      <TEXTURE>Assets/textures/drawer.jpg </TEXTURE>
+      <SCALE>3 3 3</SCALE>
+      <ROTATE>0 0 0</ROTATE>
+      <TRANSLATE>0 0 0</TRANSLATE>
+    </MODEL>
+  </GAMEOBJECT>
   
   <!--COLLECTABLE 1-->
   <COLLECTABLE>
@@ -340,17 +382,31 @@
       <TRANSLATE>0 0 0</TRANSLATE>
     </MODEL>
   </COLLECTABLE>
+
+  <!--COLLECTABLE 5-->
+  <COLLECTABLE>
+    <SCALE>0.25 0.25 0.25</SCALE>
+    <ROTATE> 0 37.316 0</ROTATE>
+    <TRANSLATE>3 1.7 -8.5</TRANSLATE>
+    <MODEL>
+      <OBJECT>Assets/objects/bolt.obj</OBJECT>
+      <TEXTURE>Assets/textures/metal.jpg </TEXTURE>
+      <SCALE>1 1 1</SCALE>
+      <ROTATE>45 0 45</ROTATE>
+      <TRANSLATE>0 0 0</TRANSLATE>
+    </MODEL>
+  </COLLECTABLE>
   
   <!--CAMERA 1-->
   <CAMERA>
-    <POSITION>-7.915 3.505 9.842</POSITION>
+    <POSITION>8.222 3.505 9.862</POSITION>
     <VIEW>p p p</VIEW>
     <UP>0 1 0</UP>
   </CAMERA>
-
+  
   <!--CAMERA 2-->
   <CAMERA>
-    <POSITION>8.222 3.505 9.862</POSITION>
+    <POSITION>-7.915 3.505 9.842</POSITION>
     <VIEW>p p p</VIEW>
     <UP>0 1 0</UP>
   </CAMERA>

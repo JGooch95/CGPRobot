@@ -13,109 +13,127 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Libraries">
+      <UniqueIdentifier>{be93135e-4e20-47d4-ab53-1179dee15365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Libraries">
+      <UniqueIdentifier>{a60c39a5-f384-42f7-ac36-0188519901f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{bc088726-2221-4dc1-994d-317d2b69f9ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\XML files">
+      <UniqueIdentifier>{60475dce-a975-4b57-9ea4-d7839bd2ff27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Vertex Shaders">
+      <UniqueIdentifier>{44824dca-c3ab-4db4-ad23-cd5c607f95ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Fragment Shaders">
+      <UniqueIdentifier>{0c3e53d0-4fc3-4945-bdcd-20bfcd28d875}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Bitmap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Collectable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gl_core_4_3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Robot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Libraries\tinyxml2\tinyxml2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\UIText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\glslprogram.cpp">
+    <ClCompile Include="src\libraries\Bitmap.cpp">
+      <Filter>Source Files\Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libraries\gl_core_4_3.cpp">
+      <Filter>Source Files\Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libraries\glslprogram.cpp">
+      <Filter>Source Files\Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libraries\Texture.cpp">
+      <Filter>Source Files\Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libraries\tinyxml2.cpp">
+      <Filter>Source Files\Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Bitmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Collectable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\gl_core_4_3.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Robot.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Libraries\tinyxml2\tinyxml2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\UIText.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glslprogram.h">
+    <ClInclude Include="include\Libraries\Bitmap.h">
+      <Filter>Header Files\Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Libraries\gl_core_4_3.hpp">
+      <Filter>Header Files\Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Libraries\glslprogram.h">
+      <Filter>Header Files\Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Libraries\stb_image.h">
+      <Filter>Header Files\Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Libraries\Texture.h">
+      <Filter>Header Files\Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Libraries\tinyxml2.h">
+      <Filter>Header Files\Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Assets\scenes\MenuScene.xml">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\XML files</Filter>
     </Xml>
     <Xml Include="Assets\scenes\Scene.xml">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\XML files</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\shader\diffuse.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\shader\diffuse.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\shader\text.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\shader\text.vert">
-      <Filter>Resource Files</Filter>
+    <None Include="Assets\shader\2D.frag">
+      <Filter>Resource Files\Shaders\Fragment Shaders</Filter>
     </None>
     <None Include="Assets\shader\2D.vert">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Shaders\Vertex Shaders</Filter>
     </None>
-    <None Include="Assets\shader\2D.frag">
-      <Filter>Resource Files</Filter>
+    <None Include="Assets\shader\diffuse.frag">
+      <Filter>Resource Files\Shaders\Fragment Shaders</Filter>
+    </None>
+    <None Include="Assets\shader\diffuse.vert">
+      <Filter>Resource Files\Shaders\Vertex Shaders</Filter>
+    </None>
+    <None Include="Assets\shader\text.frag">
+      <Filter>Resource Files\Shaders\Fragment Shaders</Filter>
+    </None>
+    <None Include="Assets\shader\text.vert">
+      <Filter>Resource Files\Shaders\Vertex Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

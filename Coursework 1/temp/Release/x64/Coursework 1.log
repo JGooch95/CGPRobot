@@ -1,6 +1,12 @@
-﻿LINK : warning LNK4098: defaultlib 'MSVCRTD' conflicts with use of other libs; use /NODEFAULTLIB:library
+﻿  Main.cpp
+  Scene.cpp
+src\Scene.cpp(117): warning C4804: '>': unsafe use of type 'bool' in operation
+  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+LINK : warning LNK4098: defaultlib 'MSVCRTD' conflicts with use of other libs; use /NODEFAULTLIB:library
   Generating code
-  All 1864 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  46 of 2053 functions ( 2.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    8 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Coursework 1.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\bin\Release\x64\Coursework 1.exe
   Coursework 1.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\bin\Release\x64\Coursework 1.pdb (Full PDB)

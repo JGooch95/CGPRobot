@@ -251,8 +251,6 @@ void Model::render(){
 
 	//Sends the material data to the shaders
 	gl::Uniform1f(gl::GetUniformLocation(m_uiProgramHandle, "material.shininess"), 32.0f);
-	//gl::Uniform1i(gl::GetUniformLocation(m_iProgramHandle, "material.diffuse"), m_Texture->object());
-	//gl::Uniform1i(gl::GetUniformLocation(m_iProgramHandle, "material.specular"), m_Texture->object());
 
 	gl::Enable(gl::DEPTH_TEST);
 	

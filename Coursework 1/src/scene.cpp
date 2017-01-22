@@ -6,6 +6,7 @@
 
 Scene::Scene(UIText* TextHolder2)
 {
+	//Loads the diffuse shader
 	m_vShaders.push_back(new GLSLProgram);
 	m_vShaders.at(0)->compileShader("Assets/shader/diffuse.vert");
 	m_vShaders.at(0)->compileShader("Assets/shader/diffuse.frag");
@@ -13,6 +14,7 @@ Scene::Scene(UIText* TextHolder2)
 	m_vShaders.at(0)->validate();
 	m_vShaders.at(0)->use();
 
+	//Loads the text shader
 	m_vShaders.push_back(new GLSLProgram);
 	m_vShaders.at(1)->compileShader("Assets/shader/text.vert");
 	m_vShaders.at(1)->compileShader("Assets/shader/text.frag");
@@ -20,6 +22,7 @@ Scene::Scene(UIText* TextHolder2)
 	m_vShaders.at(1)->validate();
 	m_vShaders.at(1)->use();
 
+	//Loads the 2D shader
 	m_vShaders.push_back(new GLSLProgram);
 	m_vShaders.at(2)->compileShader("Assets/shader/2D.vert");
 	m_vShaders.at(2)->compileShader("Assets/shader/2D.frag");
@@ -30,7 +33,8 @@ Scene::Scene(UIText* TextHolder2)
 	m_iCurrentCamera = 0; //Sets the current camera to the first camera
 	m_iCollectableCount = 0; //Sets the collectable count to 0
 	textHolder = TextHolder2;
-
+	m_bSceneOver = false;
+	m_bNewCollectable = false;
 	
 	gl::Enable(gl::BLEND);
 	gl::Enable(gl::CULL_FACE);
@@ -120,6 +124,9 @@ void Scene::update()
 				{
 					m_iCollectableCount++; //Increment collectable count
 					std::cout << m_iCollectableCount << "\n"; //Output the amount of Collectables collected
+					m_bNewCollectable = true;
+					m_Clock.restart(); //Used for timing events
+					
 				}
 			}
 		}
@@ -152,12 +159,33 @@ void Scene::update()
 	//Renders the UIText
 	if (!m_vCameras.empty()) //Cameras
 	{
-		textHolder->render(m_vShaders.at(1)->getHandle(), "Current Camera: " + std::to_string(m_iCurrentCamera + 1) + " / " + std::to_string(m_iCameraCount), 5.0f, 10.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		textHolder->render(m_vShaders.at(1)->getHandle(), "Current Camera: " + std::to_string(m_iCurrentCamera + 1) + " / " + std::to_string(m_vCameras.size()), 5.0f, 10.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 	if (!m_vCollectables.empty()) //Collectables
 	{
-		textHolder->render(m_vShaders.at(1)->getHandle(), "Collectables collected: " + std::to_string(m_iCollectableCount) + " / " + std::to_string(m_iCollectableAmount), 5.0f, 40.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		textHolder->render(m_vShaders.at(1)->getHandle(), "Collectables collected: " + std::to_string(m_iCollectableCount) + " / " + std::to_string(m_vCollectables.size()), 5.0f, 40.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		if (m_iCollectableCount >= m_vCollectables.size())
+		{
+			m_bSceneOver = true;
+		}
 	}
+
+	if (m_bSceneOver)
+	{
+		textHolder->render(m_vShaders.at(1)->getHandle(), "Congratulations!", 450.0f, 380.0f, 2.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		textHolder->render(m_vShaders.at(1)->getHandle(), "Press 'enter' to return to the menu", 450.0f, 320.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+	}
+
+	//Outputs a message to the screen if a collectable has been collected
+	if (m_bNewCollectable)
+	{
+		textHolder->render(m_vShaders.at(1)->getHandle(), "Collectable Collected", 500.0f, 550.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		if (m_Clock.getElapsedTime().asSeconds() > 1.0f)
+		{
+			m_bNewCollectable = false;
+		}
+	}
+	
 }
 
 void Scene::load(std::string sDir)
@@ -174,10 +202,6 @@ void Scene::load(std::string sDir)
 			read(currentChild); //Go to the tags child
 		}
 	}
-
-	//Set the camera and collectable counters
-	m_iCameraCount = (int)m_vCameras.size(); 
-	m_iCollectableAmount = (int)m_vCollectables.size();
 }
 
 void Scene::read(tinyxml2::XMLNode* currentNode)
@@ -457,9 +481,22 @@ void Scene::switchCamera(int iDirection)
 	}
 }
 
+bool Scene::getSceneOver()
+{
+	return m_bSceneOver;
+}
+
 Scene::~Scene()
 {
 	//Clears all of the data and pointers for all of the vectors.
+	if (!m_vShaders.empty())
+	{
+		for (int i = 0; i < m_vShaders.size(); i++)
+		{
+			delete(m_vShaders.at(i));
+			m_vShaders.at(i) = NULL;
+		}
+	}
 	if (m_vObjects.size() > 0)
 	{
 		for (int i = 0; i < m_vObjects.size(); i++)
@@ -467,14 +504,6 @@ Scene::~Scene()
 			m_vObjects.at(i)->~GameObject();
 			delete(m_vObjects.at(i));
 			m_vObjects.at(i) = NULL;
-		}
-	}
-	if (!m_vShaders.empty())
-	{
-		for (int i = 0; i < m_vShaders.size(); i++)
-		{
-			delete(m_vShaders.at(i));
-			m_vShaders.at(i) = NULL;
 		}
 	}
 	if (m_vRobots.size() > 0)

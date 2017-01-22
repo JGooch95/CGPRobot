@@ -1,7 +1,89 @@
-﻿  scene.cpp
-c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(113): warning C4804: '>': unsafe use of type 'bool' in operation
+﻿  UIText.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\uitext.cpp(58): warning C4838: conversion from 'FT_Pos' to 'GLuint' requires a narrowing conversion
+  Scene.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\scene.cpp(116): warning C4804: '>': unsafe use of type 'bool' in operation
   GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-  main.cpp
+  Robot.cpp
+  Model.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\model.cpp(263): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  Main.cpp
+  tinyxml2.cpp
+  Texture.cpp
+  gl_core_4_3.cpp
+  glslprogram.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\glslprogram.h(69): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\glslprogram.h(70): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\glslprogram.h(72): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\glslprogram.h(74): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\glslprogram.h(75): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\glslprogram.h(76): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\libraries\glslprogram.cpp(56): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\libraries\glslprogram.cpp(93): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\libraries\glslprogram.cpp(125): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\libraries\glslprogram.cpp(173): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\libraries\glslprogram.cpp(205): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\src\libraries\glslprogram.cpp(398): warning C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+  Bitmap.cpp
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(582): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(604): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(650): warning C4312: 'type cast': conversion from 'int' to 'float *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(672): warning C4312: 'type cast': conversion from 'int' to 'float *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(891): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(929): warning C4312: 'type cast': conversion from 'int' to 'float *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(947): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(1861): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(1889): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(1907): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(2874): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(2999): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3005): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3013): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3015): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3023): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3058): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3061): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3088): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3091): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3102): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3140): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3317): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3338): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3343): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3473): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3477): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3485): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3493): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3506): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3523): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3527): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3665): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3693): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3704): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3705): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3719): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3738): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3756): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3767): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3776): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3803): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(3804): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4014): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4018): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4023): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4034): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4063): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4070): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4087): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4117): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4150): warning C4312: 'type cast': conversion from 'int' to 'unsigned char *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4263): warning C4312: 'type cast': conversion from 'int' to 'float *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4272): warning C4312: 'type cast': conversion from 'int' to 'float *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4277): warning C4312: 'type cast': conversion from 'int' to 'float *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4281): warning C4312: 'type cast': conversion from 'int' to 'float *' of greater size
+c:\users\jonathon\desktop\uni p14141535\year three\imat3606 - games programming\coursework 1\coursework 1\include\libraries\stb_image.h(4330): warning C4312: 'type cast': conversion from 'int' to 'float *' of greater size
+  GameObject.cpp
+  Collectable.cpp
   Generating Code...
   Coursework 1.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\bin\Debug\x64\Coursework 1.exe
   Coursework 1.vcxproj -> C:\Users\Jonathon\Desktop\Uni P14141535\Year Three\IMAT3606 - Games Programming\Coursework 1\bin\Debug\x64\Coursework 1.pdb (Partial PDB)

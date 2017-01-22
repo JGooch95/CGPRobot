@@ -5,7 +5,7 @@
 
 sf::RenderWindow *window;
 Scene *currentScene = NULL;
-enum Screens {Game , MainMenu};
+enum Screens {MainMenu, Game};
 Screens currentScreen = MainMenu;
 UIText textHolder;
 
@@ -65,11 +65,16 @@ void gameLoop()
 			}
 			if (event.type == sf::Event::KeyPressed)
 			{
-				if (currentScreen == MainMenu)
+				if (event.key.code == sf::Keyboard::Return)
 				{
-					if (event.key.code == sf::Keyboard::Return)
+					if (currentScreen == MainMenu)
 					{
 						currentScreen = Game;
+						loadScene();
+					}
+					else if (currentScreen == Game && currentScene->getSceneOver())
+					{
+						currentScreen = MainMenu;
 						loadScene();
 					}
 				}
@@ -143,7 +148,7 @@ void main()
 	settings.minorVersion = 3;
 
 	//Adds a new window
-	window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Open GL", sf::Style::Default, settings);
+	window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Robot Game", sf::Style::Default, settings);
 
 	//Loads openGL and checks if it has loaded correctly
 	gl::exts::LoadTest GLLoaded = gl::sys::LoadFunctions();
@@ -155,7 +160,6 @@ void main()
 	{
 		textHolder.loadCharacters();
 		textHolder.setupBuffers();
-
 		loadScene();
 		gameLoop();
 	}
