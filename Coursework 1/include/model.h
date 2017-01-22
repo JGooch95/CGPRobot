@@ -37,7 +37,7 @@ class Model
 		Model();
 		Model(GLuint uiProgramHandle2); //Constructor
 		void loadObj(std::string sDir); //Loads the obj file and fills the buffers
-		virtual void render(); //Renders the model
+		void render(); //Renders the model
 
 		void start(); //Resets the model matrix ready for transforms
 		void end(); //Sends the model matrix to the shaders

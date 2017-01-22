@@ -520,4 +520,12 @@ Scene::~Scene()
 			m_vCollectables.at(i) = NULL;
 		}
 	}
+	if (m_vHUD.size() > 0)
+	{
+		for (int i = 0; i < m_vHUD.size(); i++)
+		{
+			m_vHUD.at(i)->~GameObject();
+			delete(m_vHUD.at(i));
+		}
+	}
 }
